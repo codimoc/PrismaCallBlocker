@@ -10,7 +10,24 @@
     tools:context="com.prismaqf.callblocker.CallBlockerManager">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/textDetectState"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_alignParentLeft="true"
+        android:text="@string/no_detect"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
+    <Button
+        android:id="@+id/buttonDetectToggle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/textDetectState"
+        android:text="@string/turn_on"/>
+    <Button
+        android:id="@+id/buttonExit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/buttonDetectToggle"
+        android:text="@string/exit"/>
 </RelativeLayout>

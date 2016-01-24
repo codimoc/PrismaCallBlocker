@@ -1,17 +1,46 @@
 package com.prismaqf.callblocker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class CallBlockerManager extends ActionBarActivity {
+
+    private boolean detectEnabled;
+    private TextView textDetectState;
+    private Button buttonToggleDetect;
+    private Button buttonExit;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.call_blocker_manager);
+
+        textDetectState = (TextView) findViewById(R.id.textDetectState);
+        buttonToggleDetect = (Button) findViewById(R.id.buttonDetectToggle);
+        buttonExit = (Button) findViewById(R.id.buttonExit);
+
+        buttonToggleDetect.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setDetectEnabled(!detectEnabled);
+            }
+        });
+        buttonExit.setOnClickListener( new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setDetectEnabled(false);
+                finish();
+            }
+        });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -34,4 +63,21 @@ public class CallBlockerManager extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void setDetectEnabled(boolean enable) {
+        detectEnabled = enable;
+
+        Intent intent = new Intent(this, CallDetectService.class);
+
+        if (enable) {
+            startService(intent);
+            buttonToggleDetect.setText(R.string.turn_off);
+            textDetectState.setText((R.string.detect));
+        } else {
+            stopService(intent);
+            buttonToggleDetect.setText(R.string.turn_on);
+            textDetectState.setText(R.string.no_detect);
+        }
+    }
+
 }
