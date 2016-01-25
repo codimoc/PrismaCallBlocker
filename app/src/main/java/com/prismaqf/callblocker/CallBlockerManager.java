@@ -1,6 +1,8 @@
 package com.prismaqf.callblocker;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,10 +13,8 @@ import android.widget.TextView;
 
 public class CallBlockerManager extends Activity {
 
-    private boolean detectEnabled;
     private TextView textDetectState;
     private Button buttonToggleDetect;
-    private Button buttonExit;
 
 
     @Override
@@ -24,18 +24,18 @@ public class CallBlockerManager extends Activity {
 
         textDetectState = (TextView) findViewById(R.id.textDetectState);
         buttonToggleDetect = (Button) findViewById(R.id.buttonDetectToggle);
-        buttonExit = (Button) findViewById(R.id.buttonExit);
+        Button buttonExit = (Button) findViewById(R.id.buttonExit);
 
         buttonToggleDetect.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setDetectEnabled(!detectEnabled);
+                setDetectEnabled();
             }
         });
-        buttonExit.setOnClickListener( new Button.OnClickListener() {
+        buttonExit.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setDetectEnabled(false);
+                stopService();
                 finish();
             }
         });
@@ -64,20 +64,37 @@ public class CallBlockerManager extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setDetectEnabled(boolean enable) {
-        detectEnabled = enable;
+    private void setDetectEnabled() {
 
-        Intent intent = new Intent(this, CallDetectService.class);
-
-        if (enable) {
-            startService(intent);
-            buttonToggleDetect.setText(R.string.turn_off);
-            textDetectState.setText((R.string.detect));
+        if (!isServiceRunning()) {
+            startService();
         } else {
-            stopService(intent);
-            buttonToggleDetect.setText(R.string.turn_on);
-            textDetectState.setText(R.string.no_detect);
+            stopService();
         }
+    }
+
+    private void stopService() {
+        Intent intent = new Intent(this, CallDetectService.class);
+        stopService(intent);
+        buttonToggleDetect.setText(R.string.turn_on);
+        textDetectState.setText(R.string.no_detect);
+    }
+
+    private void startService() {
+        Intent intent = new Intent(this, CallDetectService.class);
+        startService(intent);
+        buttonToggleDetect.setText(R.string.turn_off);
+        textDetectState.setText((R.string.detect));    }
+
+
+    private boolean isServiceRunning(){
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (service.service.getClassName().equals(CallDetectService.class.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
