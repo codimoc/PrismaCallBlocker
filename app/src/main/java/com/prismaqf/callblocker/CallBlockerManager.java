@@ -24,6 +24,8 @@ public class CallBlockerManager extends Activity {
 
         textDetectState = (TextView) findViewById(R.id.textDetectState);
         buttonToggleDetect = (Button) findViewById(R.id.buttonDetectToggle);
+        if (isServiceRunning())
+            buttonToggleDetect.setText(R.string.turn_off);
         Button buttonExit = (Button) findViewById(R.id.buttonExit);
 
         buttonToggleDetect.setOnClickListener(new Button.OnClickListener() {
@@ -35,7 +37,6 @@ public class CallBlockerManager extends Activity {
         buttonExit.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopService();
                 finish();
             }
         });
