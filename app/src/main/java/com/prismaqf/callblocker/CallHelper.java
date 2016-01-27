@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -14,6 +15,8 @@ import android.widget.Toast;
  * @see 'www.codeproject.com/Articles/548416/Detecting-incoming-and-outgoing-phone-calls-on-And'
  */
 public class CallHelper {
+
+    private static final String TAG = CallHelper.class.getCanonicalName();
 
     private Context ctx;
     private TelephonyManager tm;
@@ -61,6 +64,7 @@ public class CallHelper {
      * Start calls detection
      */
     public void start() {
+        Log.i(TAG, "Registering the listeners");
         tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
         tm.listen(callListener,PhoneStateListener.LISTEN_CALL_STATE);
 
@@ -72,6 +76,7 @@ public class CallHelper {
      * Stop calls detection
      */
     public void stop() {
+        Log.i(TAG, "Unregistering the listeners");
         tm.listen(callListener, PhoneStateListener.LISTEN_NONE);
         ctx.unregisterReceiver(outgoingReceiver);
     }

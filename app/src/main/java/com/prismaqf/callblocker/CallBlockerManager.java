@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class CallBlockerManager extends Activity {
+
+    private static final String TAG = CallBlockerManager.class.getCanonicalName();
 
     private TextView textDetectState;
     private Button buttonToggleDetect;
@@ -24,8 +27,10 @@ public class CallBlockerManager extends Activity {
 
         textDetectState = (TextView) findViewById(R.id.textDetectState);
         buttonToggleDetect = (Button) findViewById(R.id.buttonDetectToggle);
-        if (isServiceRunning())
+        if (isServiceRunning()) {
+            textDetectState.setText(R.string.detect);
             buttonToggleDetect.setText(R.string.turn_off);
+        }
         Button buttonExit = (Button) findViewById(R.id.buttonExit);
 
         buttonToggleDetect.setOnClickListener(new Button.OnClickListener() {
@@ -75,6 +80,7 @@ public class CallBlockerManager extends Activity {
     }
 
     private void stopService() {
+        Log.i(TAG,"Stopping the service");
         Intent intent = new Intent(this, CallDetectService.class);
         stopService(intent);
         buttonToggleDetect.setText(R.string.turn_on);
@@ -82,6 +88,7 @@ public class CallBlockerManager extends Activity {
     }
 
     private void startService() {
+        Log.i(TAG,"Starting the service");
         Intent intent = new Intent(this, CallDetectService.class);
         startService(intent);
         buttonToggleDetect.setText(R.string.turn_off);
