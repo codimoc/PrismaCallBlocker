@@ -27,7 +27,7 @@ public class CallBlockerManager extends Activity {
 
         textDetectState = (TextView) findViewById(R.id.textDetectState);
         buttonToggleDetect = (Button) findViewById(R.id.buttonDetectToggle);
-        if (isServiceRunning()) {
+        if (isServiceRunning(this)) {
             textDetectState.setText(R.string.detect);
             buttonToggleDetect.setText(R.string.turn_off);
         }
@@ -72,7 +72,7 @@ public class CallBlockerManager extends Activity {
 
     private void setDetectEnabled() {
 
-        if (!isServiceRunning()) {
+        if (!isServiceRunning(this)) {
             startService();
         } else {
             stopService();
@@ -95,8 +95,8 @@ public class CallBlockerManager extends Activity {
         textDetectState.setText((R.string.detect));    }
 
 
-    private boolean isServiceRunning(){
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+    public static boolean isServiceRunning(Activity activity){
+        ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (service.service.getClassName().equals(CallDetectService.class.getName())) {
                 return true;
