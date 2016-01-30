@@ -14,14 +14,14 @@ import android.widget.Toast;
  * @author Moskvichev Andrey V.
  * @see 'www.codeproject.com/Articles/548416/Detecting-incoming-and-outgoing-phone-calls-on-And'
  */
-public class CallHelper {
+class CallHelper {
 
     private static final String TAG = CallHelper.class.getCanonicalName();
 
-    private Context ctx;
+    private final Context ctx;
     private TelephonyManager tm;
-    private CallStateListener callListener;
-    private OutgoingReceiver outgoingReceiver;
+    private final CallStateListener callListener;
+    private final OutgoingReceiver outgoingReceiver;
 
 
     /**

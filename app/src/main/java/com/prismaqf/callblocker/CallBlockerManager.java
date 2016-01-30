@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -74,8 +75,26 @@ public class CallBlockerManager extends Activity {
 
         if (!isServiceRunning(this)) {
             startService();
+            //save the running state in a shared preference file
+            Context ctx = getApplicationContext();
+            SharedPreferences prefs = ctx.getSharedPreferences(
+                    getString(R.string.file_shared_prefs_name),
+                    Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(getString(R.string.shared_prefs_key_state),
+                    getString(R.string.shared_prefs_state_running));
+            editor.apply();
         } else {
             stopService();
+            //save the idle state in a shared preference file
+            Context ctx = getApplicationContext();
+            SharedPreferences prefs = ctx.getSharedPreferences(
+                    getString(R.string.file_shared_prefs_name),
+                    Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(getString(R.string.shared_prefs_key_state),
+                    getString(R.string.shared_prefs_state_idle));
+            editor.apply();
         }
     }
 

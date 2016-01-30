@@ -2,9 +2,12 @@ package com.prismaqf.callblocker;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +24,13 @@ import static junit.framework.Assert.*;
 public class CallBlockerManagerTest
 {
     @Rule
-    public ActivityTestRule<CallBlockerManager> mActivityRule = new ActivityTestRule(CallBlockerManager.class);
+    public final ActivityTestRule<CallBlockerManager> mActivityRule = new ActivityTestRule(CallBlockerManager.class);
+
+    @Before
+    public void before() {
+        stopRunningService();
+    }
+
 
     @Test
     public void checkDisplay() {
@@ -32,7 +41,7 @@ public class CallBlockerManagerTest
 
     @Test
     public void checkThatTurningOnServiceChangesText() {
-        //first is off, check not detecting lables
+        //first is off, check not detecting labels
         onView(withId(R.id.textDetectState)).check(matches(withText(R.string.no_detect)));
         onView(withId(R.id.buttonDetectToggle)).check(matches(withText(R.string.turn_on)));
         onView(withId(R.id.buttonDetectToggle)).perform(click());
@@ -51,9 +60,35 @@ public class CallBlockerManagerTest
         assertTrue("service on", CallBlockerManager.isServiceRunning(myActivity));
         //turn it off
         onView(withId(R.id.buttonDetectToggle)).perform(click());
-        assertFalse("service off",CallBlockerManager.isServiceRunning(myActivity));
+        assertFalse("service off", CallBlockerManager.isServiceRunning(myActivity));
     }
 
+    @Test
+    public void checkServiceStateOnSharedPreferences() {
+        Activity myActivity = mActivityRule.getActivity();
+        Context myCtx = myActivity.getApplicationContext();
+        SharedPreferences prefs = myCtx.getSharedPreferences(
+                myActivity.getString(R.string.file_shared_prefs_name),
+                Context.MODE_PRIVATE);
+        //before running the service
+        String state = prefs.getString(myActivity.getString(R.string.shared_prefs_key_state), "not found");
+        assertEquals("idle state", "idle", state);
+        //after starting the service
+        onView(withId(R.id.buttonDetectToggle)).perform(click());
+        state = prefs.getString(myActivity.getString(R.string.shared_prefs_key_state),"not found");
+        assertEquals("running state", "running", state);
+        //after stopping the service
+        onView(withId(R.id.buttonDetectToggle)).perform(click());
+        state = prefs.getString(myActivity.getString(R.string.shared_prefs_key_state),"not found");
+        assertEquals("idle state", "idle", state);
+    }
+
+    private void stopRunningService() {
+        Activity myActivity = mActivityRule.getActivity();
+        if (CallBlockerManager.isServiceRunning(myActivity)) {
+            onView(withId(R.id.buttonDetectToggle)).perform(click());
+        }
+    }
 
 
 }

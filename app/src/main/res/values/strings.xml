@@ -7,4 +7,8 @@
     <string name="turn_on">Turn on</string>
     <string name="turn_off">Turn off</string>
     <string name="exit">Exit</string>
+    <string name="file_shared_prefs_name">prismaCallBlocker.preferences</string>
+    <string name="shared_prefs_key_state">state</string>
+    <string name="shared_prefs_state_running">running</string>
+    <string name="shared_prefs_state_idle">idle</string>
 </resources>
