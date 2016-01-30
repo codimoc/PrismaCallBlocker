@@ -114,16 +114,6 @@ public class CallBlockerManager extends Activity {
         textDetectState.setText((R.string.detect));    }
 
 
-    public static boolean isServiceRunning(Activity activity){
-        ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (service.service.getClassName().equals(CallDetectService.class.getName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static boolean isServiceRunning(Context context){
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
