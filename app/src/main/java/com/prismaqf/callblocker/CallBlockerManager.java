@@ -2,10 +2,13 @@ package com.prismaqf.callblocker;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +23,38 @@ public class CallBlockerManager extends Activity {
 
     private TextView textDetectState;
     private ToggleButton buttonToggleDetect;
+    private CallDetectService myService;
+
+    private final ServiceConnection myConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            CallDetectService.LocalBinder binder = (CallDetectService.LocalBinder) service;
+            myService = binder.getService();
+            Log.i(TAG, "The service is bound to this activity");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            myService = null;
+            Log.i(TAG, "The service is unbound from this activity");
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Intent intent = new Intent(this, CallDetectService.class);
+        if (isServiceRunning(this) && myService==null)
+            bindService(intent, myConnection, Context.BIND_ABOVE_CLIENT);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (isServiceRunning(this) && myService!=null)
+            unbindService(myConnection);
+    }
 
 
     @Override
@@ -32,6 +67,11 @@ public class CallBlockerManager extends Activity {
         if (isServiceRunning(this)) {
             textDetectState.setText(R.string.detect);
             buttonToggleDetect.setChecked(true);
+        }
+        else {
+            textDetectState.setText(R.string.no_detect);
+            buttonToggleDetect.setChecked(false);
+
         }
         Button buttonExit = (Button) findViewById(R.id.buttonExit);
 
@@ -110,6 +150,7 @@ public class CallBlockerManager extends Activity {
         Log.i(TAG, "Starting the service");
         Intent intent = new Intent(this, CallDetectService.class);
         startService(intent);
+        bindService(intent, myConnection, Context.BIND_ABOVE_CLIENT);
         textDetectState.setText((R.string.detect));    }
 
 

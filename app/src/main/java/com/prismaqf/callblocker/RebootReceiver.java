@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 /**
  * Receiver to start the service after reboot
@@ -11,6 +12,8 @@ import android.content.SharedPreferences;
  * @author  ConteDiMonteCristo.
  */
 public class RebootReceiver extends BroadcastReceiver{
+
+    private static final String TAG = RebootReceiver.class.getCanonicalName();
     @Override
     public void onReceive(Context context, Intent intent) {
         if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
@@ -21,6 +24,7 @@ public class RebootReceiver extends BroadcastReceiver{
             if (state.equals(context.getString(R.string.shared_prefs_state_running))) {
                 Intent serviceIntent = new Intent(context, CallDetectService.class);
                 context.startService(serviceIntent);
+                Log.i(TAG,"Starting CallDetectService after reboot completed");
             }
         }
     }
