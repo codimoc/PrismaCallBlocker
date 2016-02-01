@@ -16,13 +16,15 @@
         android:layout_alignParentLeft="true"
         android:text="@string/no_detect"
         android:textAppearance="?android:attr/textAppearanceLarge"/>
-    <Button
+    <ToggleButton
         android:id="@+id/buttonDetectToggle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/textDetectState"
-        android:text="@string/turn_on"/>
+        android:textOn="@string/turn_off"
+        android:textOff="@string/turn_on" />
+
     <Button
         android:id="@+id/buttonExit"
         android:layout_width="fill_parent"

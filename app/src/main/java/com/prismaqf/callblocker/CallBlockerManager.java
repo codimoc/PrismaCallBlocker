@@ -12,13 +12,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class CallBlockerManager extends Activity {
 
     private static final String TAG = CallBlockerManager.class.getCanonicalName();
 
     private TextView textDetectState;
-    private Button buttonToggleDetect;
+    private ToggleButton buttonToggleDetect;
 
 
     @Override
@@ -27,10 +28,10 @@ public class CallBlockerManager extends Activity {
         setContentView(R.layout.call_blocker_manager);
 
         textDetectState = (TextView) findViewById(R.id.textDetectState);
-        buttonToggleDetect = (Button) findViewById(R.id.buttonDetectToggle);
+        buttonToggleDetect = (ToggleButton) findViewById(R.id.buttonDetectToggle);
         if (isServiceRunning(this)) {
             textDetectState.setText(R.string.detect);
-            buttonToggleDetect.setText(R.string.turn_off);
+            buttonToggleDetect.setChecked(true);
         }
         Button buttonExit = (Button) findViewById(R.id.buttonExit);
 
@@ -99,18 +100,16 @@ public class CallBlockerManager extends Activity {
     }
 
     private void stopService() {
-        Log.i(TAG,"Stopping the service");
+        Log.i(TAG, "Stopping the service");
         Intent intent = new Intent(this, CallDetectService.class);
         stopService(intent);
-        buttonToggleDetect.setText(R.string.turn_on);
         textDetectState.setText(R.string.no_detect);
     }
 
     private void startService() {
-        Log.i(TAG,"Starting the service");
+        Log.i(TAG, "Starting the service");
         Intent intent = new Intent(this, CallDetectService.class);
         startService(intent);
-        buttonToggleDetect.setText(R.string.turn_off);
         textDetectState.setText((R.string.detect));    }
 
 
