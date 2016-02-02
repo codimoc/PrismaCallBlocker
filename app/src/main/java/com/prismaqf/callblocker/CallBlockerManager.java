@@ -32,6 +32,12 @@ public class CallBlockerManager extends Activity {
             CallDetectService.LocalBinder binder = (CallDetectService.LocalBinder) service;
             myService = binder.getService();
             Log.i(TAG, "The service is bound to this activity");
+            if (myService != null) {
+                String received = String.format("%s %d",getString(R.string.call_received),myService.NumReceived());
+                TextView stats = (TextView) findViewById(R.id.textCallReceived);
+                stats.setText(received);
+                stats.invalidate();
+            }
         }
 
         @Override
@@ -162,6 +168,10 @@ public class CallBlockerManager extends Activity {
             }
         }
         return false;
+    }
+
+    public CallDetectService getService() {
+        return myService;
     }
 
 }

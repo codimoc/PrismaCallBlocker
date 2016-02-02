@@ -83,6 +83,18 @@ public class CallBlockerManagerTest
         assertEquals("idle state", "idle", state);
     }
 
+    @Test
+    public void checkServiceIsBound() {
+        CallBlockerManager myActivity = (CallBlockerManager)mActivityRule.getActivity();
+        assertNull("The service not yet bound", myActivity.getService());
+        onView(withId(R.id.buttonDetectToggle)).perform(click());
+        //now check that the text has changed
+        onView(withId(R.id.textDetectState)).check(matches(withText(R.string.detect)));
+        CallDetectService myService = myActivity.getService();
+        assertNotNull("I can bind to the service",myService!=null);
+        assertTrue("The service can be interrogated", myService.NumReceived() >= 0);
+    }
+
     private void stopRunningService() {
         Activity myActivity = mActivityRule.getActivity();
         if (CallBlockerManager.isServiceRunning(myActivity)) {

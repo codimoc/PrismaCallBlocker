@@ -25,11 +25,28 @@
         android:textOn="@string/turn_off"
         android:textOff="@string/turn_on" />
 
+    <LinearLayout
+        android:id="@+id/frame_vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/buttonDetectToggle"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textCallReceived"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/call_received"/>
+    </LinearLayout>
+
     <Button
         android:id="@+id/buttonExit"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/buttonDetectToggle"
+        android:layout_below="@id/frame_vertical"
         android:text="@string/exit"/>
 </RelativeLayout>

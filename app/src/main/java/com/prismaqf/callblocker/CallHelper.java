@@ -9,6 +9,11 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Helper class to detect incoming and outgoing calls
  * @author Moskvichev Andrey V.
@@ -22,6 +27,17 @@ class CallHelper {
     private TelephonyManager tm;
     private final CallStateListener callListener;
     private final OutgoingReceiver outgoingReceiver;
+    private int numTriggered = 0;
+    private Map<Date,String> myReceived = new HashMap<>();
+
+
+    public int getNumReceived() {
+        return myReceived.size();
+    }
+
+    public int getNumTriggered() {
+        return numTriggered;
+    }
 
 
     /**
@@ -35,6 +51,8 @@ class CallHelper {
                 case TelephonyManager.CALL_STATE_RINGING: //someone is ringing to this phone
 
                     Toast.makeText(ctx, "Incoming: " + incomingNumber, Toast.LENGTH_LONG).show();
+                    Calendar cal = Calendar.getInstance();
+                    myReceived.put(cal.getTime(),incomingNumber);
                     break;
             }
         }

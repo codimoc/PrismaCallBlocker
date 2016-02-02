@@ -11,4 +11,5 @@
     <string name="shared_prefs_key_state">state</string>
     <string name="shared_prefs_state_running">running</string>
     <string name="shared_prefs_state_idle">idle</string>
+    <string name="call_received">Call received: </string>
 </resources>

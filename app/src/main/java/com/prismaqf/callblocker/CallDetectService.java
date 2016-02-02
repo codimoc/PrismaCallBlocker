@@ -51,6 +51,13 @@ import android.support.v4.app.TaskStackBuilder;
         return myBinder;
     }
 
+    //Public interface for the bound service
+    public int NumReceived() {
+        return myCallHelper.getNumReceived();
+    }
+
+
+    //private utility metjods
     private void sendNotification() {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.police_32)
