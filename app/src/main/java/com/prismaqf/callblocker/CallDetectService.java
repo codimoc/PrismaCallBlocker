@@ -15,17 +15,21 @@ import android.support.v4.app.TaskStackBuilder;
  * @see 'www.codeproject.com/Articles/548416/Detecting-incoming-and-outgoing-phone-calls-on-And'
  */public class CallDetectService extends Service {
     
-    private CallHelper callHelper;
+    private final CallHelper myCallHelper;
     
-    public CallDetectService() {}
+    public CallDetectService() {
+        myCallHelper = new CallHelper(this);
+    }
     
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        callHelper = new CallHelper(this);
+        sendNotification();
+        myCallHelper.start();
+        return Service.START_STICKY;
+    }
 
-
-        //experimental
+    private void sendNotification() {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.police_32)
                         .setContentTitle(getText(R.string.app_name))
@@ -43,15 +47,11 @@ import android.support.v4.app.TaskStackBuilder;
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
         mNotificationManager.notify(R.integer.notification_id, mBuilder.build());
-
-        //super.onStartCommand(intent,flags,startId);
-        callHelper.start();
-        return Service.START_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        callHelper.stop();
+        myCallHelper.stop();
         super.onDestroy();
     }
 
