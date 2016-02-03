@@ -3,7 +3,9 @@ package com.prismaqf.callblocker;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -81,6 +83,21 @@ public class CallBlockerManagerTest
         onView(withId(R.id.buttonDetectToggle)).perform(click());
         state = prefs.getString(myActivity.getString(R.string.shared_prefs_key_state),"not found");
         assertEquals("idle state", "idle", state);
+    }
+
+    @Test
+    public void testCallsBroadcastReceiver() {
+        Context ctx = mActivityRule.getActivity().getApplicationContext();
+        Intent intent = new Intent();
+        intent.setAction(ctx.getString(R.string.action_call));
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.putExtra(ctx.getString(R.string.key_number_called), "123");
+        intent.putExtra(ctx.getString(R.string.key_received),10);
+        intent.putExtra(ctx.getString(R.string.key_triggered),5);
+        ctx.sendBroadcast(intent);
+        SystemClock.sleep(500);
+        onView(withId(R.id.button_received)).check(matches(withText("10")));
+        onView(withId(R.id.button_triggered)).check(matches(withText("5")));
     }
 
     private void stopRunningService() {
