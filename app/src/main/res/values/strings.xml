@@ -11,4 +11,9 @@
     <string name="shared_prefs_key_state">state</string>
     <string name="shared_prefs_state_running">running</string>
     <string name="shared_prefs_state_idle">idle</string>
+    <string name="key_number_called">number</string>
+    <string name="key_received">received</string>
+    <string name="key_triggered">triggered</string>
+    <string name="action_call">com.prismaqf.action.call</string>
+
 </resources>

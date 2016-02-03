@@ -22,6 +22,8 @@ class CallHelper {
     private TelephonyManager tm;
     private final CallStateListener callListener;
     private final OutgoingReceiver outgoingReceiver;
+    private int numReceived;
+    private int numTriggered;
 
 
     /**
@@ -34,6 +36,14 @@ class CallHelper {
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING: //someone is ringing to this phone
 
+                    numReceived += 1;
+                    Intent intent = new Intent();
+                    intent.setAction(ctx.getString(R.string.action_call));
+                    intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                    intent.putExtra(ctx.getString(R.string.key_number_called), incomingNumber);
+                    intent.putExtra(ctx.getString(R.string.key_received),numReceived);
+                    intent.putExtra(ctx.getString(R.string.key_triggered),numTriggered);
+                    ctx.sendBroadcast(intent);
                     Toast.makeText(ctx, "Incoming: " + incomingNumber, Toast.LENGTH_LONG).show();
                     break;
             }
@@ -58,6 +68,8 @@ class CallHelper {
         this.ctx = ctx;
         callListener = new CallStateListener();
         outgoingReceiver = new OutgoingReceiver();
+        numReceived = 0;
+        numTriggered = 0;
     }
 
     /**

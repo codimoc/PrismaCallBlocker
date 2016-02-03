@@ -2,8 +2,10 @@ package com.prismaqf.callblocker;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class CallBlockerManager extends Activity {
@@ -20,6 +23,23 @@ public class CallBlockerManager extends Activity {
 
     private TextView textDetectState;
     private ToggleButton buttonToggleDetect;
+    private CallEventReceiver callEventReceiver;
+
+    /**
+     * Broadcast receiver to receive intents when a call is detected
+     */
+    private class CallEventReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String number = intent.getStringExtra(context.getString(R.string.key_number_called));
+            int numReceived = intent.getIntExtra(context.getString(R.string.key_received), 0);
+            int numTriggered = intent.getIntExtra(context.getString(R.string.key_triggered), 0);
+            String message = String.format("Incoming: %s, Num received: %d, Num triggered: %d",
+                                           number, numReceived, numTriggered);
+            Log.i(TAG,message);
+        }
+    }
 
 
     @Override
@@ -47,6 +67,17 @@ public class CallBlockerManager extends Activity {
                 finish();
             }
         });
+
+        //call receiver
+        callEventReceiver = new CallEventReceiver();
+        IntentFilter filter = new IntentFilter(getString(R.string.action_call));
+        registerReceiver(callEventReceiver,filter);
+    }
+
+    @Override
+    protected void onDestroy(){
+        unregisterReceiver(callEventReceiver);
+        super.onDestroy();
     }
 
 
