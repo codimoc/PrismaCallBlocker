@@ -24,6 +24,8 @@ public class CallBlockerManager extends Activity {
     private TextView textDetectState;
     private ToggleButton buttonToggleDetect;
     private CallEventReceiver callEventReceiver;
+    private Button buttonReceived;
+    private Button buttonTriggered;
 
     /**
      * Broadcast receiver to receive intents when a call is detected
@@ -38,6 +40,12 @@ public class CallBlockerManager extends Activity {
             String message = String.format("Incoming: %s, Num received: %d, Num triggered: %d",
                                            number, numReceived, numTriggered);
             Log.i(TAG,message);
+            if (buttonReceived != null)
+                buttonReceived.setText(Integer.toString(numReceived));
+            buttonReceived.invalidate();
+            if (buttonTriggered != null)
+                buttonTriggered.setText(Integer.toString(numTriggered));
+            buttonTriggered.invalidate();
         }
     }
 
@@ -72,6 +80,10 @@ public class CallBlockerManager extends Activity {
         callEventReceiver = new CallEventReceiver();
         IntentFilter filter = new IntentFilter(getString(R.string.action_call));
         registerReceiver(callEventReceiver,filter);
+
+        //call stats buttons
+        buttonReceived = (Button) findViewById(R.id.button_received);
+        buttonTriggered = (Button) findViewById(R.id.button_triggered);
     }
 
     @Override

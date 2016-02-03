@@ -15,5 +15,7 @@
     <string name="key_received">received</string>
     <string name="key_triggered">triggered</string>
     <string name="action_call">com.prismaqf.action.call</string>
+    <string name="calls_received">Calls received:</string>
+    <string name="trigger_events">Trigger events:</string>
 
 </resources>
