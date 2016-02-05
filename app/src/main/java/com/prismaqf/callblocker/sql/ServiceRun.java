@@ -73,8 +73,10 @@ public class ServiceRun {
             try {
 
                 DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
-                myStart = format.parse(c.getString(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_START)));
-                myStop = format.parse(c.getString(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_STOP)));
+                String sstart = c.getString(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_START));
+                String sstop = c.getString(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_STOP));
+                if (sstart != null) myStart = format.parse(sstart);
+                if (sstop != null) myStop = format.parse(sstop);
             } catch (ParseException e) {
                 Log.e(TAG, e.getMessage());
             }
@@ -96,11 +98,34 @@ public class ServiceRun {
     public static long InsertRow(SQLiteDatabase db, Date start, Date stop, int numReceived, int numTriggered) {
         ContentValues vals = new ContentValues();
         DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
-        vals.put(DbContract.ServiceRuns.COLUMN_NAME_START,format.format(start));
-        vals.put(DbContract.ServiceRuns.COLUMN_NAME_STOP,format.format(stop));
+        if (start != null)
+            vals.put(DbContract.ServiceRuns.COLUMN_NAME_START,format.format(start));
+        if (stop != null)
+            vals.put(DbContract.ServiceRuns.COLUMN_NAME_STOP,format.format(stop));
         vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED, numReceived);
         vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED, numTriggered);
         return db.insert(DbContract.ServiceRuns.TABLE_NAME, DbContract.ServiceRuns.COLUMN_NAME_STOP, vals);
+    }
+
+    /**
+     * Update a row in the srviceruns table with the stop time and the number of calls and events triggered
+     * @param db db the SQLite connection
+     * @param runid the run id
+     * @param stop the time when the service was stopped
+     * @param numReceived the number of calls received during the service run
+     * @param numTriggered the number of events triggered during the service run
+     * @return the number of rows updated
+     */
+    public static int UpdateRow(SQLiteDatabase db, long runid, Date stop, int numReceived, int numTriggered) {
+        ContentValues vals = new ContentValues();
+        DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
+        vals.put(DbContract.ServiceRuns.COLUMN_NAME_STOP,format.format(stop));
+        vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED, numReceived);
+        vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED, numTriggered);
+        String selection = DbContract.ServiceRuns._ID + " = ?";
+        String[] selectionArgs = { String.valueOf(runid) };
+
+        return db.update(DbContract.ServiceRuns.TABLE_NAME,vals,selection,selectionArgs);
     }
 
     /**
@@ -112,7 +137,21 @@ public class ServiceRun {
         ServiceRun lrun = LatestRun(db);
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         Date start = cal.getTime();
-        return InsertRow(db,start,null,lrun.getNumReceived(), lrun.getNumTriggered());
+        return InsertRow(db, start, null, lrun.getNumReceived(), lrun.getNumTriggered());
+    }
+
+    /**
+     * This should be called to complete a service run
+     * @param db the SQLite connection
+     * @param runid the run id
+     * @param numReceived the number of calls received during the service run
+     * @param numTriggered the number of events triggered during the service run
+     */
+    public static void UpdateAtServiceStop(SQLiteDatabase db, long runid, int numReceived, int numTriggered) {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        Date end = cal.getTime();
+        ServiceRun lrun = LatestRun(db);
+        UpdateRow(db,runid, end,lrun.getNumReceived()+numReceived,lrun.getNumTriggered()+numTriggered);
     }
 
 }

@@ -8,13 +8,15 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 /**
  * Call detect service
  * @author Moskvichev Andrey V.
  * @see 'www.codeproject.com/Articles/548416/Detecting-incoming-and-outgoing-phone-calls-on-And'
  */public class CallDetectService extends Service {
-    
+
+    private final String TAG = CallDetectService.class.getCanonicalName();
     private final CallHelper myCallHelper;
     
     public CallDetectService() {
@@ -23,9 +25,17 @@ import android.support.v4.app.TaskStackBuilder;
     
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(final Intent intent, int flags, int startId) {
         sendNotification();
-        myCallHelper.start();
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                synchronized (this) {
+                    myCallHelper.start(intent.getStringExtra("db_name"));
+                }
+            }
+        }).start();
         return Service.START_STICKY;
     }
 
@@ -51,8 +61,23 @@ import android.support.v4.app.TaskStackBuilder;
 
     @Override
     public void onDestroy() {
-        myCallHelper.stop();
-        super.onDestroy();
+        Thread t = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                synchronized (this) {
+                    myCallHelper.stop();
+                }
+            }
+        });
+        try {
+            t.start();
+            t.join();
+            super.onDestroy();
+
+        } catch (InterruptedException e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     @Override

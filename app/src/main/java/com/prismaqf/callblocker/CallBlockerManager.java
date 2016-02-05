@@ -152,6 +152,7 @@ public class CallBlockerManager extends Activity {
     private void startService() {
         Log.i(TAG, "Starting the service");
         Intent intent = new Intent(this, CallDetectService.class);
+        intent.putExtra("db_name",getString(R.string.db_file_name));
         startService(intent);
         textDetectState.setText((R.string.detect));    }
 

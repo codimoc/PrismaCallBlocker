@@ -82,4 +82,21 @@ public class DbHelperTest {
         assertEquals("received",4, latest.getNumReceived());
         assertEquals("triggered",1, latest.getNumTriggered());
     }
+
+    @Test
+    public void TestRecordWhenStartStoppingTheService() {
+        //...when the service starts
+        long id = ServiceRun.InsertAtServiceStart(myDb);
+        //end of service
+        ServiceRun.UpdateAtServiceStop(myDb,id,2,1);
+        //service starts again
+        id = ServiceRun.InsertAtServiceStart(myDb);
+        //2nd end of service
+        ServiceRun.UpdateAtServiceStop(myDb, id, 1, 0);
+        ServiceRun latest = ServiceRun.LatestRun(myDb);
+        //tests
+        assertEquals("There should be two records",2, latest.getId());
+        assertEquals("Total of 3 calls received",3, latest.getNumReceived());
+        assertEquals("Total of 1 event triggered",1, latest.getNumTriggered());
+    }
 }

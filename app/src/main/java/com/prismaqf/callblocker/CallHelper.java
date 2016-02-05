@@ -4,10 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.prismaqf.callblocker.sql.DbHelper;
+import com.prismaqf.callblocker.sql.ServiceRun;
 
 /**
  * Helper class to detect incoming and outgoing calls
@@ -24,6 +28,8 @@ class CallHelper {
     private final OutgoingReceiver outgoingReceiver;
     private int numReceived;
     private int numTriggered;
+    private SQLiteDatabase myDb;
+    private long myRunId;
 
 
     /**
@@ -74,11 +80,16 @@ class CallHelper {
 
     /**
      * Start calls detection
+     * @param dbname the file path of the sqlite database
      */
-    public void start() {
+    public void start(final String dbname) {
+        Log.i(TAG,"Opening a DB connection");
+        myDb = new DbHelper(ctx,dbname).getWritableDatabase();
+        myRunId = ServiceRun.InsertAtServiceStart(myDb);
+
         Log.i(TAG, "Registering the listeners");
         tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
-        tm.listen(callListener,PhoneStateListener.LISTEN_CALL_STATE);
+        tm.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
 
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL);
         ctx.registerReceiver(outgoingReceiver, intentFilter);
@@ -91,6 +102,9 @@ class CallHelper {
         Log.i(TAG, "Unregistering the listeners");
         tm.listen(callListener, PhoneStateListener.LISTEN_NONE);
         ctx.unregisterReceiver(outgoingReceiver);
+
+        Log.i(TAG, "Updating DB");
+        ServiceRun.UpdateAtServiceStop(myDb,myRunId,numReceived,numTriggered);
     }
 
 }
