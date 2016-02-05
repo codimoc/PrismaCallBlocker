@@ -52,4 +52,6 @@ public class DbHelper extends SQLiteOpenHelper{
         Log.w(TAG, msg);
         db.execSQL(DbContract.ServiceRuns.SQL_DROP_TABLE);
     }
+
+
 }

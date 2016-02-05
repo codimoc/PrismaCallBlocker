@@ -1,6 +1,5 @@
 package com.prismaqf.callblocker.sql;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,14 +7,13 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import static org.junit.Assert.*;
 
@@ -43,18 +41,11 @@ public class DbHelperTest {
 
     @Test
     public void ServiceRunsInsertRow() {
-        ContentValues vals = new ContentValues();
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
         Date start = cal.getTime();
         cal.add(Calendar.HOUR, 1);
         Date end = cal.getTime();
-        vals.put(DbContract.ServiceRuns.COLUMN_NAME_START,start.toString());
-        vals.put(DbContract.ServiceRuns.COLUMN_NAME_STOP,start.toString());
-        vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED, 2);
-        vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED, 1);
-        long rid = myDb.insert(DbContract.ServiceRuns.TABLE_NAME,
-                               DbContract.ServiceRuns.COLUMN_NAME_STOP,
-                               vals);
+        ServiceRun.InsertRow(myDb,start,end,2,1);
         Cursor c = myDb.rawQuery("select * from serviceruns", null);
         assertEquals("one row expected", 1, c.getCount());
         c.moveToFirst();
@@ -64,5 +55,31 @@ public class DbHelperTest {
         assertEquals("Expected calls received",2,received);
         long triggered  = c.getLong(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED));
         assertEquals("Expected calls triggered",1,triggered);
+    }
+
+    @Test
+    public void GetLatestServiceRunWhenTableIsEmpty() {
+        ServiceRun latest = ServiceRun.LatestRun(myDb);
+        assertEquals("dummy id",0, latest.getId());
+        assertEquals("received",0, latest.getNumReceived());
+        assertEquals("triggered",0, latest.getNumTriggered());
+    }
+
+    @Test
+    public void GetLatestServiceRunWhenTableIsNotEmpty() {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        Date start = cal.getTime();
+        cal.add(Calendar.HOUR, 1);
+        Date end = cal.getTime();
+        ServiceRun.InsertRow(myDb,start,end,2,1);
+        cal.add(Calendar.HOUR, 1);
+        start = cal.getTime();
+        cal.add(Calendar.HOUR, 1);
+        end = cal.getTime();
+        ServiceRun.InsertRow(myDb,start,end,4,1);
+        ServiceRun latest = ServiceRun.LatestRun(myDb);
+        assertEquals("id",2, latest.getId());
+        assertEquals("received",4, latest.getNumReceived());
+        assertEquals("triggered",1, latest.getNumTriggered());
     }
 }
