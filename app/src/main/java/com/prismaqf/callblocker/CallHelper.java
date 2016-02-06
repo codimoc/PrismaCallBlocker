@@ -80,13 +80,8 @@ class CallHelper {
 
     /**
      * Start calls detection
-     * @param dbname the file path of the sqlite database
      */
-    public void start(final String dbname) {
-        Log.i(TAG,"Opening a DB connection");
-        myDb = new DbHelper(ctx,dbname).getWritableDatabase();
-        myRunId = ServiceRun.InsertAtServiceStart(myDb);
-
+    public void start() {
         Log.i(TAG, "Registering the listeners");
         tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
         tm.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
@@ -96,14 +91,30 @@ class CallHelper {
     }
 
     /**
+     * Open a db connection and insert a record and set the run id
+     * @param dbname the file path of the sqlite database
+     */
+    public void openDBConnection(final String dbname) {
+        Log.i(TAG,"Opening a DB connection");
+        myDb = new DbHelper(ctx,dbname).getWritableDatabase();
+        myRunId = ServiceRun.InsertAtServiceStart(myDb);
+
+    }
+
+    /**
      * Stop calls detection
      */
     public void stop() {
         Log.i(TAG, "Unregistering the listeners");
         tm.listen(callListener, PhoneStateListener.LISTEN_NONE);
         ctx.unregisterReceiver(outgoingReceiver);
+    }
 
-        Log.i(TAG, "Updating DB");
+    /**
+     * Closing the DB connection and updating the service run record
+     */
+    public void closeDBConnection() {
+        Log.i(TAG, "Closing the DB connection and updating the ServiceRun record");
         ServiceRun.UpdateAtServiceStop(myDb,myRunId,numReceived,numTriggered);
     }
 

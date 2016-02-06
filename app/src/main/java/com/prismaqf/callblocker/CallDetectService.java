@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 
 /**
  * Call detect service
@@ -16,7 +15,6 @@ import android.util.Log;
  * @see 'www.codeproject.com/Articles/548416/Detecting-incoming-and-outgoing-phone-calls-on-And'
  */public class CallDetectService extends Service {
 
-    private final String TAG = CallDetectService.class.getCanonicalName();
     private final CallHelper myCallHelper;
     
     public CallDetectService() {
@@ -27,23 +25,44 @@ import android.util.Log;
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         sendNotification();
+        myCallHelper.start();
         new Thread(new Runnable() {
-
             @Override
             public void run() {
-                synchronized (this) {
-                    myCallHelper.start(intent.getStringExtra("db_name"));
+                synchronized (myCallHelper) {
+                    myCallHelper.openDBConnection(intent.getStringExtra("db_name"));
                 }
             }
         }).start();
         return Service.START_STICKY;
     }
 
+    @Override
+    public void onDestroy() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                synchronized (this) {
+                    myCallHelper.closeDBConnection();
+                }
+            }
+        }).start();
+        myCallHelper.stop();
+        super.onDestroy();
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        //not supporting binding
+        return null;
+    }
+
     private void sendNotification() {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.police_32)
-                        .setContentTitle(getText(R.string.app_name))
-                        .setContentText(getText(R.string.notification));
+                .setSmallIcon(R.drawable.police_32)
+                .setContentTitle(getText(R.string.app_name))
+                .setContentText(getText(R.string.notification));
         Intent resultIntent = new Intent(this, CallBlockerManager.class);
         //artificial back stack for the navigation to go back to the app
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
@@ -57,32 +76,5 @@ import android.util.Log;
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
         mNotificationManager.notify(R.integer.notification_id, mBuilder.build());
-    }
-
-    @Override
-    public void onDestroy() {
-        Thread t = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                synchronized (this) {
-                    myCallHelper.stop();
-                }
-            }
-        });
-        try {
-            t.start();
-            t.join();
-            super.onDestroy();
-
-        } catch (InterruptedException e) {
-            Log.e(TAG, e.getMessage());
-        }
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        //not supporting binding
-        return null;
     }
 }
