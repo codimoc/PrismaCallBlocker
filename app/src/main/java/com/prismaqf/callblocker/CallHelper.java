@@ -22,14 +22,35 @@ class CallHelper {
 
     private static final String TAG = CallHelper.class.getCanonicalName();
 
+    private static CallHelper theHelper = null;
+
     private final Context ctx;
     private TelephonyManager tm;
     private final CallStateListener callListener;
     private final OutgoingReceiver outgoingReceiver;
+
+    private synchronized void setNumReceived(int numReceived) {
+        this.numReceived = numReceived;
+    }
+
+    private synchronized void setNumTriggered(int numTriggered) {
+        this.numTriggered = numTriggered;
+    }
+
     private int numReceived;
     private int numTriggered;
-    private SQLiteDatabase myDb;
     private long myRunId;
+
+    /**
+     * Method to return the only intance of CallHelper (singleton)
+     * @param ctx the Context, only needed when creating a CallHelper for the first time,
+     *            a null value is ok all the remaining times
+     * @return the single instance of a CallHelper class
+     */
+    public static CallHelper GetHelper(Context ctx) {
+        if (theHelper==null) theHelper = new CallHelper(ctx);
+        return theHelper;
+    }
 
 
     /**
@@ -42,7 +63,7 @@ class CallHelper {
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING: //someone is ringing to this phone
 
-                    numReceived += 1;
+                    setNumReceived(numReceived + 1);
                     Intent intent = new Intent();
                     intent.setAction(ctx.getString(R.string.action_call));
                     intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
@@ -70,7 +91,7 @@ class CallHelper {
         }
     }
 
-    public CallHelper(Context ctx) {
+    private CallHelper(Context ctx) {
         this.ctx = ctx;
         callListener = new CallStateListener();
         outgoingReceiver = new OutgoingReceiver();
@@ -92,12 +113,12 @@ class CallHelper {
 
     /**
      * Open a db connection and insert a record and set the run id
-     * @param dbname the file path of the sqlite database
      */
-    public void openDBConnection(final String dbname) {
-        Log.i(TAG,"Opening a DB connection");
-        myDb = new DbHelper(ctx,dbname).getWritableDatabase();
-        myRunId = ServiceRun.InsertAtServiceStart(myDb);
+    public void recordServiceStart() {
+        Log.i(TAG,"Opening a DB connection and recording service start");
+        SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
+        myRunId = ServiceRun.InsertAtServiceStart(db);
+        db.close();
 
     }
 
@@ -113,9 +134,12 @@ class CallHelper {
     /**
      * Closing the DB connection and updating the service run record
      */
-    public void closeDBConnection() {
+    public void recordServiceStop() {
         Log.i(TAG, "Closing the DB connection and updating the ServiceRun record");
-        ServiceRun.UpdateAtServiceStop(myDb,myRunId,numReceived,numTriggered);
+        SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
+        ServiceRun.UpdateAtServiceStop(db, myRunId, numReceived, numTriggered);
+        db.close();
     }
+
 
 }

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,12 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-public class CallBlockerManager extends Activity {
+public class CallBlockerManager extends ActionBarActivity {
 
     private static final String TAG = CallBlockerManager.class.getCanonicalName();
 
     private TextView textDetectState;
-    private ToggleButton buttonToggleDetect;
     private CallEventReceiver callEventReceiver;
     private Button buttonReceived;
     private Button buttonTriggered;
@@ -40,12 +40,14 @@ public class CallBlockerManager extends Activity {
             String message = String.format("Incoming: %s, Num received: %d, Num triggered: %d",
                                            number, numReceived, numTriggered);
             Log.i(TAG,message);
-            if (buttonReceived != null)
+            if (buttonReceived != null) {
                 buttonReceived.setText(Integer.toString(numReceived));
-            buttonReceived.invalidate();
-            if (buttonTriggered != null)
+                buttonReceived.invalidate();
+            }
+            if (buttonTriggered != null) {
                 buttonTriggered.setText(Integer.toString(numTriggered));
-            buttonTriggered.invalidate();
+                buttonTriggered.invalidate();
+            }
         }
     }
 
@@ -56,7 +58,7 @@ public class CallBlockerManager extends Activity {
         setContentView(R.layout.call_blocker_manager);
 
         textDetectState = (TextView) findViewById(R.id.textDetectState);
-        buttonToggleDetect = (ToggleButton) findViewById(R.id.buttonDetectToggle);
+        ToggleButton buttonToggleDetect = (ToggleButton) findViewById(R.id.buttonDetectToggle);
         if (isServiceRunning(this)) {
             textDetectState.setText(R.string.detect);
             buttonToggleDetect.setChecked(true);
@@ -84,6 +86,7 @@ public class CallBlockerManager extends Activity {
         //call stats buttons
         buttonReceived = (Button) findViewById(R.id.button_received);
         buttonTriggered = (Button) findViewById(R.id.button_triggered);
+
     }
 
     @Override
@@ -107,9 +110,12 @@ public class CallBlockerManager extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_show_runs:
+                showRuns();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -152,7 +158,6 @@ public class CallBlockerManager extends Activity {
     private void startService() {
         Log.i(TAG, "Starting the service");
         Intent intent = new Intent(this, CallDetectService.class);
-        intent.putExtra("db_name",getString(R.string.db_file_name));
         startService(intent);
         textDetectState.setText((R.string.detect));    }
 
@@ -165,6 +170,11 @@ public class CallBlockerManager extends Activity {
             }
         }
         return false;
+    }
+
+    private void showRuns() {
+        Intent intent = new Intent(this,ShowServiceRuns.class);
+        startActivity(intent);
     }
 
 }

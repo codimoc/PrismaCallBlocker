@@ -18,5 +18,6 @@
     <string name="calls_received">Calls received:</string>
     <string name="trigger_events">Trigger events:</string>
     <string name="db_file_name">pcb.db</string>
+    <string name="show_runs">Show runs</string>
 
 </resources>

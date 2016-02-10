@@ -19,11 +19,11 @@ public class ServiceRun {
 
     private static final String TAG = ServiceRun.class.getCanonicalName();
 
-    private long id;
-    private int numTriggered;
-    private int numReceived;
-    private Date start;
-    private Date stop;
+    private final long id;
+    private final int numTriggered;
+    private final int numReceived;
+    private final Date start;
+    private final Date stop;
 
     private ServiceRun(long id, Date start, Date stop, int numReceived, int numTriggered) {
         this.id = id;
@@ -86,6 +86,12 @@ public class ServiceRun {
         return new ServiceRun(0,null,null,0,0);
     }
 
+    public static Cursor LatestRuns(SQLiteDatabase db, int maxRecords) {
+        String orderby = String.format("%s desc",DbContract.ServiceRuns._ID);
+        String limit = String.valueOf(maxRecords);
+        return db.query(DbContract.ServiceRuns.TABLE_NAME, null, null, null, null, null, orderby, limit);
+    }
+
     /**
      * Insert a row in the serviceruns table
      * @param db the SQLite connection
@@ -116,7 +122,7 @@ public class ServiceRun {
      * @param numTriggered the number of events triggered during the service run
      * @return the number of rows updated
      */
-    public static int UpdateRow(SQLiteDatabase db, long runid, Date stop, int numReceived, int numTriggered) {
+    private static int UpdateRow(SQLiteDatabase db, long runid, Date stop, int numReceived, int numTriggered) {
         ContentValues vals = new ContentValues();
         DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
         vals.put(DbContract.ServiceRuns.COLUMN_NAME_STOP,format.format(stop));

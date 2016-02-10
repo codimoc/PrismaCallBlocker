@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -15,10 +16,23 @@ import android.support.v4.app.TaskStackBuilder;
  * @see 'www.codeproject.com/Articles/548416/Detecting-incoming-and-outgoing-phone-calls-on-And'
  */public class CallDetectService extends Service {
 
+
+    /**
+     * Class used for the client Binder.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with IPC.
+     */
+    public class LocalBinder extends Binder {
+        CallDetectService getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return CallDetectService.this;
+        }
+    }
+
     private final CallHelper myCallHelper;
+    private final IBinder myBinder = new LocalBinder();
     
     public CallDetectService() {
-        myCallHelper = new CallHelper(this);
+        myCallHelper = CallHelper.GetHelper(this);
     }
     
 
@@ -30,7 +44,7 @@ import android.support.v4.app.TaskStackBuilder;
             @Override
             public void run() {
                 synchronized (myCallHelper) {
-                    myCallHelper.openDBConnection(intent.getStringExtra("db_name"));
+                    myCallHelper.recordServiceStart();
                 }
             }
         }).start();
@@ -44,7 +58,7 @@ import android.support.v4.app.TaskStackBuilder;
             @Override
             public void run() {
                 synchronized (this) {
-                    myCallHelper.closeDBConnection();
+                    myCallHelper.recordServiceStop();
                 }
             }
         }).start();
@@ -54,9 +68,9 @@ import android.support.v4.app.TaskStackBuilder;
 
     @Override
     public IBinder onBind(Intent intent) {
-        //not supporting binding
-        return null;
+        return myBinder;
     }
+
 
     private void sendNotification() {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)

@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.prismaqf.callblocker.R;
+
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -22,10 +24,14 @@ public class DbHelper extends SQLiteOpenHelper{
      * assumed. The proper implentation should try to preserve the data
      */
     public static final int DATABASE_VERSION = 1;
-    public static final String TAG = DbHelper.class.getCanonicalName();
+    private static final String TAG = DbHelper.class.getCanonicalName();
 
-    public DbHelper(Context context, String name) {
-        super(context, name, null, DATABASE_VERSION);
+    public DbHelper(Context context) {
+        super(context, context.getString(R.string.db_file_name), null, DATABASE_VERSION);
+    }
+
+    public DbHelper(Context context, String dbname) {
+        super(context, dbname, null, DATABASE_VERSION);
     }
 
     @Override
