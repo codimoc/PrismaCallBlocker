@@ -25,10 +25,10 @@
         android:textOn="@string/turn_off"
         android:textOff="@string/turn_on" />
     <LinearLayout
+        style="@style/rounded"
         android:id="@+id/stats_area"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_corner"
         android:layout_centerInParent="true"
         android:layout_below="@id/buttonDetectToggle"
         android:layout_marginTop="10dp"
