@@ -34,6 +34,10 @@ import android.support.v4.app.TaskStackBuilder;
     public CallDetectService() {
         myCallHelper = CallHelper.GetHelper(this);
     }
+
+    public int getNumReceived() {return myCallHelper.getNumReceived();}
+
+    public int getNumTriggered() {return myCallHelper.getNumTriggered();}
     
 
     @Override

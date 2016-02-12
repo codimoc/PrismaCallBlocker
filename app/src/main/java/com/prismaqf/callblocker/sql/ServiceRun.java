@@ -156,8 +156,7 @@ public class ServiceRun {
     public static void UpdateAtServiceStop(SQLiteDatabase db, long runid, int numReceived, int numTriggered) {
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         Date end = cal.getTime();
-        ServiceRun lrun = LatestRun(db);
-        UpdateRow(db,runid, end,lrun.getNumReceived()+numReceived,lrun.getNumTriggered()+numTriggered);
+        UpdateRow(db,runid, end,numReceived,numTriggered);
     }
 
 }

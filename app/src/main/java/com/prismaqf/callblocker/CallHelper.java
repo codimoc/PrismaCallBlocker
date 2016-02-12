@@ -37,6 +37,14 @@ class CallHelper {
         this.numTriggered = numTriggered;
     }
 
+    public int getNumReceived() {
+        return numReceived;
+    }
+
+    public int getNumTriggered() {
+        return numTriggered;
+    }
+
     private int numReceived;
     private int numTriggered;
     private long myRunId;
@@ -117,6 +125,9 @@ class CallHelper {
     public void recordServiceStart() {
         Log.i(TAG,"Opening a DB connection and recording service start");
         SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
+        ServiceRun lastRun = ServiceRun.LatestRun(db);
+        setNumReceived(lastRun.getNumReceived());
+        setNumTriggered(lastRun.getNumTriggered());
         myRunId = ServiceRun.InsertAtServiceStart(db);
         db.close();
 
