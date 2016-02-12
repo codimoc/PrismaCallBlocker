@@ -10,4 +10,7 @@
     <item android:id="@+id/action_show_runs"
           android:orderInCategory="10"
           android:title="@string/show_runs" />
+    <item android:id="@+id/action_show_calls"
+        android:orderInCategory="20"
+        android:title="@string/show_calls" />
 </menu>

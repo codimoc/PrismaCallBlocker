@@ -103,20 +103,16 @@ public class DbHelperTest {
 
     @Test
     public void LoggedCallsInsertRows() {
-        Calendar cal = Calendar.getInstance(Locale.getDefault());
-        Date timestamp = cal.getTime();
-        LoggedCall.InsertRow(myDb, 15, timestamp, "123", "a dummy", null);
-        LoggedCall.InsertRow(myDb, 21, timestamp, "321", "another dummy", 1);
+        LoggedCall.InsertRow(myDb, 15, "123", "a dummy", null);
+        LoggedCall.InsertRow(myDb, 21, "321", "another dummy", 1);
         Cursor c = LoggedCall.LatestCalls(myDb,5);
         assertEquals("There should be two records",2,c.getCount());
     }
 
     @Test
     public void LoggedCallsLatest() {
-        Calendar cal = Calendar.getInstance(Locale.getDefault());
-        Date timestamp = cal.getTime();
-        LoggedCall.InsertRow(myDb,15,timestamp,"123","a dummy",null);
-        LoggedCall.InsertRow(myDb, 21, timestamp, "321", "another dummy", 1);
+        LoggedCall.InsertRow(myDb,15, "123","a dummy",null);
+        LoggedCall.InsertRow(myDb, 21,"321", "another dummy", 1);
         Cursor c = LoggedCall.LatestCalls(myDb,5);
         //they should appear in reverse order
         c.moveToFirst();

@@ -124,6 +124,9 @@ public class CallBlockerManager extends ActionBarActivity {
             case R.id.action_show_runs:
                 showRuns();
                 return true;
+            case R.id.action_show_calls:
+                showCalls();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -182,6 +185,11 @@ public class CallBlockerManager extends ActionBarActivity {
 
     private void showRuns() {
         Intent intent = new Intent(this,ShowServiceRuns.class);
+        startActivity(intent);
+    }
+
+    private void showCalls() {
+        Intent intent = new Intent(this,ShowLoggedCalls.class);
         startActivity(intent);
     }
 

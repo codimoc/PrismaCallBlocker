@@ -13,18 +13,17 @@ import android.support.v4.widget.SimpleCursorAdapter;
 
 import com.prismaqf.callblocker.sql.DbContract;
 import com.prismaqf.callblocker.sql.DbHelper;
-import com.prismaqf.callblocker.sql.ServiceRun;
+import com.prismaqf.callblocker.sql.LoggedCall;
 
 /**
- * Activity to show a list of recent service runs with
- * start time, end time and total number of call received
- * and event triggered
+ * Activity to show a list of recent logged calls with
+ * timestamp, calling number, description
+ * and name of the rule matched (if any
  * @author ConteDiMonteCristo
- */
-public class ShowServiceRuns extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+ */public class ShowLoggedCalls extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private final String TAG = ShowServiceRuns.class.getCanonicalName();
-    private static final int URL_LOADER = 0; // Identifies a particular Loader being used in this component
+    private final String TAG = ShowLoggedCalls.class.getCanonicalName();
+    private static final int URL_LOADER = 1; // Identifies a particular Loader being used in this component
     private SimpleCursorAdapter myAdapter;
     private SQLiteDatabase myDbConnection;
 
@@ -35,17 +34,18 @@ public class ShowServiceRuns extends ListActivity implements LoaderManager.Loade
         setContentView(R.layout.data_bound_list_activity);
         myDbConnection = new DbHelper(this).getReadableDatabase();
 
+        //// TODO: change ruleid with rule description by joining tables
         myAdapter = new SimpleCursorAdapter(this,
-                R.layout.service_run_record,
+                R.layout.logged_call_record,
                 null,  //no cursor yet
-                new String[] {DbContract.ServiceRuns.COLUMN_NAME_START,
-                        DbContract.ServiceRuns.COLUMN_NAME_STOP,
-                        DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED,
-                        DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED},
-                new int[] {R.id.text_start_time,
-                        R.id.text_end_time,
-                        R.id.text_num_received,
-                        R.id.text_num_triggered}, 0);
+                new String[] {DbContract.LoggedCalls.COLUMN_NAME_TIMESTAMP,
+                        DbContract.LoggedCalls.COLUMN_NAME_NUMBER,
+                        DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION,
+                        DbContract.LoggedCalls.COLUMN_NAME_RULEID},
+                new int[] {R.id.text_timestamp,
+                        R.id.text_calling_number,
+                        R.id.text_description,
+                        R.id.text_rule_matched}, 0);
 
         setListAdapter(myAdapter);
         getLoaderManager().initLoader(URL_LOADER, null, this);
@@ -57,8 +57,6 @@ public class ShowServiceRuns extends ListActivity implements LoaderManager.Loade
         super.onStop();
         myDbConnection.close();
     }
-    
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
@@ -66,25 +64,24 @@ public class ShowServiceRuns extends ListActivity implements LoaderManager.Loade
             case URL_LOADER:
                 // Returns a new CursorLoader
                 return new CursorLoader(this,   // Parent activity context
-                                        null,   // All the following params
-                                        null,   // are null
-                                        null,   // because the Cursor is created
-                                        null,   // below
-                                        null)
+                        null,   // All the following params
+                        null,   // are null
+                        null,   // because the Cursor is created
+                        null,   // below
+                        null)
                 {
                     @Override
                     public Cursor loadInBackground() {
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
                         String key = getString(R.string.prefs_key_sql_limit);
                         int limit = Integer.parseInt(prefs.getString(key,"10"));
-                        return ServiceRun.LatestRuns(myDbConnection, limit);
+                        return LoggedCall.LatestCalls(myDbConnection, limit);
                     }
                 };
             default:
                 return null;
         }
     }
-
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {

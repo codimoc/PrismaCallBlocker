@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -61,20 +62,17 @@ public class LoggedCall {
      * Insert a new record (logged call) in the database
      * @param db the SQLite connection
      * @param runid the service run id
-     * @param timestamp the current timestamp
      * @param number the calling number
      * @param description (nullable) the description like the contact name corresponding to the number
      * @param ruleid (nullable) the rule id if applicable
      * @return the new call id
      */
-    public static long InsertRow(SQLiteDatabase db, long runid, Date timestamp, String number, String description, Integer ruleid) {
+    public static long InsertRow(SQLiteDatabase db, long runid, String number, String description, Integer ruleid) {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        Date timestamp = cal.getTime();
         ContentValues vals = new ContentValues();
         DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
-        if (timestamp != null)
-            vals.put(DbContract.LoggedCalls.COLUMN_NAME_TIMESTAMP, format.format(timestamp));
-        else {
-            Log.e(TAG, "Timestamp required for a logged call");
-        }
+        vals.put(DbContract.LoggedCalls.COLUMN_NAME_TIMESTAMP, format.format(timestamp));
         vals.put(DbContract.LoggedCalls.COLUMN_NAME_RUNID,runid);
         if (number == null)
             Log.e(TAG, "Phone number required for a logged call");

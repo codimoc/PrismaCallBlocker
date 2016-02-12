@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.prismaqf.callblocker.sql.DbHelper;
+import com.prismaqf.callblocker.sql.LoggedCall;
 import com.prismaqf.callblocker.sql.ServiceRun;
 
 /**
@@ -67,10 +68,22 @@ class CallHelper {
     private class CallStateListener extends PhoneStateListener {
 
         @Override
-        public void onCallStateChanged(int state, String incomingNumber) {
+        public void onCallStateChanged(int state, final String incomingNumber) {
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING: //someone is ringing to this phone
 
+                    //start a thread to write to DC
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "Recording a call received in DB");
+                            SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
+                            ServiceRun lastRun = ServiceRun.LatestRun(db);
+                            //todo: get contact name and rule id
+                            LoggedCall.InsertRow(db,lastRun.getId(),incomingNumber,null,null);
+                            db.close();
+                        }
+                    }).start();
                     setNumReceived(numReceived + 1);
                     Intent intent = new Intent();
                     intent.setAction(ctx.getString(R.string.action_call));
