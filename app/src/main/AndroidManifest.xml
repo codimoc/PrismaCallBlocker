@@ -29,6 +29,11 @@
                   android:label="@string/show_runs">
         </activity>
 
+        <activity android:name=".SettingActivity"
+                  android:label="@string/activity_setting">
+
+        </activity>
+
         <service
             android:name=".CallDetectService"
             android:enabled="true"

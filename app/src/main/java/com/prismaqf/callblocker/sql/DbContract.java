@@ -17,7 +17,7 @@ public class DbContract {
     public static final String TYPE_TEXT = " TEXT";
     public static final String TYPE_INT = " INTEGER";
     public static final String NOT_NULL = " NOT NULL";
-    public static final String DATE_FORMAT = "d MMM yyyy HH:mm::ss zzz";
+    public static final String DATE_FORMAT = "d MMM yyyy 'at' HH:mm:ss z";
 
     /**
      * Schema for teble on service runs: a service run contains the

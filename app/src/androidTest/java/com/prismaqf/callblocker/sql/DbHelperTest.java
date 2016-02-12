@@ -92,7 +92,7 @@ public class DbHelperTest {
         //service starts again
         id = ServiceRun.InsertAtServiceStart(myDb);
         //2nd end of service
-        ServiceRun.UpdateAtServiceStop(myDb, id, 1, 0);
+        ServiceRun.UpdateAtServiceStop(myDb, id, 3, 1);
         ServiceRun latest = ServiceRun.LatestRun(myDb);
         //tests
         assertEquals("There should be two records",2, latest.getId());

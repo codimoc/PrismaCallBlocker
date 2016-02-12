@@ -4,9 +4,11 @@ import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -74,8 +76,10 @@ public class ShowServiceRuns extends ListActivity implements LoaderManager.Loade
                 {
                     @Override
                     public Cursor loadInBackground() {
-                        //todo: get the limit from shared preferences
-                        return ServiceRun.LatestRuns(myDbConnection, 10);
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                        String key = getString(R.string.prefs_key_sql_limit);
+                        int limit = Integer.parseInt(prefs.getString(key,"10"));
+                        return ServiceRun.LatestRuns(myDbConnection, limit);
                     }
                 };
             default:

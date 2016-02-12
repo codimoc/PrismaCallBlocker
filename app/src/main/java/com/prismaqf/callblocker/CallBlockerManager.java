@@ -1,17 +1,13 @@
 package com.prismaqf.callblocker;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -19,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.prismaqf.callblocker.sql.DbHelper;
@@ -33,7 +28,6 @@ public class CallBlockerManager extends ActionBarActivity {
     private CallEventReceiver callEventReceiver;
     private Button buttonReceived;
     private Button buttonTriggered;
-    private CallDetectService myService = null;
 
     /**
      * Broadcast receiver to receive intents when a call is detected
@@ -103,35 +97,6 @@ public class CallBlockerManager extends ActionBarActivity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (myService==null && isServiceRunning(this)) {
-            Intent intent = new Intent(this,CallDetectService.class);
-            bindService(intent,myConnection,Context.BIND_ABOVE_CLIENT);
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (myService != null && isServiceRunning(this))
-            unbindService(myConnection);
-    }
-
-    private ServiceConnection myConnection = new ServiceConnection()    {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            CallDetectService.LocalBinder binder = (CallDetectService.LocalBinder) service;
-            myService = binder.getService();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            myService = null;
-        }
-    };
-
-    @Override
     protected void onDestroy(){
         unregisterReceiver(callEventReceiver);
         super.onDestroy();
@@ -154,6 +119,7 @@ public class CallBlockerManager extends ActionBarActivity {
 
         switch(id) {
             case R.id.action_settings:
+                showSettings();
                 return true;
             case R.id.action_show_runs:
                 showRuns();
@@ -216,6 +182,11 @@ public class CallBlockerManager extends ActionBarActivity {
 
     private void showRuns() {
         Intent intent = new Intent(this,ShowServiceRuns.class);
+        startActivity(intent);
+    }
+
+    private void showSettings() {
+        Intent intent = new Intent(this,SettingActivity.class);
         startActivity(intent);
     }
 
