@@ -32,11 +32,12 @@ public class DbHelperTest {
         myDbHelper = new DbHelper(myContext,DB_NAME);
         myDb = myDbHelper.getWritableDatabase();
         myDb.delete(DbContract.ServiceRuns.TABLE_NAME,null,null);
+        myDb.delete(DbContract.LoggedCalls.TABLE_NAME,null,null);
     }
 
     @Test
     public void dbSmokeTest() {
-        assertEquals("DB version", 1, myDb.getVersion());
+        assertEquals("DB version", 2, myDb.getVersion());
     }
 
     @Test
@@ -88,7 +89,7 @@ public class DbHelperTest {
         //...when the service starts
         long id = ServiceRun.InsertAtServiceStart(myDb);
         //end of service
-        ServiceRun.UpdateAtServiceStop(myDb,id,2,1);
+        ServiceRun.UpdateAtServiceStop(myDb, id, 2, 1);
         //service starts again
         id = ServiceRun.InsertAtServiceStart(myDb);
         //2nd end of service
@@ -98,5 +99,37 @@ public class DbHelperTest {
         assertEquals("There should be two records",2, latest.getId());
         assertEquals("Total of 3 calls received",3, latest.getNumReceived());
         assertEquals("Total of 1 event triggered",1, latest.getNumTriggered());
+    }
+
+    @Test
+    public void LoggedCallsInsertRows() {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        Date timestamp = cal.getTime();
+        LoggedCall.InsertRow(myDb, 15, timestamp, "123", "a dummy", null);
+        LoggedCall.InsertRow(myDb, 21, timestamp, "321", "another dummy", 1);
+        Cursor c = LoggedCall.LatestCalls(myDb,5);
+        assertEquals("There should be two records",2,c.getCount());
+    }
+
+    @Test
+    public void LoggedCallsLatest() {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        Date timestamp = cal.getTime();
+        LoggedCall.InsertRow(myDb,15,timestamp,"123","a dummy",null);
+        LoggedCall.InsertRow(myDb, 21, timestamp, "321", "another dummy", 1);
+        Cursor c = LoggedCall.LatestCalls(myDb,5);
+        //they should appear in reverse order
+        c.moveToFirst();
+        assertEquals("Check the second run id", 21, c.getInt(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_RUNID)));
+        assertEquals("Check the second number","321", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_NUMBER)));
+        assertEquals("Check the second description", "another dummy", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION)));
+        assertNotNull("The second rule id is not null", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_RULEID)));
+        assertEquals("Check the second rule id", 1, c.getInt(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_RULEID)));
+        c.moveToNext();
+        assertEquals("Check the first run id", 15, c.getInt(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_RUNID)));
+        assertEquals("Check the first number", "123", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_NUMBER)));
+        assertEquals("Check the first description", "a dummy", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION)));
+        assertNull("The first rule id is null", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_RULEID)));
+
     }
 }

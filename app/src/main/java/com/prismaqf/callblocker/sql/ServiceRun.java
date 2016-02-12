@@ -86,6 +86,12 @@ public class ServiceRun {
         return new ServiceRun(0,null,null,0,0);
     }
 
+    /**
+     * Retrieves the latest service runs
+     * @param db the SQLite connection
+     * @param maxRecords the total number of records returned
+     * @return a cursor
+     */
     public static Cursor LatestRuns(SQLiteDatabase db, int maxRecords) {
         String orderby = String.format("%s desc",DbContract.ServiceRuns._ID);
         String limit = String.valueOf(maxRecords);
