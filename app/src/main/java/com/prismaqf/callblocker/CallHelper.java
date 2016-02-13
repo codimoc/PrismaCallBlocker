@@ -4,7 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -79,8 +82,9 @@ class CallHelper {
                             Log.i(TAG, "Recording a call received in DB");
                             SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
                             ServiceRun lastRun = ServiceRun.LatestRun(db);
-                            //todo: get contact name and rule id
-                            LoggedCall.InsertRow(db,lastRun.getId(),incomingNumber,null,null);
+                            //todo: get rule id
+                            String contactDescription = resolveContactDescription(incomingNumber);
+                            LoggedCall.InsertRow(db,lastRun.getId(),incomingNumber,contactDescription,null);
                             db.close();
                         }
                     }).start();
@@ -95,6 +99,19 @@ class CallHelper {
                     Toast.makeText(ctx, "Incoming: " + incomingNumber, Toast.LENGTH_LONG).show();
                     break;
             }
+        }
+
+        private String resolveContactDescription(String incomingNumber) {
+            String description = "Not found";
+            Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(incomingNumber));
+            String[] projection = new String[]{ ContactsContract.PhoneLookup.DISPLAY_NAME};
+            Cursor c = ctx.getContentResolver().query(uri,projection,null,null,null);
+            if (c!= null && c.getCount()>0) {
+                c.moveToFirst();
+                description = c.getString(0);
+            }
+
+            return description;
         }
     }
 
