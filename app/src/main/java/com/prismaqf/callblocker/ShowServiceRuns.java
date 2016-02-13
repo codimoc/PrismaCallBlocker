@@ -1,18 +1,13 @@
 package com.prismaqf.callblocker;
 
-import android.app.ListActivity;
-import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SimpleCursorAdapter;
-
 import com.prismaqf.callblocker.sql.DbContract;
-import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.ServiceRun;
 
 /**
@@ -21,43 +16,10 @@ import com.prismaqf.callblocker.sql.ServiceRun;
  * and event triggered
  * @author ConteDiMonteCristo
  */
-public class ShowServiceRuns extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ShowServiceRuns extends ShowListActivity {
 
     private final String TAG = ShowServiceRuns.class.getCanonicalName();
     private static final int URL_LOADER = 0; // Identifies a particular Loader being used in this component
-    private SimpleCursorAdapter myAdapter;
-    private SQLiteDatabase myDbConnection;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.data_bound_list_activity);
-        myDbConnection = new DbHelper(this).getReadableDatabase();
-
-        myAdapter = new SimpleCursorAdapter(this,
-                R.layout.service_run_record,
-                null,  //no cursor yet
-                new String[] {DbContract.ServiceRuns.COLUMN_NAME_START,
-                        DbContract.ServiceRuns.COLUMN_NAME_STOP,
-                        DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED,
-                        DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED},
-                new int[] {R.id.text_start_time,
-                        R.id.text_end_time,
-                        R.id.text_num_received,
-                        R.id.text_num_triggered}, 0);
-
-        setListAdapter(myAdapter);
-        getLoaderManager().initLoader(URL_LOADER, null, this);
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        myDbConnection.close();
-    }
-    
 
 
     @Override
@@ -87,12 +49,22 @@ public class ShowServiceRuns extends ListActivity implements LoaderManager.Loade
 
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        myAdapter.swapCursor(cursor);
+    public SimpleCursorAdapter getAdapter() {
+        return new SimpleCursorAdapter(this,
+                R.layout.service_run_record,
+                null,  //no cursor yet
+                new String[] {DbContract.ServiceRuns.COLUMN_NAME_START,
+                        DbContract.ServiceRuns.COLUMN_NAME_STOP,
+                        DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED,
+                        DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED},
+                new int[] {R.id.text_start_time,
+                        R.id.text_end_time,
+                        R.id.text_num_received,
+                        R.id.text_num_triggered}, 0);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        myAdapter.swapCursor(null);
+    public void initLoader() {
+        getLoaderManager().initLoader(URL_LOADER, null, this);
     }
 }
