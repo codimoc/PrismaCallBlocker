@@ -18,6 +18,7 @@ public class DbContract {
     public static final String TYPE_INT = " INTEGER";
     public static final String NOT_NULL = " NOT NULL";
     public static final String DATE_FORMAT = "d MMM yyyy 'at' HH:mm:ss z";
+    public static final String DEF_TIMESTAMP = " DEFAULT (DATETIME('now','localtime'))";
 
     /**
      * Schema for a table on service runs: a service run contains the
@@ -67,5 +68,24 @@ public class DbContract {
                 CLOSE_BRAC;
         public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
+    }
+
+    public static abstract class CalendarRules implements BaseColumns {
+        public static final String TABLE_NAME = "calendarrules";
+        public static final String COLUMN_NAME_RULENAME = "name";
+        public static final String COLUMN_NAME_DAYMASK = "daymask";
+        public static final String COLUMN_NAME_FROM = "fromTime";
+        public static final String COLUMN_NAME_TO = "toTime";
+        public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
+        //sql table creation and deletion
+        public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + OPEN_BRAC +
+                _ID + IPK +
+                COLUMN_NAME_RULENAME + TYPE_TEXT + NOT_NULL + COMMA_SEP +
+                COLUMN_NAME_DAYMASK + TYPE_INT + NOT_NULL + COMMA_SEP +
+                COLUMN_NAME_FROM + TYPE_TEXT + NOT_NULL + COMMA_SEP +
+                COLUMN_NAME_TO + TYPE_TEXT + NOT_NULL + COMMA_SEP +
+                COLUMN_NAME_TIMESTAMP + TYPE_TEXT + DEF_TIMESTAMP +
+                CLOSE_BRAC;
+        public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 }

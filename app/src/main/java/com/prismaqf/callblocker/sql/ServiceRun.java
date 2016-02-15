@@ -2,6 +2,7 @@ package com.prismaqf.callblocker.sql;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -32,6 +33,31 @@ public class ServiceRun {
         this.numReceived = numReceived;
         this.numTriggered = numTriggered;
     }
+
+    public static ServiceRun deserialize(Cursor c) {
+        long myId = c.getLong(c.getColumnIndexOrThrow(DbContract.ServiceRuns._ID));
+        int myReceived  = c.getInt(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED));
+        int myTriggered  = c.getInt(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED));
+        Date myStart = null;
+        Date myStop = null;
+        try {
+
+            DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
+            String sstart = c.getString(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_START));
+            String sstop = c.getString(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_STOP));
+            if (sstart != null) myStart = format.parse(sstart);
+            if (sstop != null) myStop = format.parse(sstop);
+        } catch (ParseException e) {
+            Log.e(TAG, e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+        return new ServiceRun(myId,myStart,myStop,myReceived,myTriggered);
+    }
+
+    public static void serialize(SQLiteDatabase db, ServiceRun sr) {
+        InsertRow(db,sr.getStart(),sr.getStop(),sr.getNumReceived(),sr.getNumTriggered());
+    }
+
 
     public long getId() {
         return id;
@@ -65,23 +91,7 @@ public class ServiceRun {
         Cursor c = db.query(DbContract.ServiceRuns.TABLE_NAME, null, null, null, null, null, orderby, limit);
         if (c.getCount() > 0) {
             c.moveToFirst();
-            long myId = c.getLong(c.getColumnIndexOrThrow(DbContract.ServiceRuns._ID));
-            int myReceived  = c.getInt(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED));
-            int myTriggered  = c.getInt(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED));
-            Date myStart = null;
-            Date myStop = null;
-            try {
-
-                DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
-                String sstart = c.getString(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_START));
-                String sstop = c.getString(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_STOP));
-                if (sstart != null) myStart = format.parse(sstart);
-                if (sstop != null) myStop = format.parse(sstop);
-            } catch (ParseException e) {
-                Log.e(TAG, e.getMessage());
-            }
-            return new ServiceRun(myId,myStart,myStop,myReceived,myTriggered);
-
+            return deserialize(c);
         }
         return new ServiceRun(0,null,null,0,0);
     }
@@ -93,8 +103,27 @@ public class ServiceRun {
      * @return a cursor
      */
     public static Cursor LatestRuns(SQLiteDatabase db, int maxRecords) {
-        String orderby = String.format("%s desc",DbContract.ServiceRuns._ID);
-        String limit = String.valueOf(maxRecords);
+        return LatestRuns(db, maxRecords, true);
+    }
+
+    /**
+     * Retrieves the latest service runs
+     * @param db the SQLite connection
+     * @param maxRecords the total number of records returned
+     * @param descending a flag to inicate the sorting order, descending when the flag is true
+     * @return a cursor
+     */
+    public static Cursor LatestRuns(SQLiteDatabase db, int maxRecords, boolean descending) {
+        String orderby;
+        if (descending)
+            orderby= String.format("%s desc",DbContract.ServiceRuns._ID);
+        else
+            orderby= String.format("%s asc",DbContract.ServiceRuns._ID);
+
+        String limit = null;
+        if (maxRecords > 0)
+            limit = String.valueOf(maxRecords);
+
         return db.query(DbContract.ServiceRuns.TABLE_NAME, null, null, null, null, null, orderby, limit);
     }
 

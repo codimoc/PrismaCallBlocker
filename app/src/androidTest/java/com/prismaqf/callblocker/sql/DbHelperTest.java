@@ -33,11 +33,12 @@ public class DbHelperTest {
         myDb = myDbHelper.getWritableDatabase();
         myDb.delete(DbContract.ServiceRuns.TABLE_NAME,null,null);
         myDb.delete(DbContract.LoggedCalls.TABLE_NAME,null,null);
+        myDb.delete(DbContract.CalendarRules.TABLE_NAME,null,null);
     }
 
     @Test
     public void dbSmokeTest() {
-        assertEquals("DB version", 2, myDb.getVersion());
+        assertEquals("DB version", 8, myDb.getVersion());
     }
 
     @Test
@@ -126,6 +127,43 @@ public class DbHelperTest {
         assertEquals("Check the first number", "123", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_NUMBER)));
         assertEquals("Check the first description", "a dummy", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION)));
         assertNull("The first rule id is null", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_RULEID)));
+    }
 
+    @Test
+    public void InsertCalendarRule(){
+        CalendarRule.InsertRow(myDb,"first",9,"05:45","21:12");
+        CalendarRule.InsertRow(myDb,"second",96,null,null);
+        Cursor c = CalendarRule.AllCalendarRules(myDb);
+        assertEquals("There should be two records",2,c.getCount());
+    }
+
+    @Test
+    public void RetrieveCalendarRules() {
+        CalendarRule.InsertRow(myDb,"first",9,"05:45","21:12");
+        CalendarRule.InsertRow(myDb,"second",96,null,null);
+        Cursor c = CalendarRule.AllCalendarRules(myDb);
+        c.moveToFirst();
+        assertEquals("Name of first", "first", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_RULENAME)));
+        assertEquals("Mask of first",9,c.getInt(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_DAYMASK)));
+        assertEquals("From of first", "05:45", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_FROM)));
+        assertEquals("To of first", "21:12", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_TO)));
+        c.moveToNext();
+        assertEquals("Name of second", "second", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_RULENAME)));
+        assertEquals("Mask of second", 96, c.getInt(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_DAYMASK)));
+        assertEquals("From of second", "00:00", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_FROM)));
+        assertEquals("To of second","23:59",c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_TO)));
+    }
+
+    @Test
+    public void UpdateCalendarRule() {
+        long id =  CalendarRule.InsertRow(myDb,"first",9,"05:45","21:12");
+        CalendarRule.UpdateCalendarRule(myDb,id,9,"06:05","21:12");
+        Cursor c = CalendarRule.AllCalendarRules(myDb);
+        assertEquals("There should be one record1",1,c.getCount());
+        c.moveToFirst();
+        assertEquals("Name of first", "first", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_RULENAME)));
+        assertEquals("Mask of first",9,c.getInt(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_DAYMASK)));
+        assertEquals("From of first", "06:05", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_FROM)));
+        assertEquals("To of first", "21:12", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_TO)));
     }
 }

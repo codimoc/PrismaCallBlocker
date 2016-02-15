@@ -2,10 +2,12 @@ package com.prismaqf.callblocker.sql;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,16 +24,44 @@ public class LoggedCall {
     private final Date timestamp;
     private final String number;
     private final String description;
-    private final long ruleid;
+    private final int ruleid;
 
 
-    public LoggedCall(long id, long runid, long ruleid, Date timestamp, String number, String description) {
+    private LoggedCall(long id, long runid, int ruleid, Date timestamp, String number, String description) {
         this.id = id;
         this.runid = runid;
         this.ruleid = ruleid;
         this.timestamp = timestamp;
         this.number = number;
         this.description = description;
+    }
+
+    public static LoggedCall deserialize(Cursor c) {
+        long myId = c.getLong(c.getColumnIndexOrThrow(DbContract.LoggedCalls._ID));
+        long myRunId = c.getLong(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_RUNID));
+        int myRuleId = -1;
+        if (!c.isNull(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_RULEID)))
+            myRuleId = c.getInt(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_RULEID));
+        String myNumber = c.getString(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_NUMBER));
+        String myDescription = c.getString(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION));
+        Date myTimestamp = null;
+        try {
+
+            DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
+            String sts = c.getString(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_TIMESTAMP));
+            if (sts != null) myTimestamp = format.parse(sts);
+        } catch (ParseException e) {
+            Log.e(TAG, e.getMessage());
+            throw new SQLException(e.getMessage());
+        }
+        return new LoggedCall(myId,myRunId,myRuleId,myTimestamp,myNumber,myDescription);
+    }
+
+    public static void serialize(SQLiteDatabase db, LoggedCall lc) {
+        Integer ruleId = null;
+        if (lc.getRuleid() > 0)
+            ruleId = lc.getRuleid();
+        InsertRow(db,lc.getRunid(),lc.getNumber(), lc.getDescription(), ruleId);
     }
 
     public long getId() {
@@ -54,7 +84,7 @@ public class LoggedCall {
         return description;
     }
 
-    public long getRuleid() {
+    public int getRuleid() {
         return ruleid;
     }
 
@@ -91,8 +121,26 @@ public class LoggedCall {
      * @return a cursor
      */
     public static Cursor LatestCalls(SQLiteDatabase db, int maxRecords) {
-        String orderby = String.format("%s desc",DbContract.LoggedCalls._ID);
-        String limit = String.valueOf(maxRecords);
+        return LatestCalls(db, maxRecords, true);
+    }
+
+    /**
+     * Retrieves the latest calls logged
+     * @param db the SQLite connection
+     * @param maxRecords the total number of records returned
+     * @param descending a flag to inicate the sorting order, descending when the flag is true
+     * @return a cursor
+     */
+    public static Cursor LatestCalls(SQLiteDatabase db, int maxRecords, boolean descending) {
+        String orderby;
+        if (descending)
+            orderby= String.format("%s desc",DbContract.LoggedCalls._ID);
+        else
+            orderby= String.format("%s asc",DbContract.LoggedCalls._ID);
+
+        String limit = null;
+        if (maxRecords > 0)
+            limit = String.valueOf(maxRecords);
         return db.query(DbContract.LoggedCalls.TABLE_NAME, null, null, null, null, null, orderby, limit);
     }
 }
