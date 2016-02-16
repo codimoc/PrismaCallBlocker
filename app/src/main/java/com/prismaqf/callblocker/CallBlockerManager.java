@@ -2,12 +2,15 @@ package com.prismaqf.callblocker;
 
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +31,27 @@ public class CallBlockerManager extends ActionBarActivity {
     private CallEventReceiver callEventReceiver;
     private Button buttonReceived;
     private Button buttonTriggered;
+    private CallDetectService myService;
+    private boolean isBound;
+
+    private ServiceConnection myConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            CallDetectService.LocalBinder binder = (CallDetectService.LocalBinder) service;
+            myService = binder.getService();
+            isBound = true;
+            buttonReceived.setText(String.valueOf(myService.getNumReceived()));
+            buttonReceived.invalidate();
+            buttonTriggered.setText(String.valueOf(myService.getNumTriggered()));
+            buttonTriggered.invalidate();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            isBound = false;
+        }
+    };
 
     /**
      * Broadcast receiver to receive intents when a call is detected
@@ -42,14 +66,16 @@ public class CallBlockerManager extends ActionBarActivity {
             String message = String.format("Incoming: %s, Num received: %d, Num triggered: %d",
                                            number, numReceived, numTriggered);
             Log.i(TAG,message);
-            if (buttonReceived != null) {
-                buttonReceived.setText(Integer.toString(numReceived));
-                buttonReceived.invalidate();
-            }
-            if (buttonTriggered != null) {
-                buttonTriggered.setText(Integer.toString(numTriggered));
-                buttonTriggered.invalidate();
-            }
+
+            if (buttonReceived == null)
+                buttonReceived = (Button) findViewById(R.id.button_received);
+            if (buttonTriggered == null)
+                buttonTriggered = (Button) findViewById(R.id.button_triggered);
+
+            buttonReceived.setText(String.valueOf(numReceived));
+            buttonReceived.invalidate();
+            buttonTriggered.setText(String.valueOf(numTriggered));
+            buttonTriggered.invalidate();
         }
     }
 
@@ -88,12 +114,24 @@ public class CallBlockerManager extends ActionBarActivity {
         //call stats buttons
         buttonReceived = (Button) findViewById(R.id.button_received);
         buttonTriggered = (Button) findViewById(R.id.button_triggered);
+    }
 
-        SQLiteDatabase db = new DbHelper(this).getReadableDatabase();
-        ServiceRun last = ServiceRun.LatestRun(db);
-        buttonReceived.setText(Integer.toString(last.getNumReceived()));
-        buttonTriggered.setText(Integer.toString(last.getNumTriggered()));
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (isServiceRunning(this)) {
+            Intent intent = new Intent(this, CallDetectService.class);
+            bindService(intent, myConnection, Context.BIND_ABOVE_CLIENT);
+        }
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isBound){
+            unbindService(myConnection);
+            isBound = false;
+        }
     }
 
     @Override
@@ -160,17 +198,28 @@ public class CallBlockerManager extends ActionBarActivity {
     }
 
     private void stopService() {
+        if (isBound) {
+            unbindService(myConnection);
+            isBound = false;
+        }
         Log.i(TAG, "Stopping the service");
         Intent intent = new Intent(this, CallDetectService.class);
         stopService(intent);
         textDetectState.setText(R.string.no_detect);
+
     }
 
     private void startService() {
         Log.i(TAG, "Starting the service");
         Intent intent = new Intent(this, CallDetectService.class);
         startService(intent);
-        textDetectState.setText((R.string.detect));    }
+        textDetectState.setText((R.string.detect));
+        //todo: might need to use an async task
+        SQLiteDatabase db = new DbHelper(this).getReadableDatabase();
+        ServiceRun last = ServiceRun.LatestRun(db);
+        buttonReceived.setText(String.valueOf(last.getNumReceived()));
+        buttonTriggered.setText(String.valueOf(last.getNumTriggered()));
+    }
 
 
     public static boolean isServiceRunning(Context context){

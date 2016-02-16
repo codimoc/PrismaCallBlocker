@@ -9,12 +9,16 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 /**
  * Call detect service
  * @author Moskvichev Andrey V.
  * @see 'www.codeproject.com/Articles/548416/Detecting-incoming-and-outgoing-phone-calls-on-And'
  */public class CallDetectService extends Service {
+
+    private static final String TAG = CallDetectService.class.getCanonicalName();
+
 
 
     /**
@@ -57,7 +61,8 @@ import android.support.v4.app.TaskStackBuilder;
 
     @Override
     public void onDestroy() {
-        new Thread(new Runnable() {
+        Log.w(TAG,"The service has been killed");
+/*        new Thread(new Runnable() {
 
             @Override
             public void run() {
@@ -65,7 +70,8 @@ import android.support.v4.app.TaskStackBuilder;
                     myCallHelper.recordServiceStop();
                 }
             }
-        }).start();
+        }).start();*/
+        myCallHelper.recordServiceStop();
         myCallHelper.stop();
         super.onDestroy();
     }
