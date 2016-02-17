@@ -165,6 +165,9 @@ public class CallBlockerManager extends ActionBarActivity {
             case R.id.action_show_calls:
                 showCalls();
                 return true;
+            case R.id.action_show_calendar_rules:
+                showCalendarRules();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -241,6 +244,12 @@ public class CallBlockerManager extends ActionBarActivity {
         Intent intent = new Intent(this,ShowLoggedCalls.class);
         startActivity(intent);
     }
+
+    private void showCalendarRules() {
+        Intent intent = new Intent(this,ShowCalendarRules.class);
+        startActivity(intent);
+    }
+
 
     private void showSettings() {
         Intent intent = new Intent(this,SettingActivity.class);

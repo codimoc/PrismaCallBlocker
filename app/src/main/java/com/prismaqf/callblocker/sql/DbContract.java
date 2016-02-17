@@ -76,6 +76,7 @@ public class DbContract {
         public static final String COLUMN_NAME_DAYMASK = "daymask";
         public static final String COLUMN_NAME_FROM = "fromTime";
         public static final String COLUMN_NAME_TO = "toTime";
+        public static final String COLUMN_NAME_FORMAT = "format";
         public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
         //sql table creation and deletion
         public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + OPEN_BRAC +
@@ -84,6 +85,7 @@ public class DbContract {
                 COLUMN_NAME_DAYMASK + TYPE_INT + NOT_NULL + COMMA_SEP +
                 COLUMN_NAME_FROM + TYPE_TEXT + NOT_NULL + COMMA_SEP +
                 COLUMN_NAME_TO + TYPE_TEXT + NOT_NULL + COMMA_SEP +
+                COLUMN_NAME_FORMAT + TYPE_TEXT + NOT_NULL + COMMA_SEP +
                 COLUMN_NAME_TIMESTAMP + TYPE_TEXT + DEF_TIMESTAMP +
                 CLOSE_BRAC;
         public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;

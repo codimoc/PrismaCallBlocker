@@ -166,7 +166,27 @@ public class ServiceRun {
         String selection = DbContract.ServiceRuns._ID + " = ?";
         String[] selectionArgs = { String.valueOf(runid) };
 
-        return db.update(DbContract.ServiceRuns.TABLE_NAME,vals,selection,selectionArgs);
+        return db.update(DbContract.ServiceRuns.TABLE_NAME, vals, selection, selectionArgs);
+    }
+
+    /**
+     * Update a row in the srviceruns table while running the service
+     * @param db db the SQLite connection
+     * @param runid the run id
+     * @param numReceived the number of calls received during the service run (negative number to skip this value update)
+     * @param numTriggered the number of events triggered during the service run (negative number to skip this value update)
+     */
+    public static void UpdateWhileRunning(SQLiteDatabase db, long runid, int numReceived, int numTriggered) {
+        ContentValues vals = new ContentValues();
+        vals.put(DbContract.ServiceRuns.COLUMN_NAME_STOP, "running");
+        if (numReceived >= 0)
+            vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED, numReceived);
+        if (numTriggered >=0)
+            vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED, numTriggered);
+        String selection = DbContract.ServiceRuns._ID + " = ?";
+        String[] selectionArgs = { String.valueOf(runid) };
+
+        db.update(DbContract.ServiceRuns.TABLE_NAME,vals,selection,selectionArgs);
     }
 
     /**

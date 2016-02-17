@@ -34,6 +34,10 @@
             android:label="@string/show_calls">
         </activity>
 
+        <activity android:name=".ShowCalendarRules"
+            android:label="@string/show_calendar_rules">
+        </activity>
+
         <activity android:name=".SettingActivity"
                   android:label="@string/activity_setting">
 

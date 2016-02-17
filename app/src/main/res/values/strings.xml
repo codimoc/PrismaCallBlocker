@@ -20,6 +20,7 @@
     <string name="db_file_name">pcb.db</string>
     <string name="show_runs">Show latest service runs</string>
     <string name="show_calls">Show latest call received</string>
+    <string name="show_calendar_rules">Show all calendar rules</string>
     <string name="title_sql_limit">Max sixe of DB query</string>
     <string name="activity_setting">Settings</string>
     <string name="prefs_key_sql_limit">sql_query_limit</string>

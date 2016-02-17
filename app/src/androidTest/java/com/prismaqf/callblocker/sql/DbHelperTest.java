@@ -38,7 +38,7 @@ public class DbHelperTest {
 
     @Test
     public void dbSmokeTest() {
-        assertEquals("DB version", 8, myDb.getVersion());
+        assertEquals("DB version", 9, myDb.getVersion());
     }
 
     @Test
@@ -147,11 +147,13 @@ public class DbHelperTest {
         assertEquals("Mask of first",9,c.getInt(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_DAYMASK)));
         assertEquals("From of first", "05:45", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_FROM)));
         assertEquals("To of first", "21:12", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_TO)));
+        assertEquals("Format of first", "Days M--T--- from 05:45 to 21:12", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_FORMAT)));
         c.moveToNext();
         assertEquals("Name of second", "second", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_RULENAME)));
         assertEquals("Mask of second", 96, c.getInt(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_DAYMASK)));
         assertEquals("From of second", "00:00", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_FROM)));
         assertEquals("To of second","23:59",c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_TO)));
+        assertEquals("Format of second", "Days -----SS from 00:00 to 23:59", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_FORMAT)));
     }
 
     @Test

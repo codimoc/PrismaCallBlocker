@@ -13,4 +13,7 @@
     <item android:id="@+id/action_show_calls"
         android:orderInCategory="20"
         android:title="@string/show_calls" />
+    <item android:id="@+id/action_show_calendar_rules"
+        android:orderInCategory="30"
+        android:title="@string/show_calendar_rules" />
 </menu>

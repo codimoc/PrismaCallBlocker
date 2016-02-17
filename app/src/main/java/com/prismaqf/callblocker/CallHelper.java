@@ -85,9 +85,12 @@ class CallHelper {
                             //todo: get rule id
                             String contactDescription = resolveContactDescription(incomingNumber);
                             LoggedCall.InsertRow(db,lastRun.getId(),incomingNumber,contactDescription,null);
+                            //todo: only numreceived is updated for the time being
+                            ServiceRun.UpdateWhileRunning(db,myRunId,numReceived+1,numTriggered);
                             db.close();
                         }
                     }).start();
+                    //todo: only received is updated for the time being
                     setNumReceived(numReceived + 1);
                     Intent intent = new Intent();
                     intent.setAction(ctx.getString(R.string.action_call));
@@ -159,6 +162,7 @@ class CallHelper {
         setNumReceived(lastRun.getNumReceived());
         setNumTriggered(lastRun.getNumTriggered());
         myRunId = ServiceRun.InsertAtServiceStart(db);
+        ServiceRun.UpdateWhileRunning(db,myRunId,-1,-1);
         db.close();
 
     }

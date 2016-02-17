@@ -27,7 +27,7 @@ public class DbHelper extends SQLiteOpenHelper{
      * implementation they throw an exception becase a single version is
      * assumed. The proper implentation should try to preserve the data
      */
-    public static final int DATABASE_VERSION = 8;
+    public static final int DATABASE_VERSION = 9;
     private static final String TAG = DbHelper.class.getCanonicalName();
 
     public DbHelper(Context context) {
