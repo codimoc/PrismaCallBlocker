@@ -1,35 +1,41 @@
 package com.prismaqf.callblocker;
 
-import android.app.ListActivity;
+import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 
 import com.prismaqf.callblocker.sql.DbHelper;
 
+
 /**
- * Abstract base class for activity showing results as list based on query to DB
+ * Fragment for editing lists bound to cursors
  * @author ConteDiMonteCristo
  */
-public abstract class ShowListActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>  {
+public abstract class EditListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     protected SimpleCursorAdapter myAdapter;
     protected SQLiteDatabase myDbConnection;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public abstract SimpleCursorAdapter getAdapter();
+    public abstract void initLoader();
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.data_bound_list_activity);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+
+        return inflater.inflate(R.layout.data_bound_list_activity,container,false);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        myDbConnection = new DbHelper(this).getReadableDatabase();
+        myDbConnection = new DbHelper(getActivity()).getWritableDatabase();
         myAdapter = getAdapter();
 
         setListAdapter(myAdapter);
@@ -50,7 +56,4 @@ public abstract class ShowListActivity extends ListActivity implements LoaderMan
     public void onLoaderReset(Loader<Cursor> loader) {
         myAdapter.swapCursor(null);
     }
-
-    public abstract SimpleCursorAdapter getAdapter();
-    public abstract void initLoader();
 }

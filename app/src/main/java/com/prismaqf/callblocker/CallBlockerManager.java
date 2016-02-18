@@ -1,5 +1,6 @@
 package com.prismaqf.callblocker;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -114,6 +115,7 @@ public class CallBlockerManager extends ActionBarActivity {
         //call stats buttons
         buttonReceived = (Button) findViewById(R.id.button_received);
         buttonTriggered = (Button) findViewById(R.id.button_triggered);
+
     }
 
     @Override
@@ -246,7 +248,7 @@ public class CallBlockerManager extends ActionBarActivity {
     }
 
     private void showCalendarRules() {
-        Intent intent = new Intent(this,ShowCalendarRules.class);
+        Intent intent = new Intent(this,EditCalendarRules.class);
         startActivity(intent);
     }
 

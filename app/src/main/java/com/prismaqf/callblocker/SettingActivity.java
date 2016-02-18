@@ -2,7 +2,6 @@ package com.prismaqf.callblocker;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 
 /**
  * The main activity for the settings

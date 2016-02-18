@@ -75,25 +75,6 @@ class CallHelper {
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING: //someone is ringing to this phone
 
-                    //start a thread to write to DC
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.i(TAG, "Recording a call received in DB");
-                            SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
-                            try {
-                                ServiceRun lastRun = ServiceRun.LatestRun(db);
-                                //todo: get rule id
-                                String contactDescription = resolveContactDescription(incomingNumber);
-                                LoggedCall.InsertRow(db,lastRun.getId(),incomingNumber,contactDescription,null);
-                                //todo: only numreceived is updated for the time being
-                                ServiceRun.UpdateWhileRunning(db,myRunId,numReceived+1,numTriggered);
-                            }
-                            finally {
-                                db.close();
-                            }
-                        }
-                    }).start();
                     //todo: only received is updated for the time being
                     setNumReceived(numReceived + 1);
                     Intent intent = new Intent();
@@ -104,6 +85,25 @@ class CallHelper {
                     intent.putExtra(ctx.getString(R.string.key_triggered),numTriggered);
                     ctx.sendBroadcast(intent);
                     Toast.makeText(ctx, "Incoming: " + incomingNumber, Toast.LENGTH_LONG).show();
+
+                    //start a thread to write to DC
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "Recording a call received in DB");
+                            SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
+                            try {
+                                //todo: get rule id
+                                String contactDescription = resolveContactDescription(incomingNumber);
+                                LoggedCall.InsertRow(db,myRunId,incomingNumber,contactDescription,null);
+                                //todo: only numreceived is updated for the time being
+                                ServiceRun.UpdateWhileRunning(db,myRunId,numReceived,numTriggered);
+                            }
+                            finally {
+                                db.close();
+                            }
+                        }
+                    }).start();
                     break;
             }
         }
@@ -167,7 +167,13 @@ class CallHelper {
             ServiceRun lastRun = ServiceRun.LatestRun(db);
             setNumReceived(lastRun.getNumReceived());
             setNumTriggered(lastRun.getNumTriggered());
-            myRunId = ServiceRun.InsertAtServiceStart(db);
+            if (lastRun.getId()==0 || lastRun.getStop() != null) {
+                //new run
+                myRunId = ServiceRun.InsertAtServiceStart(db);
+            } //otherwise the service was restarted and continue with old run
+            else {
+                myRunId = lastRun.getId();
+            }
             ServiceRun.UpdateWhileRunning(db,myRunId,-1,-1);
         }
         finally {
