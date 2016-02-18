@@ -19,6 +19,7 @@ import java.util.Locale;
 public class ServiceRun {
 
     private static final String TAG = ServiceRun.class.getCanonicalName();
+    private static final String RUNNING = "running";
 
     private final long id;
     private final int numTriggered;
@@ -46,10 +47,10 @@ public class ServiceRun {
             String sstart = c.getString(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_START));
             String sstop = c.getString(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_STOP));
             if (sstart != null) myStart = format.parse(sstart);
-            if (sstop != null) myStop = format.parse(sstop);
+            if (sstop != null && !sstop.equals(RUNNING)) myStop = format.parse(sstop);
         } catch (ParseException e) {
             Log.e(TAG, e.getMessage());
-            throw new SQLException(e.getMessage());
+            //throw new SQLException(e.getMessage());
         }
         return new ServiceRun(myId,myStart,myStop,myReceived,myTriggered);
     }
@@ -178,7 +179,7 @@ public class ServiceRun {
      */
     public static void UpdateWhileRunning(SQLiteDatabase db, long runid, int numReceived, int numTriggered) {
         ContentValues vals = new ContentValues();
-        vals.put(DbContract.ServiceRuns.COLUMN_NAME_STOP, "running");
+        vals.put(DbContract.ServiceRuns.COLUMN_NAME_STOP, RUNNING);
         if (numReceived >= 0)
             vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED, numReceived);
         if (numTriggered >=0)

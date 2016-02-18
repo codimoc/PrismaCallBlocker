@@ -81,13 +81,17 @@ class CallHelper {
                         public void run() {
                             Log.i(TAG, "Recording a call received in DB");
                             SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
-                            ServiceRun lastRun = ServiceRun.LatestRun(db);
-                            //todo: get rule id
-                            String contactDescription = resolveContactDescription(incomingNumber);
-                            LoggedCall.InsertRow(db,lastRun.getId(),incomingNumber,contactDescription,null);
-                            //todo: only numreceived is updated for the time being
-                            ServiceRun.UpdateWhileRunning(db,myRunId,numReceived+1,numTriggered);
-                            db.close();
+                            try {
+                                ServiceRun lastRun = ServiceRun.LatestRun(db);
+                                //todo: get rule id
+                                String contactDescription = resolveContactDescription(incomingNumber);
+                                LoggedCall.InsertRow(db,lastRun.getId(),incomingNumber,contactDescription,null);
+                                //todo: only numreceived is updated for the time being
+                                ServiceRun.UpdateWhileRunning(db,myRunId,numReceived+1,numTriggered);
+                            }
+                            finally {
+                                db.close();
+                            }
                         }
                     }).start();
                     //todo: only received is updated for the time being
@@ -156,15 +160,19 @@ class CallHelper {
      * Open a db connection and insert a record and set the run id
      */
     public void recordServiceStart() {
-        Log.i(TAG,"Opening a DB connection and recording service start");
+        Log.i(TAG, "Opening a DB connection and recording service start");
         SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
-        ServiceRun lastRun = ServiceRun.LatestRun(db);
-        setNumReceived(lastRun.getNumReceived());
-        setNumTriggered(lastRun.getNumTriggered());
-        myRunId = ServiceRun.InsertAtServiceStart(db);
-        ServiceRun.UpdateWhileRunning(db,myRunId,-1,-1);
-        db.close();
+        try {
 
+            ServiceRun lastRun = ServiceRun.LatestRun(db);
+            setNumReceived(lastRun.getNumReceived());
+            setNumTriggered(lastRun.getNumTriggered());
+            myRunId = ServiceRun.InsertAtServiceStart(db);
+            ServiceRun.UpdateWhileRunning(db,myRunId,-1,-1);
+        }
+        finally {
+            db.close();
+        }
     }
 
     /**
@@ -182,8 +190,12 @@ class CallHelper {
     public void recordServiceStop() {
         Log.i(TAG, "Closing the DB connection and updating the ServiceRun record");
         SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
-        ServiceRun.UpdateAtServiceStop(db, myRunId, numReceived, numTriggered);
-        db.close();
+        try {
+            ServiceRun.UpdateAtServiceStop(db, myRunId, numReceived, numTriggered);
+        }
+        finally {
+            db.close();
+        }
     }
 
 

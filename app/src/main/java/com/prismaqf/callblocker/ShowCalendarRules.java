@@ -2,7 +2,6 @@ package com.prismaqf.callblocker;
 
 import android.content.CursorLoader;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -20,6 +19,7 @@ public class ShowCalendarRules extends ShowListActivity {
 
     private final String TAG = ShowCalendarRules.class.getCanonicalName();
     private static final int URL_LOADER = 2; // Identifies a particular Loader being used in this component
+
 
     @Override
     public SimpleCursorAdapter getAdapter() {
