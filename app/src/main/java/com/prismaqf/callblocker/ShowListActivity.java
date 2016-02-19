@@ -24,20 +24,17 @@ public abstract class ShowListActivity extends ListActivity implements LoaderMan
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.data_bound_list_activity);
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
         myDbConnection = new DbHelper(this).getReadableDatabase();
         myAdapter = getAdapter();
 
         setListAdapter(myAdapter);
         initLoader();
     }
+
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroy() {
+        super.onDestroy();
         myDbConnection.close();
     }
 

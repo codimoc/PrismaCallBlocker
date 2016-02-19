@@ -4,11 +4,13 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.widget.SimpleCursorAdapter;
 
 import com.prismaqf.callblocker.sql.DbContract;
+import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.ServiceRun;
 
 /**
@@ -39,7 +41,7 @@ public class ShowServiceRuns extends ShowListActivity {
                     public Cursor loadInBackground() {
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
                         String key = getString(R.string.prefs_key_sql_limit);
-                        int limit = Integer.parseInt(prefs.getString(key,"10"));
+                        int limit = Integer.parseInt(prefs.getString(key, "10"));
                         return ServiceRun.LatestRuns(myDbConnection, limit);
                     }
                 };
