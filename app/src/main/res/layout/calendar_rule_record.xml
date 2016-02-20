@@ -14,7 +14,7 @@
             android:layout_alignParentLeft="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
-            android:text="Name: " />
+            android:text="@string/tx_calendar_rule_name" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
             android:layout_alignParentLeft="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
-            android:text="Format: " />
+            android:text="@string/tx_calendar_rule_format" />
 
         <TextView
             android:layout_width="wrap_content"

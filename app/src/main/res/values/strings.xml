@@ -40,8 +40,22 @@
     <string name="tx_from_time">From 00:00</string>
     <string name="tx_to_time">To 23:59</string>
     <string name="tx_rule_validation">Rule validation:</string>
-    <string name="tx_new_calendar_rule">New Calendar rule</string>
-    <string name="ac_edit_calendar_rule">Edit a Calendar Rule</string>
+    <string name="tx_new_calendar_rule">New calendar rule</string>
+    <string name="ac_edit_calendar_rule">Edit a calendar Rule</string>
     <string name="ky_calendar_rule_names">names</string>
+    <string name="tx_calendar_rule_name">Name:</string>
+    <string name="tx_calendar_rule_format">Format:</string>
+    <string name="tx_call_received_default">0</string>
+    <string name="tx_call_triggered_default">0</string>
+    <string name="tx_data_bound_no_data">No data</string>
+    <string name="tx_logged_call_timestamp">Timestamp:</string>
+    <string name="tx_logged_call_number">Calling number:</string>
+    <string name="tx_logged_call_description">Description:</string>
+    <string name="tx_logged_call_none">none</string>
+    <string name="tx_logged_call_rule_matched">Rule matched:</string>
+    <string name="tx_service_run_start">Start service:</string>
+    <string name="tx_service_run_stop">End service:</string>
+    <string name="tx_service_run_tot_received">Total Received:</string>
+    <string name="tx_service_run_tot_triggered">Total Triggered:</string>
 
 </resources>

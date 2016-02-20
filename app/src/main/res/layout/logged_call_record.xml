@@ -14,7 +14,7 @@
             android:layout_alignParentLeft="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
-            android:text="Timestamp: " />
+            android:text="@string/tx_logged_call_timestamp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
             android:layout_alignParentLeft="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
-            android:text="Calling number: " />
+            android:text="@string/tx_logged_call_number" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,14 +54,14 @@
             android:layout_alignParentLeft="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
-            android:text="Description: " />
+            android:text="@string/tx_logged_call_description" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="none"
+            android:text="@string/tx_logged_call_none"
             android:id="@+id/text_description" />
     </RelativeLayout>
 
@@ -75,14 +75,14 @@
             android:layout_alignParentLeft="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
-            android:text="Rule matched: " />
+            android:text="@string/tx_logged_call_rule_matched" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="none"
+            android:text="@string/tx_logged_call_none"
             android:id="@+id/text_rule_matched" />
     </RelativeLayout>
 

@@ -117,6 +117,9 @@ class CallHelper {
                 c.moveToFirst();
                 description = c.getString(0);
             }
+            if (c != null) {
+                c.close();
+            }
 
             return description;
         }
