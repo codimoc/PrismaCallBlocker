@@ -21,8 +21,8 @@ public class RebootReceiver extends BroadcastReceiver{
             SharedPreferences prefs = context.getSharedPreferences(
                     context.getString(R.string.file_shared_prefs_name),
                     Context.MODE_PRIVATE);
-            String state = prefs.getString(context.getString(R.string.shared_prefs_key_state), "not found");
-            if (state.equals(context.getString(R.string.shared_prefs_state_running))) {
+            String state = prefs.getString(context.getString(R.string.pk_state), "not found");
+            if (state.equals(context.getString(R.string.tx_state_running))) {
                 Intent serviceIntent = new Intent(context, CallDetectService.class);
                 context.startService(serviceIntent);
                 Log.i(TAG, "Starting CallDetectService after reboot completed");

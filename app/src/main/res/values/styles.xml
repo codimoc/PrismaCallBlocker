@@ -6,7 +6,7 @@
     </style>
 
     <style name="rounded">
-        <item name="android:background">@drawable/rounded_corner</item>
+        <item name="android:background">@drawable/rounded_corner_purple</item>
     </style>
 
 </resources>

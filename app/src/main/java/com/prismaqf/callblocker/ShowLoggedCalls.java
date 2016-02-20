@@ -36,7 +36,7 @@ import com.prismaqf.callblocker.sql.LoggedCall;
                     @Override
                     public Cursor loadInBackground() {
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-                        String key = getString(R.string.prefs_key_sql_limit);
+                        String key = getString(R.string.pk_sql_limit);
                         int limit = Integer.parseInt(prefs.getString(key,"10"));
                         return LoggedCall.LatestCalls(myDbConnection, limit);
                     }

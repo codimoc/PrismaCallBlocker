@@ -1,5 +1,7 @@
 package com.prismaqf.callblocker.rules;
 
+import android.os.Bundle;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
@@ -11,11 +13,57 @@ import java.util.Locale;
  */
 public class CalendarRule implements ICalendarRule{
 
-    private final EnumSet<DayOfWeek> dayMask;
-    private final int startHour;
-    private final int startMin;
-    private final int endHour;
-    private final int endMin;
+    public final static String KEY_DAY_MASK = "com.prismaqf.callblocker:daymask";
+    public final static String KEY_START_HOUR = "com.prismaqf.callblocker:starthour";
+    public final static String KEY_START_MIN = "com.prismaqf.callblocker:startmin";
+    public final static String KEY_END_HOUR = "com.prismaqf.callblocker:endhour";
+    public final static String KEY_END_MIN = "com.prismaqf.callblocker:endmin";
+
+    private EnumSet<DayOfWeek> dayMask;
+    private int startHour;
+    private int startMin;
+    private int endHour;
+    private int endMin;
+
+    public EnumSet<DayOfWeek> getDayMask() {
+        return dayMask;
+    }
+
+    public void setDayMask(EnumSet<DayOfWeek> dayMask) {
+        this.dayMask = dayMask;
+    }
+
+    public int getStartHour() {
+        return startHour;
+    }
+
+    public void setStartHour(int startHour) {
+        this.startHour = startHour;
+    }
+
+    public int getStartMin() {
+        return startMin;
+    }
+
+    public void setStartMin(int startMin) {
+        this.startMin = startMin;
+    }
+
+    public int getEndHour() {
+        return endHour;
+    }
+
+    public void setEndHour(int endHour) {
+        this.endHour = endHour;
+    }
+
+    public int getEndMin() {
+        return endMin;
+    }
+
+    public void setEndMin(int endMin) {
+        this.endMin = endMin;
+    }
 
     /**
      * A calendar rule based on a mask for the days of the week when the rule should be active
@@ -58,7 +106,17 @@ public class CalendarRule implements ICalendarRule{
         this.endMin = 59;
     }
 
-        /**
+    public static CalendarRule makeRule(Bundle extras) {
+        CalendarRule rule = new CalendarRule();
+        rule.setDayMask(makeMask(extras.getInt(KEY_DAY_MASK,0)));
+        rule.setDayMask(makeMask(extras.getInt(KEY_START_HOUR,0)));
+        rule.setDayMask(makeMask(extras.getInt(KEY_START_MIN,0)));
+        rule.setDayMask(makeMask(extras.getInt(KEY_END_HOUR,23)));
+        rule.setDayMask(makeMask(extras.getInt(KEY_END_MIN,59)));
+        return rule;
+    }
+
+    /**
          * Binary mask for day of the week
          */
     public enum DayOfWeek {
@@ -149,5 +207,17 @@ public class CalendarRule implements ICalendarRule{
         else buffer.append('-');
         buffer.append(String.format(", from %02d:%02d to %02d:%02d",startHour,startMin,endHour,endMin));
         return buffer.toString();
+    }
+
+    public static EnumSet<DayOfWeek> makeMask(int dm) {
+        EnumSet<DayOfWeek> mask = EnumSet.noneOf(DayOfWeek.class);
+        if ((dm & 1) == 1) mask.add(DayOfWeek.MONDAY);
+        if ((dm & 2) == 2) mask.add(DayOfWeek.TUESDAY);
+        if ((dm & 4) == 4) mask.add(DayOfWeek.WEDNESDAY);
+        if ((dm & 8) == 8) mask.add(DayOfWeek.THURSDAY);
+        if ((dm & 16) == 16) mask.add(DayOfWeek.FRIDAY);
+        if ((dm & 32) == 32) mask.add(DayOfWeek.SATURDAY);
+        if ((dm & 64) == 64) mask.add(DayOfWeek.SUNDAY);
+        return mask;
     }
 }

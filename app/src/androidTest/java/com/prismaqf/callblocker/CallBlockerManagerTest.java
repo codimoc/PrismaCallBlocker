@@ -44,12 +44,12 @@ public class CallBlockerManagerTest
     @Test
     public void checkThatTurningOnServiceChangesText() {
         //first is off, check not detecting labels
-        onView(withId(R.id.textDetectState)).check(matches(withText(R.string.no_detect)));
-        onView(withId(R.id.buttonDetectToggle)).check(matches(withText(R.string.turn_on)));
+        onView(withId(R.id.textDetectState)).check(matches(withText(R.string.tx_no_detect)));
+        onView(withId(R.id.buttonDetectToggle)).check(matches(withText(R.string.tx_turn_on)));
         onView(withId(R.id.buttonDetectToggle)).perform(click());
         //now check that the text has changed
-        onView(withId(R.id.textDetectState)).check(matches(withText(R.string.detect)));
-        onView(withId(R.id.buttonDetectToggle)).check(matches(withText(R.string.turn_off)));
+        onView(withId(R.id.textDetectState)).check(matches(withText(R.string.tx_detect)));
+        onView(withId(R.id.buttonDetectToggle)).check(matches(withText(R.string.tx_turn_off)));
         onView(withId(R.id.buttonDetectToggle)).perform(click()); //turn off
     }
 
@@ -73,15 +73,15 @@ public class CallBlockerManagerTest
                 myActivity.getString(R.string.file_shared_prefs_name),
                 Context.MODE_PRIVATE);
         //before running the service
-        String state = prefs.getString(myActivity.getString(R.string.shared_prefs_key_state), "not found");
+        String state = prefs.getString(myActivity.getString(R.string.pk_state), "not found");
         assertEquals("idle state", "idle", state);
         //after starting the service
         onView(withId(R.id.buttonDetectToggle)).perform(click());
-        state = prefs.getString(myActivity.getString(R.string.shared_prefs_key_state),"not found");
+        state = prefs.getString(myActivity.getString(R.string.pk_state),"not found");
         assertEquals("running state", "running", state);
         //after stopping the service
         onView(withId(R.id.buttonDetectToggle)).perform(click());
-        state = prefs.getString(myActivity.getString(R.string.shared_prefs_key_state),"not found");
+        state = prefs.getString(myActivity.getString(R.string.pk_state),"not found");
         assertEquals("idle state", "idle", state);
     }
 
@@ -89,11 +89,11 @@ public class CallBlockerManagerTest
     public void testCallsBroadcastReceiver() {
         Context ctx = mActivityRule.getActivity().getApplicationContext();
         Intent intent = new Intent();
-        intent.setAction(ctx.getString(R.string.action_call));
+        intent.setAction(ctx.getString(R.string.ac_call));
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        intent.putExtra(ctx.getString(R.string.key_number_called), "123");
-        intent.putExtra(ctx.getString(R.string.key_received),10);
-        intent.putExtra(ctx.getString(R.string.key_triggered),5);
+        intent.putExtra(ctx.getString(R.string.ky_number_called), "123");
+        intent.putExtra(ctx.getString(R.string.ky_received),10);
+        intent.putExtra(ctx.getString(R.string.ky_triggered),5);
         ctx.sendBroadcast(intent);
         SystemClock.sleep(500);
         onView(withId(R.id.button_received)).check(matches(withText("10")));

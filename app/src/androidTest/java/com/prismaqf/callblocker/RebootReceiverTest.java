@@ -27,13 +27,13 @@ public class RebootReceiverTest {
     public void before() {
         myContext = InstrumentationRegistry.getTargetContext();
         //set the service state to idle
-        setServiceState(myContext.getString(R.string.shared_prefs_state_idle));
+        setServiceState(myContext.getString(R.string.tx_state_idle));
     }
 
     @After
     public void after() {
         //reset the state to idle
-        setServiceState(myContext.getString(R.string.shared_prefs_state_idle));
+        setServiceState(myContext.getString(R.string.tx_state_idle));
     }
 
 
@@ -53,7 +53,7 @@ public class RebootReceiverTest {
     public void testRunningServiceWillStartOnBoot() {
         //before the service is idle
         assertFalse("Service idle", CallBlockerManager.isServiceRunning(myContext));
-        setServiceState(myContext.getString(R.string.shared_prefs_state_running));
+        setServiceState(myContext.getString(R.string.tx_state_running));
 
         RebootReceiver receiver = new RebootReceiver();
         Intent reboot = new Intent("android.intent.action.BOOT_COMPLETED");
@@ -67,7 +67,7 @@ public class RebootReceiverTest {
                 myContext.getString(R.string.file_shared_prefs_name),
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(myContext.getString(R.string.shared_prefs_key_state), state);
+        editor.putString(myContext.getString(R.string.pk_state), state);
         editor.apply();
     }
 

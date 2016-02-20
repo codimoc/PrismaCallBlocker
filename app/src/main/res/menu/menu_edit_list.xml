@@ -3,7 +3,7 @@
     xmlns:com.prismaqf.callblocker="http://schemas.android.com/apk/res-auto"
     android:id="@+id/menu_edit_list">
     <item android:id="@+id/action_new_item"
-        android:title="@string/menu_new_item"
+        android:title="@string/mn_new_item"
         android:icon="@drawable/ic_add_circle"
         com.prismaqf.callblocker:showAsAction="always"/>
 </menu>

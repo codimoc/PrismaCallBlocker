@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:key="@string/prefs_key_sql_limit"
-        android:title="@string/title_sql_limit"
+        android:key="@string/pk_sql_limit"
+        android:title="@string/tx_sql_limit"
         android:defaultValue="10"
         android:entries="@array/sql_limit_keys"
         android:entryValues="@array/sql_limits_vals"

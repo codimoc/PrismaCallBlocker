@@ -14,7 +14,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:text="@string/no_detect"
+        android:text="@string/tx_no_detect"
         android:textAppearance="?android:attr/textAppearanceLarge"/>
     <ToggleButton
         android:id="@+id/buttonDetectToggle"
@@ -22,8 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/textDetectState"
-        android:textOn="@string/turn_off"
-        android:textOff="@string/turn_on" />
+        android:textOn="@string/tx_turn_off"
+        android:textOff="@string/tx_turn_on" />
     <LinearLayout
         style="@style/rounded"
         android:id="@+id/stats_area"
@@ -48,7 +48,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="10dp"
                 android:layout_centerInParent="true"
-                android:text="@string/calls_received"/>
+                android:text="@string/tx_calls_received"/>
             <Button
                 android:id="@+id/button_received"
                 android:layout_width="120dp"
@@ -73,7 +73,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="10dp"
                 android:layout_centerInParent="true"
-                android:text="@string/trigger_events"/>
+                android:text="@string/tx_trigger_events"/>
             <Button
                 android:id="@+id/button_triggered"
                 android:layout_width="120dp"
@@ -95,5 +95,5 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/stats_area"
-        android:text="@string/exit"/>
+        android:text="@string/tx_exit"/>
 </RelativeLayout>

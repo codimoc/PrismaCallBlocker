@@ -78,11 +78,11 @@ class CallHelper {
                     //todo: only received is updated for the time being
                     setNumReceived(numReceived + 1);
                     Intent intent = new Intent();
-                    intent.setAction(ctx.getString(R.string.action_call));
+                    intent.setAction(ctx.getString(R.string.ac_call));
                     intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                    intent.putExtra(ctx.getString(R.string.key_number_called), incomingNumber);
-                    intent.putExtra(ctx.getString(R.string.key_received),numReceived);
-                    intent.putExtra(ctx.getString(R.string.key_triggered),numTriggered);
+                    intent.putExtra(ctx.getString(R.string.ky_number_called), incomingNumber);
+                    intent.putExtra(ctx.getString(R.string.ky_received),numReceived);
+                    intent.putExtra(ctx.getString(R.string.ky_triggered),numTriggered);
                     ctx.sendBroadcast(intent);
                     Toast.makeText(ctx, "Incoming: " + incomingNumber, Toast.LENGTH_LONG).show();
 

@@ -1,6 +1,5 @@
 package com.prismaqf.callblocker;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -61,9 +60,9 @@ public class CallBlockerManager extends ActionBarActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String number = intent.getStringExtra(context.getString(R.string.key_number_called));
-            int numReceived = intent.getIntExtra(context.getString(R.string.key_received), 0);
-            int numTriggered = intent.getIntExtra(context.getString(R.string.key_triggered), 0);
+            String number = intent.getStringExtra(context.getString(R.string.ky_number_called));
+            int numReceived = intent.getIntExtra(context.getString(R.string.ky_received), 0);
+            int numTriggered = intent.getIntExtra(context.getString(R.string.ky_triggered), 0);
             String message = String.format("Incoming: %s, Num received: %d, Num triggered: %d",
                                            number, numReceived, numTriggered);
             Log.i(TAG,message);
@@ -89,7 +88,7 @@ public class CallBlockerManager extends ActionBarActivity {
         textDetectState = (TextView) findViewById(R.id.textDetectState);
         ToggleButton buttonToggleDetect = (ToggleButton) findViewById(R.id.buttonDetectToggle);
         if (isServiceRunning(this)) {
-            textDetectState.setText(R.string.detect);
+            textDetectState.setText(R.string.tx_detect);
             buttonToggleDetect.setChecked(true);
         }
         Button buttonExit = (Button) findViewById(R.id.buttonExit);
@@ -109,7 +108,7 @@ public class CallBlockerManager extends ActionBarActivity {
 
         //call receiver
         callEventReceiver = new CallEventReceiver();
-        IntentFilter filter = new IntentFilter(getString(R.string.action_call));
+        IntentFilter filter = new IntentFilter(getString(R.string.ac_call));
         registerReceiver(callEventReceiver,filter);
 
         //call stats buttons
@@ -185,8 +184,8 @@ public class CallBlockerManager extends ActionBarActivity {
                     getString(R.string.file_shared_prefs_name),
                     Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putString(getString(R.string.shared_prefs_key_state),
-                    getString(R.string.shared_prefs_state_running));
+            editor.putString(getString(R.string.pk_state),
+                    getString(R.string.tx_state_running));
             editor.apply();
         } else {
             stopService();
@@ -196,8 +195,8 @@ public class CallBlockerManager extends ActionBarActivity {
                     getString(R.string.file_shared_prefs_name),
                     Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putString(getString(R.string.shared_prefs_key_state),
-                    getString(R.string.shared_prefs_state_idle));
+            editor.putString(getString(R.string.pk_state),
+                    getString(R.string.tx_state_idle));
             editor.apply();
         }
     }
@@ -210,7 +209,7 @@ public class CallBlockerManager extends ActionBarActivity {
         Log.i(TAG, "Stopping the service");
         Intent intent = new Intent(this, CallDetectService.class);
         stopService(intent);
-        textDetectState.setText(R.string.no_detect);
+        textDetectState.setText(R.string.tx_no_detect);
 
     }
 
@@ -218,7 +217,7 @@ public class CallBlockerManager extends ActionBarActivity {
         Log.i(TAG, "Starting the service");
         Intent intent = new Intent(this, CallDetectService.class);
         startService(intent);
-        textDetectState.setText((R.string.detect));
+        textDetectState.setText((R.string.tx_detect));
         //todo: might need to use an async task
         SQLiteDatabase db = new DbHelper(this).getReadableDatabase();
         ServiceRun last = ServiceRun.LatestRun(db);

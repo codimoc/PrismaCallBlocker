@@ -86,7 +86,7 @@ import android.util.Log;
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.police_32)
                 .setContentTitle(getText(R.string.app_name))
-                .setContentText(getText(R.string.notification));
+                .setContentText(getText(R.string.tx_notification));
         Intent resultIntent = new Intent(this, CallBlockerManager.class);
         //artificial back stack for the navigation to go back to the app
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);

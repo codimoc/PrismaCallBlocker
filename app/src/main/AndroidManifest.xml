@@ -29,19 +29,19 @@
 
         </activity>
         <activity android:name=".ShowServiceRuns"
-                  android:label="@string/show_runs">
+                  android:label="@string/ac_show_runs">
         </activity>
 
         <activity android:name=".ShowLoggedCalls"
-            android:label="@string/show_calls">
+            android:label="@string/ac_show_calls">
         </activity>
 
         <activity android:name=".EditCalendarRules"
-            android:label="@string/show_calendar_rules">
+            android:label="@string/ac_show_calendar_rules">
         </activity>
 
         <activity android:name=".SettingActivity"
-                  android:label="@string/activity_setting">
+                  android:label="@string/ac_setting">
 
         </activity>
 
