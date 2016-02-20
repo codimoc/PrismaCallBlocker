@@ -109,10 +109,10 @@ public class CalendarRule implements ICalendarRule{
     public static CalendarRule makeRule(Bundle extras) {
         CalendarRule rule = new CalendarRule();
         rule.setDayMask(makeMask(extras.getInt(KEY_DAY_MASK,0)));
-        rule.setDayMask(makeMask(extras.getInt(KEY_START_HOUR,0)));
-        rule.setDayMask(makeMask(extras.getInt(KEY_START_MIN,0)));
-        rule.setDayMask(makeMask(extras.getInt(KEY_END_HOUR,23)));
-        rule.setDayMask(makeMask(extras.getInt(KEY_END_MIN,59)));
+        rule.setStartHour(extras.getInt(KEY_START_HOUR,0));
+        rule.setStartMin(extras.getInt(KEY_START_MIN,0));
+        rule.setEndHour(extras.getInt(KEY_END_HOUR,23));
+        rule.setEndMin(extras.getInt(KEY_END_MIN,59));
         return rule;
     }
 

@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Simple class to make a rule always active
  */
-public class Allways implements ICalendarRule {
+public class Always implements ICalendarRule {
 
     @Override
     public boolean IsActive(Date currentTime) {

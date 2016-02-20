@@ -9,6 +9,7 @@ import android.util.Log;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -149,6 +150,22 @@ public class CalendarRule {
      */
     public static Cursor AllCalendarRules(SQLiteDatabase db) {
         return LatestCalendarRules(db, -1, false);
+    }
+
+    /**
+     * Return all names of the rule to prevent re-inserting a rule with a given name
+     * @param db
+     * @return a list of names
+     */
+    public static ArrayList<String> AllRuleNames(SQLiteDatabase db) {
+        Cursor c = AllCalendarRules(db);
+        ArrayList<String> names = new ArrayList<String>();
+        while (c.moveToNext()) {
+            String name = c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_RULENAME));
+            names.add(name);
+        }
+
+        return names;
     }
 
     public static void UpdateCalendarRule(SQLiteDatabase db, long ruleid, int daymask, String from, String to) {

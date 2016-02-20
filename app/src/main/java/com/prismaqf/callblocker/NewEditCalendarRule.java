@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.prismaqf.callblocker.rules.CalendarRule;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 /**
@@ -25,6 +26,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
     private CheckBox cb_Monday, cb_Tuesday, cb_Wednesday, cb_Thursday, cb_Friday, cb_Saturday, cb_Sunday;
     private EditText ed_name;
     private CalendarRule myNewRule, myOrigRule;
+    private ArrayList<String> myRuleNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
         onAllDays(null);
 
         Intent intent = getIntent();
+        myRuleNames = intent.getStringArrayListExtra(getString(R.string.ky_calendar_rule_names));
         if (intent.hasExtra(ACTION_KEY) && intent.getStringExtra(ACTION_KEY).equals(ACTION_UPDATE)) {
             myNewRule  = CalendarRule.makeRule(intent.getExtras());
             myOrigRule = CalendarRule.makeRule(intent.getExtras());

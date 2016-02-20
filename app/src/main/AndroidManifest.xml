@@ -45,6 +45,11 @@
 
         </activity>
 
+        <activity android:name=".NewEditCalendarRule"
+            android:label="@string/ac_edit_calendar_rule">
+
+        </activity>
+
         <service
             android:name=".CallDetectService"
             android:enabled="true"

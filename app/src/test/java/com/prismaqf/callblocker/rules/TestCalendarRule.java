@@ -1,8 +1,14 @@
 package com.prismaqf.callblocker.rules;
 
 
-import org.junit.Test;
+import android.os.BaseBundle;
+import android.os.Bundle;
 
+
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import static org.mockito.Mockito.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
@@ -76,5 +82,31 @@ public class TestCalendarRule {
         cal.set(Calendar.HOUR_OF_DAY,23);
         cal.set(Calendar.MINUTE, 59);
         assertFalse("Saturday 23:59 is not fine", rule.IsActive(cal.getTime()));
+    }
+
+    @Test
+    public void testIntMaskToEnumSet() {
+        int mask = 86; //should be -TW-F-S
+        EnumSet<CalendarRule.DayOfWeek> set = CalendarRule.makeMask(mask);
+        assertFalse("Monday is not in set", set.contains(CalendarRule.DayOfWeek.MONDAY));
+        assertTrue("Tuesday is in set", set.contains(CalendarRule.DayOfWeek.TUESDAY));
+        assertTrue("Wednesday is in set", set.contains(CalendarRule.DayOfWeek.WEDNESDAY));
+        assertFalse("Thursday is not in set", set.contains(CalendarRule.DayOfWeek.THURSDAY));
+        assertTrue("Friday is in set", set.contains(CalendarRule.DayOfWeek.FRIDAY));
+        assertFalse("Saturday is not in set", set.contains(CalendarRule.DayOfWeek.SATURDAY));
+        assertTrue("Sunday is in set", set.contains(CalendarRule.DayOfWeek.SUNDAY));
+    }
+
+    @Test
+    public void testMakeRuleFromBundle() {
+        Bundle b = Mockito.mock(Bundle.class);
+        when(b.getInt(CalendarRule.KEY_DAY_MASK,0)).thenReturn(86);
+        when(b.getInt(CalendarRule.KEY_START_HOUR,0)).thenReturn(5);
+        when(b.getInt(CalendarRule.KEY_START_MIN,0)).thenReturn(25);
+        when(b.getInt(CalendarRule.KEY_END_HOUR,23)).thenReturn(21);
+        when(b.getInt(CalendarRule.KEY_END_MIN,59)).thenReturn(7);
+
+        CalendarRule rule = CalendarRule.makeRule(b);
+        assertEquals("Rule summary","Days=-TW-F-S, from 05:25 to 21:07",rule.toString());
     }
 }

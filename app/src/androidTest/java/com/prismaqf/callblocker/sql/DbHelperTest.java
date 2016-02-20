@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.*;
@@ -159,13 +160,23 @@ public class DbHelperTest {
     @Test
     public void UpdateCalendarRule() {
         long id =  CalendarRule.InsertRow(myDb,"first",9,"05:45","21:12");
-        CalendarRule.UpdateCalendarRule(myDb,id,9,"06:05","21:12");
+        CalendarRule.UpdateCalendarRule(myDb, id, 9, "06:05", "21:12");
         Cursor c = CalendarRule.AllCalendarRules(myDb);
-        assertEquals("There should be one record1",1,c.getCount());
+        assertEquals("There should be one record1", 1, c.getCount());
         c.moveToFirst();
         assertEquals("Name of first", "first", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_RULENAME)));
         assertEquals("Mask of first",9,c.getInt(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_DAYMASK)));
         assertEquals("From of first", "06:05", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_FROM)));
         assertEquals("To of first", "21:12", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_TO)));
+    }
+
+    @Test
+    public void TestAllNames() {
+        CalendarRule.InsertRow(myDb,"first",9,"05:45","21:12");
+        CalendarRule.InsertRow(myDb, "second", 96, null, null);
+        List<String> names = CalendarRule.AllRuleNames(myDb);
+        assertEquals("Two names found",2,names.size());
+        assertTrue("Name first found", names.contains("first"));
+        assertTrue("Name second found",names.contains("second"));
     }
 }
