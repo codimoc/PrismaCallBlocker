@@ -57,5 +57,8 @@
     <string name="tx_service_run_stop">End service:</string>
     <string name="tx_service_run_tot_received">Total Received:</string>
     <string name="tx_service_run_tot_triggered">Total Triggered:</string>
+    <string name="mn_save_rule">Save Rule</string>
+    <string name="mn_delete_rule">Delete rule</string>
+    <string name="mn_change_rule">Change a rule</string>
 
 </resources>

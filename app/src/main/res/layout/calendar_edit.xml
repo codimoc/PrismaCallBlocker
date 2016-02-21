@@ -1,190 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-
-    <LinearLayout
-        android:orientation="horizontal"
+    android:layout_height="fill_parent"
+    android:id="@+id/scrollView"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0.1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/tx_rule_name"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:singleLine="false"
+                android:gravity="center_vertical" />
+
+            <EditText
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:id="@+id/edit_calendar_rule_name"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="right"
+                android:layout_weight="2"
+                android:inputType="text" />
+        </LinearLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:columnCount="3"
+            android:rowCount="3"
+            android:background="@drawable/rounded_corner_yellow"
+            android:id="@+id/grid_day_mask"
+            android:layout_weight="0.3">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tx_Monday"
+                android:id="@+id/cb_Monday"
+                android:layout_column="0"
+                android:layout_row="0" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tx_Tuesday"
+                android:id="@+id/cb_Tuesday"
+                android:layout_column="0"
+                android:layout_row="1" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tx_Wednesday"
+                android:id="@+id/cb_Wednesday"
+                android:layout_column="0"
+                android:layout_row="2" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tx_Thursday"
+                android:id="@+id/cb_Thursday"
+                android:layout_column="1"
+                android:layout_row="0" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tx_Friday"
+                android:id="@+id/cb_Friday"
+                android:layout_column="1"
+                android:layout_row="1" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tx_Saturday"
+                android:id="@+id/cb_Saturday"
+                android:layout_column="2"
+                android:layout_row="0" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tx_Sunday"
+                android:id="@+id/cb_Sunday"
+                android:layout_column="2"
+                android:layout_row="1" />
+        </GridLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0.1">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/tx_all_days"
+                android:textAllCaps="false"
+                android:id="@+id/bt_all_days"
+                android:layout_marginLeft="4dp"
+                android:onClick="onAllDays"
+                android:layout_marginRight="1dp"
+                android:layout_weight="1"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/tx_no_days"
+                android:textAllCaps="false"
+                android:id="@+id/bt_no_days"
+                android:layout_marginLeft="1dp"
+                android:onClick="onNoDays"
+                android:layout_marginRight="1dp"
+                android:layout_weight="1"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/tx_work_days"
+                android:textAllCaps="false"
+                android:id="@+id/bt_working_days"
+                android:layout_marginLeft="1dp"
+                android:onClick="onWorkingDays"
+                android:layout_marginRight="1dp"
+                android:layout_weight="1"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/tx_week_end"
+                android:textAllCaps="false"
+                android:id="@+id/bt_week_end"
+                android:layout_marginLeft="1dp"
+                android:onClick="onWeekEnd"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0.1">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/tx_from_time"
+                android:id="@+id/bt_from_time"
+                android:textAllCaps="false"
+                android:layout_marginLeft="4dp"
+                android:layout_weight="1"
+                android:onClick="onFromTime"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/tx_to_time"
+                android:id="@+id/bt_to_time"
+                android:textAllCaps="false"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1"
+                android:onClick="onToTime"/>
+        </LinearLayout>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/tx_rule_name"
+            android:id ="@+id/tx_calendar_rule_validation"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:background="@drawable/rounded_corner_purple"
+            android:text="@string/tx_rule_validation"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:layout_marginLeft="10dp"
-            android:layout_gravity="left"
-            android:layout_weight="1"
-            android:singleLine="false"
-            android:gravity="center_vertical" />
-
-        <EditText
-            android:layout_width="200dp"
-            android:layout_height="match_parent"
-            android:id="@+id/edit_calendar_rule_name"
             android:layout_marginRight="10dp"
-            android:layout_gravity="right"
-            android:layout_weight="2"
-            android:inputType="text" />
+            android:layout_gravity="left"
+            android:layout_weight="0.4"/>
+
     </LinearLayout>
-
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="10dp"
-        android:columnCount="3"
-        android:rowCount="3"
-        android:background="@drawable/rounded_corner_yellow"
-        android:id="@+id/grid_day_mask">
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tx_Monday"
-            android:id="@+id/cb_Monday"
-            android:layout_column="0"
-            android:layout_row="0" />
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tx_Tuesday"
-            android:id="@+id/cb_Tuesday"
-            android:layout_column="0"
-            android:layout_row="1" />
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tx_Wednesday"
-            android:id="@+id/cb_Wednesday"
-            android:layout_column="0"
-            android:layout_row="2" />
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tx_Thursday"
-            android:id="@+id/cb_Thursday"
-            android:layout_column="1"
-            android:layout_row="0" />
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tx_Friday"
-            android:id="@+id/cb_Friday"
-            android:layout_column="1"
-            android:layout_row="1" />
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tx_Saturday"
-            android:id="@+id/cb_Saturday"
-            android:layout_column="2"
-            android:layout_row="0" />
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tx_Sunday"
-            android:id="@+id/cb_Sunday"
-            android:layout_column="2"
-            android:layout_row="1" />
-    </GridLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/tx_all_days"
-            android:textAllCaps="false"
-            android:id="@+id/bt_all_days"
-            android:layout_marginLeft="4dp"
-            android:onClick="onAllDays"
-            android:layout_marginRight="1dp"
-            android:layout_weight="1"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/tx_no_days"
-            android:textAllCaps="false"
-            android:id="@+id/bt_no_days"
-            android:layout_marginLeft="1dp"
-            android:onClick="onNoDays"
-            android:layout_marginRight="1dp"
-            android:layout_weight="1"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/tx_work_days"
-            android:textAllCaps="false"
-            android:id="@+id/bt_working_days"
-            android:layout_marginLeft="1dp"
-            android:onClick="onWorkingDays"
-            android:layout_marginRight="1dp"
-            android:layout_weight="1"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/tx_week_end"
-            android:textAllCaps="false"
-            android:id="@+id/bt_week_end"
-            android:layout_marginLeft="1dp"
-            android:onClick="onWeekEnd"
-            android:layout_marginRight="4dp"
-            android:layout_weight="1"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/tx_from_time"
-            android:id="@+id/bt_from_time"
-            android:textAllCaps="false"
-            android:layout_marginLeft="4dp"
-            android:layout_weight="1"
-            android:onClick="onFromTime"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/tx_to_time"
-            android:id="@+id/bt_to_time"
-            android:textAllCaps="false"
-            android:layout_marginRight="4dp"
-            android:layout_weight="1"
-            android:onClick="onToTime"/>
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:background="@drawable/rounded_corner_purple"
-        android:text="@string/tx_rule_validation"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_gravity="left"
-        android:layout_weight="1" />
-
-</LinearLayout>
+</ScrollView>

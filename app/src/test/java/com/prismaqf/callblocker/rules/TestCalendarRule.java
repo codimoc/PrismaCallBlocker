@@ -24,13 +24,13 @@ public class TestCalendarRule {
     @Test
     public void DefaultConstructorTest() {
         CalendarRule rule = new CalendarRule();
-        assertEquals("String representation","Days=MTWTFSS, from 00:00 to 23:59",rule.toString());
+        assertEquals("String representation","Name=always, Days=MTWTFSS, from 00:00 to 23:59",rule.toString());
         assertTrue("Any time is satisfied",rule.IsActive());
     }
 
     @Test
     public void OnGivenDays() {
-        CalendarRule rule = new CalendarRule(EnumSet.of(CalendarRule.DayOfWeek.MONDAY,
+        CalendarRule rule = new CalendarRule("first", EnumSet.of(CalendarRule.DayOfWeek.MONDAY,
                                                         CalendarRule.DayOfWeek.THURSDAY));
         //On Monday
         Calendar cal = Calendar.getInstance(Locale.getDefault());
@@ -41,12 +41,12 @@ public class TestCalendarRule {
         cal.add(Calendar.DAY_OF_YEAR,1);
         currentTime = cal.getTime();
         assertFalse("Tuesday is not ok", rule.IsActive(currentTime));
-        assertEquals("String representation", "Days=M--T---, from 00:00 to 23:59", rule.toString());
+        assertEquals("String representation", "Name=first, Days=M--T---, from 00:00 to 23:59", rule.toString());
     }
 
     @Test
     public void OnGiveDayGivenTime() {
-        CalendarRule rule = new CalendarRule(EnumSet.of(CalendarRule.DayOfWeek.SATURDAY),12,35,16,45);
+        CalendarRule rule = new CalendarRule("first",EnumSet.of(CalendarRule.DayOfWeek.SATURDAY),12,35,16,45);
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
         cal.set(Calendar.HOUR_OF_DAY,15);
@@ -100,6 +100,7 @@ public class TestCalendarRule {
     @Test
     public void testMakeRuleFromBundle() {
         Bundle b = Mockito.mock(Bundle.class);
+        when(b.getString(CalendarRule.KEY_NAME)).thenReturn("dummy");
         when(b.getInt(CalendarRule.KEY_DAY_MASK,0)).thenReturn(86);
         when(b.getInt(CalendarRule.KEY_START_HOUR,0)).thenReturn(5);
         when(b.getInt(CalendarRule.KEY_START_MIN,0)).thenReturn(25);
@@ -107,6 +108,6 @@ public class TestCalendarRule {
         when(b.getInt(CalendarRule.KEY_END_MIN,59)).thenReturn(7);
 
         CalendarRule rule = CalendarRule.makeRule(b);
-        assertEquals("Rule summary","Days=-TW-F-S, from 05:25 to 21:07",rule.toString());
+        assertEquals("Rule summary","Name=dummy, Days=-TW-F-S, from 05:25 to 21:07",rule.toString());
     }
 }

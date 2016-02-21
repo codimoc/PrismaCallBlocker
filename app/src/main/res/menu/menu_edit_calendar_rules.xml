@@ -3,5 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:com.prismaqf.callblocker="http://schemas.android.com/apk/res-auto"
     tools:context="com.prismaqf.callblocker.EditCalendarRules">
-
+    <item android:id="@+id/action_save_rule"
+        android:title="@string/mn_save_rule"
+        android:icon="@drawable/ic_save_circle"
+        android:orderInCategory="10"
+        com.prismaqf.callblocker:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_delete_rule"
+        android:title="@string/mn_delete_rule"
+        android:icon="@drawable/ic_minus_circle"
+        android:orderInCategory="20"
+        com.prismaqf.callblocker:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_change_rule"
+        android:title="@string/mn_change_rule"
+        android:icon="@drawable/ic_change_circle"
+        android:orderInCategory="30"
+        com.prismaqf.callblocker:showAsAction="ifRoom"/>
 </menu>

@@ -13,17 +13,27 @@ import java.util.Locale;
  */
 public class CalendarRule implements ICalendarRule{
 
+    public final static String KEY_NAME = "com.prismaqf.callblocker:name";
     public final static String KEY_DAY_MASK = "com.prismaqf.callblocker:daymask";
     public final static String KEY_START_HOUR = "com.prismaqf.callblocker:starthour";
     public final static String KEY_START_MIN = "com.prismaqf.callblocker:startmin";
     public final static String KEY_END_HOUR = "com.prismaqf.callblocker:endhour";
     public final static String KEY_END_MIN = "com.prismaqf.callblocker:endmin";
 
+    private String name;
     private EnumSet<DayOfWeek> dayMask;
     private int startHour;
     private int startMin;
     private int endHour;
     private int endMin;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public EnumSet<DayOfWeek> getDayMask() {
         return dayMask;
@@ -65,16 +75,22 @@ public class CalendarRule implements ICalendarRule{
         this.endMin = endMin;
     }
 
+    public String getStartTime() { return String.format("From %02d:%02d",startHour, startMin);}
+
+    public String getEndTime() { return String.format("To %02d:%02d",endHour, endMin);}
+
     /**
      * A calendar rule based on a mask for the days of the week when the rule should be active
      * and a start stop time given in hour,minute
+     * @param name the rule name
      * @param dayMask a set of days of the week for which this rule applies
      * @param startHour the starting hour [0-23]
      * @param startMin the starting minute [0-59]
      * @param endHour the ending hour [0-23]
      * @param endMin the ending minute [0-59]
      */
-    public CalendarRule(EnumSet<DayOfWeek> dayMask, int startHour, int startMin, int endHour, int endMin) {
+    public CalendarRule(String name, EnumSet<DayOfWeek> dayMask, int startHour, int startMin, int endHour, int endMin) {
+        this.name = name;
         this.dayMask = dayMask;
         this.startHour = startHour;
         this.startMin = startMin;
@@ -85,9 +101,11 @@ public class CalendarRule implements ICalendarRule{
     /**
      A calendar rule based on a mask for the days of the week when the rule should be active
      * with no filtering on start and stop time
+     * @param name the rule name
      * @param dayMask a set of days of the week for which this rule applies
      */
-    public CalendarRule(EnumSet<DayOfWeek> dayMask) {
+    public CalendarRule(String name, EnumSet<DayOfWeek> dayMask) {
+        this.name = name;
         this.dayMask = dayMask;
         this.startHour = 0;
         this.startMin = 0;
@@ -99,6 +117,7 @@ public class CalendarRule implements ICalendarRule{
      A Default calendar rule: no filtering
      */
     public CalendarRule() {
+        name = "always";
         dayMask = EnumSet.allOf(DayOfWeek.class);
         this.startHour = 0;
         this.startMin = 0;
@@ -108,6 +127,7 @@ public class CalendarRule implements ICalendarRule{
 
     public static CalendarRule makeRule(Bundle extras) {
         CalendarRule rule = new CalendarRule();
+        rule.setName(extras.getString(KEY_NAME));
         rule.setDayMask(makeMask(extras.getInt(KEY_DAY_MASK,0)));
         rule.setStartHour(extras.getInt(KEY_START_HOUR,0));
         rule.setStartMin(extras.getInt(KEY_START_MIN,0));
@@ -190,7 +210,9 @@ public class CalendarRule implements ICalendarRule{
 
     @Override
     public String toString() {
-        StringBuilder buffer = new StringBuilder("Days=");
+        StringBuilder buffer = new StringBuilder("Name=");
+        buffer.append(name);
+        buffer.append(", Days=");
         if (dayMask.contains(DayOfWeek.MONDAY)) buffer.append('M');
         else buffer.append('-');
         if (dayMask.contains(DayOfWeek.TUESDAY)) buffer.append('T');
