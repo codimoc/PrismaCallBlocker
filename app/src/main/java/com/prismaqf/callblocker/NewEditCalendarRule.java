@@ -3,6 +3,8 @@ package com.prismaqf.callblocker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +24,36 @@ import java.util.EnumSet;
  */
 public class NewEditCalendarRule extends ActionBarActivity {
 
+    private abstract class RuleNameValidator implements TextWatcher {
+
+        private final TextView mySource, myTarget;
+        private final ArrayList<String> myUsedNames;
+
+        public RuleNameValidator(TextView source, TextView target, ArrayList<String> names) {
+            mySource = source;
+            myTarget = target;
+            myUsedNames = names;
+        }
+
+        public abstract void validate(TextView source, TextView target,  ArrayList<String> names, String text);
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            String text = mySource.getText().toString();
+            validate(mySource, myTarget, myUsedNames, text);
+        }
+    }
+
     private static final String TAG = NewEditCalendarRule.class.getCanonicalName();
     public static final String ACTION_KEY  = "com.prismaqft.callblocker:key";
     public static final String ACTION_CREATE  = "com.prismaqf.callblocker:create";
@@ -33,6 +65,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
     private Button bn_from, bn_to;
     private CalendarRule myNewRule, myOrigRule;
     private ArrayList<String> myRuleNames;
+    private String myAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +80,16 @@ public class NewEditCalendarRule extends ActionBarActivity {
         cb_Saturday = (CheckBox) findViewById(R.id.cb_Saturday);
         cb_Sunday = (CheckBox) findViewById(R.id.cb_Sunday);
         ed_name = (EditText) findViewById(R.id.edit_calendar_rule_name);
+        ed_name.clearFocus();
         bn_from = (Button) findViewById(R.id.bt_from_time);
         bn_to = (Button) findViewById(R.id.bt_to_time);
         tx_validation = (TextView)findViewById(R.id.tx_calendar_rule_validation);
 
+
         Intent intent = getIntent();
         myRuleNames = intent.getStringArrayListExtra(getString(R.string.ky_calendar_rule_names));
+
+
         if (intent.hasExtra(ACTION_KEY) && intent.getStringExtra(ACTION_KEY).equals(ACTION_UPDATE)) {
             myNewRule  = CalendarRule.makeRule(intent.getExtras());
             myOrigRule = CalendarRule.makeRule(intent.getExtras());
@@ -71,7 +108,26 @@ public class NewEditCalendarRule extends ActionBarActivity {
         mi_save = menu.findItem(R.id.action_save_rule);
         mi_delete = menu.findItem(R.id.action_delete_rule);
         mi_change = menu.findItem(R.id.action_change_rule);
-        validateActions();
+
+        //add text validation
+        ed_name.addTextChangedListener(new RuleNameValidator(ed_name,tx_validation, myRuleNames) {
+            @Override
+            public void validate(TextView source, TextView target, ArrayList<String> names, String text) {
+                if (source.getText().toString().equals("")) {
+                    target.setText(R.string.tx_validation_rule_name_empty);
+                    mi_save.setVisible(false);
+                    return;
+                }
+                if (names.contains(source.getText().toString())) {
+                    target.setText(R.string.tx_validation_rule_name_used);
+                    mi_save.setVisible(false);
+                    return;
+                }
+                mi_save.setVisible(true);
+                target.setText(R.string.tx_validation_rule_valid);
+                myNewRule.setName(text);
+            }
+        });
         return true;
     }
 
@@ -126,14 +182,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
         bn_to.setText(myNewRule.getEndTime());
     }
 
-    private void validateActions() {
-        if (myNewRule.getName().isEmpty()) {
-            tx_validation.setText("Rule name can not be empty.\nNo saving allowed");
-            mi_save.setVisible(false);
-        }
-        if (myRuleNames.contains(myNewRule.getName())) {
-            tx_validation.setText("Rule name Already used.\nNo saving allowed");
-            mi_save.setVisible(false);
-        }
+    public String getMyAction() {
+        return myAction;
     }
 }

@@ -19,7 +19,7 @@
     <string name="db_file_name">pcb.db</string>
     <string name="ac_show_runs">Show latest service runs</string>
     <string name="ac_show_calls">Show latest call received</string>
-    <string name="ac_show_calendar_rules">Show Calendar rules</string>
+    <string name="ac_show_calendar_rules">Show calendar rules</string>
     <string name="tx_sql_limit">Max sixe of DB query</string>
     <string name="ac_setting">Settings</string>
     <string name="pk_sql_limit">sql_query_limit</string>
@@ -60,5 +60,8 @@
     <string name="mn_save_rule">Save Rule</string>
     <string name="mn_delete_rule">Delete rule</string>
     <string name="mn_change_rule">Change a rule</string>
+    <string name="tx_validation_rule_name_empty">Rule name can not be empty.\nNo saving allowed</string>
+    <string name="tx_validation_rule_name_used">Rule name already used.\nNo saving allowed</string>
+    <string name="tx_validation_rule_valid">The rule is valid.\nSaving allowed</string>
 
 </resources>
