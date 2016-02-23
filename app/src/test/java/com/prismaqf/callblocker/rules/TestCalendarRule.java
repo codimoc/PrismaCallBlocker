@@ -108,6 +108,33 @@ public class TestCalendarRule {
         when(b.getInt(CalendarRule.KEY_END_MIN,59)).thenReturn(7);
 
         CalendarRule rule = CalendarRule.makeRule(b);
-        assertEquals("Rule summary","Name=dummy, Days=-TW-F-S, from 05:25 to 21:07",rule.toString());
+        assertEquals("Rule summary", "Name=dummy, Days=-TW-F-S, from 05:25 to 21:07", rule.toString());
+    }
+
+    @Test
+    public void testEquality() throws CloneNotSupportedException {
+        CalendarRule c1 = new CalendarRule("first",EnumSet.of(CalendarRule.DayOfWeek.MONDAY,CalendarRule.DayOfWeek.FRIDAY),2,15,10,7);
+        CalendarRule c2 = (CalendarRule)c1.clone();
+        assertEquals("The rules are equal",c1,c2);
+        assertEquals("Same hash code",c1.hashCode(),c2.hashCode());
+        c2.setName("second");
+        assertNotEquals("Changed the name", c1, c2);
+        assertNotEquals("Different hash code", c1.hashCode(), c2.hashCode());
+        c2 = (CalendarRule)c1.clone();
+        c2.getDayMask().add(CalendarRule.DayOfWeek.WEDNESDAY);
+        assertNotEquals("Changed day mask", c1, c2);
+        c2 = (CalendarRule)c1.clone();
+        c2.setStartHour(3);
+        assertNotEquals("Changed start hour", c1, c2);
+        c2 = (CalendarRule)c1.clone();
+        c2.setStartMin(16);
+        assertNotEquals("Changed start min", c1, c2);
+        c2 = (CalendarRule)c1.clone();
+        c2.setEndHour(11);
+        assertNotEquals("Changed end hour", c1, c2);
+        c2 = (CalendarRule)c1.clone();
+        c2.setEndMin(31);
+        assertNotEquals("Changed end min", c1, c2);
+
     }
 }

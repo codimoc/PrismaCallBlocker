@@ -24,7 +24,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.containsString;
 
 @RunWith(AndroidJUnit4.class)
-public class NewEditCalendarRuleTest {
+public class NewCalendarRuleTest {
 
     @Rule
     public final ActivityTestRule<EditCalendarRules> myActivityRule = new ActivityTestRule(EditCalendarRules.class);
@@ -88,4 +88,26 @@ public class NewEditCalendarRuleTest {
         onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(new ReplaceTextAction("a"));
         onView(ViewMatchers.withId(R.id.action_save_rule)).check(matches(isDisplayed()));
     }
+
+    @Test
+    public void TestDeleteActionMissingOnCreate(){
+        Context ctx = myActivityRule.getActivity();
+        Intent intent = new Intent(ctx, NewEditCalendarRule.class);
+        intent.putExtra(NewEditCalendarRule.ACTION_KEY, NewEditCalendarRule.ACTION_CREATE);
+        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+        ctx.startActivity(intent);
+        onView(ViewMatchers.withId(R.id.action_delete_rule)).check(doesNotExist());
+    }
+
+    @Test
+    public void TestChangeActionMissingOnCreate(){
+        Context ctx = myActivityRule.getActivity();
+        Intent intent = new Intent(ctx, NewEditCalendarRule.class);
+        intent.putExtra(NewEditCalendarRule.ACTION_KEY, NewEditCalendarRule.ACTION_CREATE);
+        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+        ctx.startActivity(intent);
+        onView(ViewMatchers.withId(R.id.action_change_rule)).check(doesNotExist());
+    }
+
+
 }

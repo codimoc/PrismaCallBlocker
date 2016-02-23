@@ -93,10 +93,12 @@ public class NewEditCalendarRule extends ActionBarActivity {
         if (intent.hasExtra(ACTION_KEY) && intent.getStringExtra(ACTION_KEY).equals(ACTION_UPDATE)) {
             myNewRule  = CalendarRule.makeRule(intent.getExtras());
             myOrigRule = CalendarRule.makeRule(intent.getExtras());
+            myAction = ACTION_UPDATE;
 
         } else {
             myNewRule = new CalendarRule(); //always active by default (all days of week and full day)
             myOrigRule = new CalendarRule();
+            myAction = ACTION_CREATE;
         }
         refreshWidgets();
     }
@@ -108,6 +110,13 @@ public class NewEditCalendarRule extends ActionBarActivity {
         mi_save = menu.findItem(R.id.action_save_rule);
         mi_delete = menu.findItem(R.id.action_delete_rule);
         mi_change = menu.findItem(R.id.action_change_rule);
+        if (myAction.equals(ACTION_CREATE)) {
+            mi_delete.setVisible(false);
+            mi_change.setVisible(false);
+        }
+        else {
+            mi_save.setVisible(false);
+        }
 
         //add text validation
         ed_name.addTextChangedListener(new RuleNameValidator(ed_name,tx_validation, myRuleNames) {

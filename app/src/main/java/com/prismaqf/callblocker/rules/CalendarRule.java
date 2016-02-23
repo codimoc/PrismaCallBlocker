@@ -11,7 +11,7 @@ import java.util.Locale;
  * Custom calendar rule, with days of week and start stop times
  * @author ConteDiMonteCristo.
  */
-public class CalendarRule implements ICalendarRule{
+public class CalendarRule implements ICalendarRule, Cloneable{
 
     public final static String KEY_NAME = "com.prismaqf.callblocker:name";
     public final static String KEY_DAY_MASK = "com.prismaqf.callblocker:daymask";
@@ -241,5 +241,38 @@ public class CalendarRule implements ICalendarRule{
         if ((dm & 32) == 32) mask.add(DayOfWeek.SATURDAY);
         if ((dm & 64) == 64) mask.add(DayOfWeek.SUNDAY);
         return mask;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof CalendarRule)) return false;
+        CalendarRule other = (CalendarRule)o;
+        return  name.equals(other.name) &&
+                dayMask.equals(other.dayMask) &&
+                startHour == other.startHour &&
+                startMin == other.startMin &&
+                endHour == other.endHour &&
+                endMin == other.endMin;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + name.hashCode();
+        result = prime * result + dayMask.hashCode();
+        result = prime * result + startHour;
+        result = prime * result + startMin;
+        result = prime * result + endHour;
+        result = prime * result + endMin;
+        return result;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        CalendarRule other = (CalendarRule) super.clone();
+        other.setDayMask(EnumSet.copyOf(getDayMask()));
+        return other;
     }
 }
