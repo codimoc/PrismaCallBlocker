@@ -58,49 +58,56 @@
                 android:text="@string/tx_Monday"
                 android:id="@+id/cb_Monday"
                 android:layout_column="0"
-                android:layout_row="0" />
+                android:layout_row="0"
+                android:onClick="onCheckDay"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tx_Tuesday"
                 android:id="@+id/cb_Tuesday"
                 android:layout_column="0"
-                android:layout_row="1" />
+                android:layout_row="1"
+                android:onClick="onCheckDay"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tx_Wednesday"
                 android:id="@+id/cb_Wednesday"
                 android:layout_column="0"
-                android:layout_row="2" />
+                android:layout_row="2"
+                android:onClick="onCheckDay"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tx_Thursday"
                 android:id="@+id/cb_Thursday"
                 android:layout_column="1"
-                android:layout_row="0" />
+                android:layout_row="0"
+                android:onClick="onCheckDay"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tx_Friday"
                 android:id="@+id/cb_Friday"
                 android:layout_column="1"
-                android:layout_row="1" />
+                android:layout_row="1"
+                android:onClick="onCheckDay"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tx_Saturday"
                 android:id="@+id/cb_Saturday"
                 android:layout_column="2"
-                android:layout_row="0" />
+                android:layout_row="0"
+                android:onClick="onCheckDay"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tx_Sunday"
                 android:id="@+id/cb_Sunday"
                 android:layout_column="2"
-                android:layout_row="1" />
+                android:layout_row="1"
+                android:onClick="onCheckDay"/>
         </GridLayout>
 
         <LinearLayout

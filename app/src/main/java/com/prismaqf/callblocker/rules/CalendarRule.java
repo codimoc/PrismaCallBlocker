@@ -1,6 +1,8 @@
 package com.prismaqf.callblocker.rules;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -11,7 +13,7 @@ import java.util.Locale;
  * Custom calendar rule, with days of week and start stop times
  * @author ConteDiMonteCristo.
  */
-public class CalendarRule implements ICalendarRule, Cloneable{
+public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
 
     public final static String KEY_NAME = "com.prismaqf.callblocker:name";
     public final static String KEY_DAY_MASK = "com.prismaqf.callblocker:daymask";
@@ -125,6 +127,15 @@ public class CalendarRule implements ICalendarRule, Cloneable{
         this.endMin = 59;
     }
 
+    private CalendarRule(Parcel in) {
+        name = in.readString();
+        dayMask = (EnumSet<DayOfWeek>)in.readSerializable();
+        startHour = in.readInt();
+        startMin = in.readInt();
+        endHour = in.readInt();
+        endMin = in.readInt();
+    }
+
     public static CalendarRule makeRule(Bundle extras) {
         CalendarRule rule = new CalendarRule();
         rule.setName(extras.getString(KEY_NAME));
@@ -135,6 +146,33 @@ public class CalendarRule implements ICalendarRule, Cloneable{
         rule.setEndMin(extras.getInt(KEY_END_MIN,59));
         return rule;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeSerializable(dayMask);
+        dest.writeInt(startHour);
+        dest.writeInt(startMin);
+        dest.writeInt(endHour);
+        dest.writeInt(endMin);
+    }
+
+    public static final Parcelable.Creator<CalendarRule> CREATOR
+            = new Parcelable.Creator<CalendarRule>() {
+        public CalendarRule createFromParcel(Parcel in) {
+            return new CalendarRule(in);
+        }
+
+        public CalendarRule[] newArray(int size) {
+            return new CalendarRule[size];
+        }
+    };
+
 
     /**
          * Binary mask for day of the week
@@ -270,7 +308,7 @@ public class CalendarRule implements ICalendarRule, Cloneable{
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         CalendarRule other = (CalendarRule) super.clone();
         other.setDayMask(EnumSet.copyOf(getDayMask()));
         return other;

@@ -1,9 +1,6 @@
 package com.prismaqf.callblocker.rules;
 
-
-import android.os.BaseBundle;
 import android.os.Bundle;
-
 
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -135,6 +132,21 @@ public class TestCalendarRule {
         c2 = (CalendarRule)c1.clone();
         c2.setEndMin(31);
         assertNotEquals("Changed end min", c1, c2);
-
     }
+
+    @Test
+    public void TestIdentiy() throws CloneNotSupportedException {
+        CalendarRule c1 = new CalendarRule("first",EnumSet.of(CalendarRule.DayOfWeek.MONDAY,CalendarRule.DayOfWeek.FRIDAY),2,15,10,7);
+        CalendarRule c2 = (CalendarRule)c1.clone();
+        assertFalse("Identity is not equality",c2==c1);
+        CalendarRule c3 = c1; //alias
+        assertTrue("Aliasing", c3 == c1);
+    }
+
+    @Test
+    public void TestEqualityVsNull() {
+        CalendarRule c1 = new CalendarRule("first",EnumSet.of(CalendarRule.DayOfWeek.MONDAY,CalendarRule.DayOfWeek.FRIDAY),2,15,10,7);
+        assertNotEquals("Null is not equal to any object", c1, null);
+    }
+
 }

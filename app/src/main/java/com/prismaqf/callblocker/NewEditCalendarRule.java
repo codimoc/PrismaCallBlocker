@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import java.util.EnumSet;
  * @author ConteDiMonteCristo
  */
 public class NewEditCalendarRule extends ActionBarActivity {
+
 
     private abstract class RuleNameValidator implements TextWatcher {
 
@@ -56,6 +58,11 @@ public class NewEditCalendarRule extends ActionBarActivity {
 
     private static final String TAG = NewEditCalendarRule.class.getCanonicalName();
     public static final String ACTION_KEY  = "com.prismaqft.callblocker:key";
+    public static final String KEY_NEW  = "com.prismaqft.callblocker:keynew";
+    public static final String KEY_ORIG  = "com.prismaqft.callblocker:keyorig";
+    public static final String KEY_ISNAMEVALID  = "com.prismaqft.callblocker:namevalid";
+    public static final String KEY_RULENAMES  = "com.prismaqft.callblocker:rulenames";
+    public static final String KEY_PTRULE  = "com.prismaqft.callblocker:ptrule";
     public static final String ACTION_CREATE  = "com.prismaqf.callblocker:create";
     public static final String ACTION_UPDATE  = "com.prismaqf.callblocker:update";
     private CheckBox cb_Monday, cb_Tuesday, cb_Wednesday, cb_Thursday, cb_Friday, cb_Saturday, cb_Sunday;
@@ -63,9 +70,10 @@ public class NewEditCalendarRule extends ActionBarActivity {
     private EditText ed_name;
     private TextView tx_validation;
     private Button bn_from, bn_to;
-    private CalendarRule myNewRule, myOrigRule;
+    private CalendarRule myNewRule, myOrigRule, ptRule;  //ptRule is an alias to the active rule
     private ArrayList<String> myRuleNames;
     private String myAction;
+    private boolean isNameValid = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,56 +99,92 @@ public class NewEditCalendarRule extends ActionBarActivity {
 
 
         if (intent.hasExtra(ACTION_KEY) && intent.getStringExtra(ACTION_KEY).equals(ACTION_UPDATE)) {
-            myNewRule  = CalendarRule.makeRule(intent.getExtras());
             myOrigRule = CalendarRule.makeRule(intent.getExtras());
+            try {
+                myNewRule  = (CalendarRule)myOrigRule.clone();
+            } catch (CloneNotSupportedException e) {
+                Log.e(TAG, "Could not clone original rule");
+                myNewRule =  CalendarRule.makeRule(intent.getExtras());
+            }
+            ptRule = myOrigRule;
             myAction = ACTION_UPDATE;
 
         } else {
             myNewRule = new CalendarRule(); //always active by default (all days of week and full day)
-            myOrigRule = new CalendarRule();
+            myOrigRule = null;
+            ptRule = myNewRule;
             myAction = ACTION_CREATE;
         }
-        refreshWidgets();
+    }
+    
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putParcelable(KEY_NEW, myNewRule);
+        savedInstanceState.putParcelable(KEY_ORIG,myOrigRule);
+        savedInstanceState.putString(ACTION_KEY, myAction);
+        savedInstanceState.putBoolean(KEY_ISNAMEVALID, isNameValid);
+        savedInstanceState.putStringArrayList(KEY_RULENAMES, myRuleNames);
+        savedInstanceState.putString(KEY_PTRULE, ptRule == myOrigRule ? "Original" : "New");
+
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_edit_calendar_rules, menu);
-        mi_save = menu.findItem(R.id.action_save_rule);
-        mi_delete = menu.findItem(R.id.action_delete_rule);
-        mi_change = menu.findItem(R.id.action_change_rule);
-        if (myAction.equals(ACTION_CREATE)) {
-            mi_delete.setVisible(false);
-            mi_change.setVisible(false);
-        }
-        else {
-            mi_save.setVisible(false);
-        }
-
-        //add text validation
-        ed_name.addTextChangedListener(new RuleNameValidator(ed_name,tx_validation, myRuleNames) {
-            @Override
-            public void validate(TextView source, TextView target, ArrayList<String> names, String text) {
-                if (source.getText().toString().equals("")) {
-                    target.setText(R.string.tx_validation_rule_name_empty);
-                    mi_save.setVisible(false);
-                    return;
-                }
-                if (names.contains(source.getText().toString())) {
-                    target.setText(R.string.tx_validation_rule_name_used);
-                    mi_save.setVisible(false);
-                    return;
-                }
-                mi_save.setVisible(true);
-                target.setText(R.string.tx_validation_rule_valid);
-                myNewRule.setName(text);
-            }
-        });
-        return true;
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        myNewRule = savedInstanceState.getParcelable(KEY_NEW);
+        myOrigRule = savedInstanceState.getParcelable(KEY_ORIG);
+        myAction = savedInstanceState.getString(ACTION_KEY);
+        isNameValid = savedInstanceState.getBoolean(KEY_ISNAMEVALID);
+        myRuleNames = savedInstanceState.getStringArrayList(KEY_RULENAMES);
+        String rule = savedInstanceState.getString(KEY_PTRULE);
+        if (rule.equals("Original"))
+            ptRule = myOrigRule;
+        else
+            ptRule = myNewRule;
     }
 
 
+        @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.menu_edit_calendar_rules, menu);
+            mi_save = menu.findItem(R.id.action_save_rule);
+            mi_delete = menu.findItem(R.id.action_delete_rule);
+            mi_change = menu.findItem(R.id.action_change_rule);
+            if (myAction.equals(ACTION_CREATE)) {
+                mi_delete.setVisible(false);
+                mi_change.setVisible(false);
+            }
+            else {
+                mi_save.setVisible(false);
+            }
+
+            //add text validation
+            ed_name.addTextChangedListener(new RuleNameValidator(ed_name, tx_validation, myRuleNames) {
+                @Override
+                public void validate(TextView source, TextView target, ArrayList<String> names, String text) {
+                    if (source.getText().toString().equals("")) {
+                        target.setText(R.string.tx_validation_rule_name_empty);
+                        mi_save.setVisible(false);
+                        isNameValid = false;
+                        return;
+                    }
+                    if (names.contains(source.getText().toString())) {
+                        target.setText(R.string.tx_validation_rule_name_used);
+                        mi_save.setVisible(false);
+                        isNameValid = false;
+                        return;
+                    }
+                    mi_save.setVisible(true);
+                    target.setText(R.string.tx_validation_rule_valid);
+                    ptRule.setName(text);
+                    isNameValid = true;
+                }
+            });
+            refreshWidgets();
+            return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -148,17 +192,17 @@ public class NewEditCalendarRule extends ActionBarActivity {
     }
 
     public void onAllDays(View view) {
-        myNewRule.setDayMask(EnumSet.allOf(CalendarRule.DayOfWeek.class));
+        ptRule.setDayMask(EnumSet.allOf(CalendarRule.DayOfWeek.class));
         refreshWidgets();
     }
 
     public void onNoDays(View view) {
-        myNewRule.setDayMask(EnumSet.noneOf(CalendarRule.DayOfWeek.class));
+        ptRule.setDayMask(EnumSet.noneOf(CalendarRule.DayOfWeek.class));
         refreshWidgets();
     }
 
     public void onWorkingDays(View view) {
-        myNewRule.getDayMask().addAll(EnumSet.of(CalendarRule.DayOfWeek.MONDAY,
+        ptRule.getDayMask().addAll(EnumSet.of(CalendarRule.DayOfWeek.MONDAY,
                 CalendarRule.DayOfWeek.TUESDAY,
                 CalendarRule.DayOfWeek.WEDNESDAY,
                 CalendarRule.DayOfWeek.THURSDAY,
@@ -167,7 +211,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
     }
 
     public void onWeekEnd(View view) {
-        myNewRule.getDayMask().addAll(EnumSet.of(CalendarRule.DayOfWeek.SATURDAY,
+        ptRule.getDayMask().addAll(EnumSet.of(CalendarRule.DayOfWeek.SATURDAY,
                                                  CalendarRule.DayOfWeek.SUNDAY));
         refreshWidgets();
     }
@@ -178,20 +222,71 @@ public class NewEditCalendarRule extends ActionBarActivity {
     public void onToTime(View view) {
     }
 
-    private void refreshWidgets() {
-        ed_name.setText(myNewRule.getName());
-        cb_Monday.setChecked(myNewRule.getDayMask().contains(CalendarRule.DayOfWeek.MONDAY));
-        cb_Tuesday.setChecked(myNewRule.getDayMask().contains(CalendarRule.DayOfWeek.TUESDAY));
-        cb_Wednesday.setChecked(myNewRule.getDayMask().contains(CalendarRule.DayOfWeek.WEDNESDAY));
-        cb_Thursday.setChecked(myNewRule.getDayMask().contains(CalendarRule.DayOfWeek.THURSDAY));
-        cb_Friday.setChecked(myNewRule.getDayMask().contains(CalendarRule.DayOfWeek.FRIDAY));
-        cb_Saturday.setChecked(myNewRule.getDayMask().contains(CalendarRule.DayOfWeek.SATURDAY));
-        cb_Sunday.setChecked(myNewRule.getDayMask().contains(CalendarRule.DayOfWeek.SUNDAY));
-        bn_from.setText(myNewRule.getStartTime());
-        bn_to.setText(myNewRule.getEndTime());
+    public void onCheckDay(View view) {
+        switch (view.getId()) {
+            case R.id.cb_Monday:
+                if (cb_Monday.isChecked())
+                    ptRule.getDayMask().add(CalendarRule.DayOfWeek.MONDAY);
+                else
+                    ptRule.getDayMask().remove(CalendarRule.DayOfWeek.MONDAY);
+                break;
+            case R.id.cb_Tuesday:
+                if (cb_Tuesday.isChecked())
+                    ptRule.getDayMask().add(CalendarRule.DayOfWeek.TUESDAY);
+                else
+                    ptRule.getDayMask().remove(CalendarRule.DayOfWeek.TUESDAY);
+                break;
+            case R.id.cb_Wednesday:
+                if (cb_Wednesday.isChecked())
+                    ptRule.getDayMask().add(CalendarRule.DayOfWeek.WEDNESDAY);
+                else
+                    ptRule.getDayMask().remove(CalendarRule.DayOfWeek.WEDNESDAY);
+                break;
+            case R.id.cb_Thursday:
+                if (cb_Thursday.isChecked())
+                    ptRule.getDayMask().add(CalendarRule.DayOfWeek.THURSDAY);
+                else
+                    ptRule.getDayMask().remove(CalendarRule.DayOfWeek.THURSDAY);
+                break;
+            case R.id.cb_Friday:
+                if (cb_Friday.isChecked())
+                    ptRule.getDayMask().add(CalendarRule.DayOfWeek.FRIDAY);
+                else
+                    ptRule.getDayMask().remove(CalendarRule.DayOfWeek.FRIDAY);
+                break;
+            case R.id.cb_Saturday:
+            if (cb_Saturday.isChecked())
+                ptRule.getDayMask().add(CalendarRule.DayOfWeek.SATURDAY);
+            else
+                ptRule.getDayMask().remove(CalendarRule.DayOfWeek.SATURDAY);
+            break;
+            case R.id.cb_Sunday:
+                if (cb_Sunday.isChecked())
+                    ptRule.getDayMask().add(CalendarRule.DayOfWeek.SUNDAY);
+                else
+                    ptRule.getDayMask().remove(CalendarRule.DayOfWeek.SUNDAY);
+        }
     }
 
-    public String getMyAction() {
-        return myAction;
+
+    private void refreshWidgets() {
+        ed_name.setText(ptRule.getName());
+        cb_Monday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.MONDAY));
+        cb_Tuesday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.TUESDAY));
+        cb_Wednesday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.WEDNESDAY));
+        cb_Thursday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.THURSDAY));
+        cb_Friday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.FRIDAY));
+        cb_Saturday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.SATURDAY));
+        cb_Sunday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.SUNDAY));
+        bn_from.setText(ptRule.getStartTime());
+        bn_to.setText(ptRule.getEndTime());
+        validateActions();
     }
+
+    private void validateActions() {
+        mi_save.setVisible(!myNewRule.equals(myOrigRule) && isNameValid);
+        mi_delete.setVisible(myAction.equals(ACTION_UPDATE) && ptRule == myOrigRule);
+        mi_change.setVisible(myAction.equals(ACTION_UPDATE) && ptRule == myOrigRule);
+    }
+
 }
