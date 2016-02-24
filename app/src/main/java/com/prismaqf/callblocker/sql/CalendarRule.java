@@ -77,7 +77,7 @@ public class CalendarRule {
             if (sts != null) myTimestamp = format.parse(sts);
         } catch (ParseException e) {
             Log.e(TAG, e.getMessage());
-            throw new SQLException(e.getMessage());
+            //throw new SQLException(e.getMessage());
         }
         return new CalendarRule(myId,myName,myDayMask,myFrom,myTo,myTimestamp);
     }
@@ -154,7 +154,7 @@ public class CalendarRule {
 
     /**
      * Return all names of the rule to prevent re-inserting a rule with a given name
-     * @param db
+     * @param db the SQLite connection
      * @return a list of names
      */
     public static ArrayList<String> AllRuleNames(SQLiteDatabase db) {
@@ -187,6 +187,19 @@ public class CalendarRule {
         String selection = DbContract.CalendarRules._ID + " = ?";
         String[] selectionArgs = { String.valueOf(ruleid) };
         db.update(DbContract.CalendarRules.TABLE_NAME,vals,selection,selectionArgs);
+    }
+
+    public static CalendarRule FindCalendarRule(SQLiteDatabase db, long ruleid) {
+        String selection = DbContract.CalendarRules._ID + " = ?";
+        String[] selectionArgs = { String.valueOf(ruleid) };
+        Cursor c = db.query(DbContract.CalendarRules.TABLE_NAME,null,selection,selectionArgs,null,null,null,null);
+        if (c.getCount() >0) {
+            c.moveToFirst();
+            return deserialize(c);
+        }
+        String msg = String.format("Could not find a calendar rule with id=%d",ruleid);
+        Log.e(TAG,msg);
+        throw new SQLException(msg);
     }
 
     private static boolean hasHHMMFormat(String in) {

@@ -131,6 +131,7 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
         this.endMin = 59;
     }
 
+
     private CalendarRule(Parcel in) {
         name = in.readString();
         dayMask = (EnumSet<DayOfWeek>)in.readSerializable();
@@ -138,6 +139,23 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
         startMin = in.readInt();
         endHour = in.readInt();
         endMin = in.readInt();
+    }
+
+    public static CalendarRule makeRule(com.prismaqf.callblocker.sql.CalendarRule sqlrule) throws Exception {
+        CalendarRule rule = new CalendarRule();
+        rule.setName(sqlrule.getName());
+        rule.setDayMask(makeMask(sqlrule.getDaymask()));
+        String[] start = sqlrule.getFrom().split(":");
+        if (start.length==2) {
+            rule.setStartHour(Integer.valueOf(start[0]));
+            rule.setStartMin(Integer.valueOf(start[1]));
+        }
+        String[] end = sqlrule.getTo().split(":");
+        if (end.length==2) {
+            rule.setEndHour(Integer.valueOf(end[0]));
+            rule.setEndMin(Integer.valueOf(end[1]));
+        }
+        return rule;
     }
 
     public static CalendarRule makeRule(Bundle extras) {

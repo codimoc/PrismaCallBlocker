@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -172,11 +173,24 @@ public class DbHelperTest {
 
     @Test
     public void TestAllNames() {
-        CalendarRule.InsertRow(myDb,"first",9,"05:45","21:12");
+        CalendarRule.InsertRow(myDb, "first", 9, "05:45", "21:12");
         CalendarRule.InsertRow(myDb, "second", 96, null, null);
         List<String> names = CalendarRule.AllRuleNames(myDb);
         assertEquals("Two names found",2,names.size());
         assertTrue("Name first found", names.contains("first"));
-        assertTrue("Name second found",names.contains("second"));
+        assertTrue("Name second found", names.contains("second"));
+    }
+
+    @Test
+    public void MakeRuleFromSql() throws Exception {
+        long id = CalendarRule.InsertRow(myDb,"first",9,"05:45","21:12");
+        CalendarRule found = CalendarRule.FindCalendarRule(myDb, id);
+        com.prismaqf.callblocker.rules.CalendarRule theRule = com.prismaqf.callblocker.rules.CalendarRule.makeRule(found);
+        assertEquals("The name","first",theRule.getName());
+        assertEquals("DayMask", 9, theRule.getBinaryMask());
+        assertEquals("Start Hour",5,theRule.getStartHour());
+        assertEquals("Start Min",45,theRule.getStartMin());
+        assertEquals("End Hour",21,theRule.getEndHour());
+        assertEquals("Start Hour",12,theRule.getEndMin());
     }
 }

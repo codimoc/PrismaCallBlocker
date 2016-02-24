@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -116,6 +117,28 @@ public class NewEditCalendarRule extends ActionBarActivity {
         }
     }
 
+    private class SaveOperation extends AsyncTask<CalendarRule, Void, Void> {
+
+        @Override
+        protected Void doInBackground(CalendarRule... rules) {
+            SQLiteDatabase db = new DbHelper(NewEditCalendarRule.this).getWritableDatabase();
+            CalendarRule rule = rules[0];
+            try {
+                com.prismaqf.callblocker.sql.CalendarRule.InsertRow(db, rule.getName(), rule.getBinaryMask(), rule.getBareStartTime(), rule.getBareEndTime());
+            }
+            finally {
+                db.close();    
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute (Void v) {
+            Intent intent = new Intent(NewEditCalendarRule.this, EditCalendarRules.class);
+            startActivity(intent);
+        }
+    }
+
 
 
     private static final String TAG = NewEditCalendarRule.class.getCanonicalName();
@@ -161,7 +184,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
 
 
         if (intent.hasExtra(ACTION_KEY) && intent.getStringExtra(ACTION_KEY).equals(ACTION_UPDATE)) {
-            myOrigRule = CalendarRule.makeRule(intent.getExtras());
+            myOrigRule = intent.getParcelableExtra(KEY_ORIG);
             try {
                 myNewRule  = (CalendarRule)myOrigRule.clone();
             } catch (CloneNotSupportedException e) {
@@ -233,7 +256,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
                         isNameValid = false;
                         return;
                     }
-                    if (names.contains(source.getText().toString())) {
+                    if (names!= null && names.contains(source.getText().toString())) {
                         target.setText(R.string.tx_validation_rule_name_used);
                         mi_save.setVisible(false);
                         isNameValid = false;
@@ -364,22 +387,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
     }
 
     private void saveCalendarRule() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SQLiteDatabase db = new DbHelper(NewEditCalendarRule.this).getWritableDatabase();
-                com.prismaqf.callblocker.sql.CalendarRule.InsertRow(db,ptRule.getName(),ptRule.getBinaryMask(),ptRule.getBareStartTime(),ptRule.getBareEndTime());
-                db.close();
-            }
-        }).start();
-        try {
-            myOrigRule = (CalendarRule)ptRule.clone();
-            ptRule = myOrigRule;
-            myAction = ACTION_UPDATE;
-        } catch (CloneNotSupportedException e) {
-            Log.e(TAG,"Can't clone the active calendar rule");
-        }
-        refreshWidgets(true);
+        new SaveOperation().execute(ptRule);
     }
 
 

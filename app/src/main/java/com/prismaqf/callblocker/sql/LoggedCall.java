@@ -52,7 +52,7 @@ public class LoggedCall {
             if (sts != null) myTimestamp = format.parse(sts);
         } catch (ParseException e) {
             Log.e(TAG, e.getMessage());
-            throw new SQLException(e.getMessage());
+            //throw new SQLException(e.getMessage());
         }
         return new LoggedCall(myId,myRunId,myRuleId,myTimestamp,myNumber,myDescription);
     }
