@@ -79,7 +79,11 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
 
     public String getStartTime() { return String.format("From %02d:%02d",startHour, startMin);}
 
+    public String getBareStartTime() { return String.format("%02d:%02d",startHour, startMin);}
+
     public String getEndTime() { return String.format("To %02d:%02d",endHour, endMin);}
+
+    public String getBareEndTime() { return String.format("%02d:%02d",endHour, endMin);}
 
     /**
      * A calendar rule based on a mask for the days of the week when the rule should be active
@@ -279,6 +283,18 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
         if ((dm & 32) == 32) mask.add(DayOfWeek.SATURDAY);
         if ((dm & 64) == 64) mask.add(DayOfWeek.SUNDAY);
         return mask;
+    }
+
+    public int getBinaryMask() {
+        int bm = 0;
+        if (dayMask.contains(DayOfWeek.MONDAY)) bm+=1;
+        if (dayMask.contains(DayOfWeek.TUESDAY)) bm+=2;
+        if (dayMask.contains(DayOfWeek.WEDNESDAY)) bm+=4;
+        if (dayMask.contains(DayOfWeek.THURSDAY)) bm+=8;
+        if (dayMask.contains(DayOfWeek.FRIDAY)) bm+=16;
+        if (dayMask.contains(DayOfWeek.SATURDAY)) bm+=32;
+        if (dayMask.contains(DayOfWeek.SUNDAY)) bm+=64;
+        return bm;
     }
 
     @Override

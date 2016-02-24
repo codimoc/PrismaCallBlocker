@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.prismaqf.callblocker.rules.CalendarRule;
+import com.prismaqf.callblocker.sql.DbHelper;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -113,6 +115,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
             parent.refreshWidgets(true);
         }
     }
+
 
 
     private static final String TAG = NewEditCalendarRule.class.getCanonicalName();
@@ -248,6 +251,13 @@ public class NewEditCalendarRule extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_save_rule:
+                saveCalendarRule();
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -352,5 +362,25 @@ public class NewEditCalendarRule extends ActionBarActivity {
         mi_delete.setVisible(myAction.equals(ACTION_UPDATE) && ptRule == myOrigRule);
         mi_change.setVisible(myAction.equals(ACTION_UPDATE) && ptRule == myOrigRule);
     }
+
+    private void saveCalendarRule() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SQLiteDatabase db = new DbHelper(NewEditCalendarRule.this).getWritableDatabase();
+                com.prismaqf.callblocker.sql.CalendarRule.InsertRow(db,ptRule.getName(),ptRule.getBinaryMask(),ptRule.getBareStartTime(),ptRule.getBareEndTime());
+                db.close();
+            }
+        }).start();
+        try {
+            myOrigRule = (CalendarRule)ptRule.clone();
+            ptRule = myOrigRule;
+            myAction = ACTION_UPDATE;
+        } catch (CloneNotSupportedException e) {
+            Log.e(TAG,"Can't clone the active calendar rule");
+        }
+        refreshWidgets(true);
+    }
+
 
 }
