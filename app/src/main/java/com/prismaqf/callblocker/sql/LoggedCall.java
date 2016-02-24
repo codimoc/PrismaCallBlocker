@@ -21,17 +21,15 @@ public class LoggedCall {
 
     private final long id;
     private final long runid;
-    private final Date timestamp;
     private final String number;
     private final String description;
     private final int ruleid;
 
 
-    private LoggedCall(long id, long runid, int ruleid, Date timestamp, String number, String description) {
+    private LoggedCall(long id, long runid, int ruleid, String number, String description) {
         this.id = id;
         this.runid = runid;
         this.ruleid = ruleid;
-        this.timestamp = timestamp;
         this.number = number;
         this.description = description;
     }
@@ -44,17 +42,7 @@ public class LoggedCall {
             myRuleId = c.getInt(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_RULEID));
         String myNumber = c.getString(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_NUMBER));
         String myDescription = c.getString(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION));
-        Date myTimestamp = null;
-        try {
-
-            DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
-            String sts = c.getString(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_TIMESTAMP));
-            if (sts != null) myTimestamp = format.parse(sts);
-        } catch (ParseException e) {
-            Log.e(TAG, e.getMessage());
-            //throw new SQLException(e.getMessage());
-        }
-        return new LoggedCall(myId,myRunId,myRuleId,myTimestamp,myNumber,myDescription);
+        return new LoggedCall(myId,myRunId,myRuleId,myNumber,myDescription);
     }
 
     public static void serialize(SQLiteDatabase db, LoggedCall lc) {
@@ -70,10 +58,6 @@ public class LoggedCall {
 
     public long getRunid() {
         return runid;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
     }
 
     public String getNumber() {
@@ -99,10 +83,7 @@ public class LoggedCall {
      */
     public static long InsertRow(SQLiteDatabase db, long runid, String number, String description, Integer ruleid) {
         Calendar cal = Calendar.getInstance(Locale.getDefault());
-        Date timestamp = cal.getTime();
         ContentValues vals = new ContentValues();
-        DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
-        vals.put(DbContract.LoggedCalls.COLUMN_NAME_TIMESTAMP, format.format(timestamp));
         vals.put(DbContract.LoggedCalls.COLUMN_NAME_RUNID,runid);
         if (number == null)
             Log.e(TAG, "Phone number required for a logged call");

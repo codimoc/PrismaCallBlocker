@@ -61,7 +61,7 @@ public class DbContract {
         public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + OPEN_BRAC +
                 _ID + IPK +
                 COLUMN_NAME_RUNID + TYPE_INT + NOT_NULL + COMMA_SEP +
-                COLUMN_NAME_TIMESTAMP + TYPE_TEXT + NOT_NULL + COMMA_SEP +
+                COLUMN_NAME_TIMESTAMP + TYPE_TEXT + DEF_TIMESTAMP + COMMA_SEP +
                 COLUMN_NAME_NUMBER + TYPE_TEXT + NOT_NULL + COMMA_SEP +
                 COLUMN_NAME_DESCRIPTION + TYPE_TEXT + COMMA_SEP +
                 COLUMN_NAME_RULEID + TYPE_INT +

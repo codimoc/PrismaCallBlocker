@@ -26,7 +26,6 @@ public class CalendarRule {
     private final int daymask;
     private final String from;
     private final String to;
-    private final Date timestamp;
 
     public long getId() {
         return id;
@@ -48,18 +47,13 @@ public class CalendarRule {
         return to;
     }
 
-    public Date getTimestamp() {
-        return timestamp;
-    }
 
-
-    private CalendarRule(long id, String name, int daymask, String from, String to, Date timestamp) {
+    private CalendarRule(long id, String name, int daymask, String from, String to) {
         this.id = id;
         this.name = name;
         this.daymask = daymask;
         this.from = from;
         this.to = to;
-        this.timestamp = timestamp;
     }
 
     public static CalendarRule deserialize(Cursor c) {
@@ -69,17 +63,7 @@ public class CalendarRule {
         String myFrom = c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_FROM));
         String myTo = c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_TO));
 
-        Date myTimestamp = null;
-        try {
-
-            DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
-            String sts = c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_TIMESTAMP));
-            if (sts != null) myTimestamp = format.parse(sts);
-        } catch (ParseException e) {
-            Log.e(TAG, e.getMessage());
-            //throw new SQLException(e.getMessage());
-        }
-        return new CalendarRule(myId,myName,myDayMask,myFrom,myTo,myTimestamp);
+        return new CalendarRule(myId,myName,myDayMask,myFrom,myTo);
     }
 
     public static void serialize(SQLiteDatabase db, CalendarRule cr) {

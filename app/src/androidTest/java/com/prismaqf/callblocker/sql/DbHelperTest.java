@@ -132,11 +132,21 @@ public class DbHelperTest {
     }
 
     @Test
+    public void LoggedCallCheckTimeStamp() {
+        LoggedCall.InsertRow(myDb, 15, "123", "a dummy", null);
+        Cursor c = LoggedCall.LatestCalls(myDb,5);
+        c.moveToFirst();
+        String ts = c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_TIMESTAMP));
+        assertNotNull("The timestamp is not null", ts);
+        assertFalse("The timestamp is not empty", ts.isEmpty());
+    }
+
+    @Test
     public void InsertCalendarRule(){
-        CalendarRule.InsertRow(myDb,"first",9,"05:45","21:12");
-        CalendarRule.InsertRow(myDb,"second",96,null,null);
+        CalendarRule.InsertRow(myDb, "first", 9, "05:45", "21:12");
+        CalendarRule.InsertRow(myDb, "second", 96, null, null);
         Cursor c = CalendarRule.AllCalendarRules(myDb);
-        assertEquals("There should be two records",2,c.getCount());
+        assertEquals("There should be two records", 2, c.getCount());
     }
 
     @Test
@@ -182,15 +192,26 @@ public class DbHelperTest {
     }
 
     @Test
+    public void CalendarRuleCheckTimeStamp() {
+        long id = CalendarRule.InsertRow(myDb, "first", 9, "05:45", "21:12");
+        Cursor c = CalendarRule.LatestCalendarRules(myDb,1,true);
+        c.moveToFirst();
+        String ts = c.getString(c.getColumnIndex(DbContract.CalendarRules.COLUMN_NAME_TIMESTAMP));
+        assertNotNull("The timestamp is not null", ts);
+        assertFalse("The timestamp is not empty", ts.isEmpty());
+    }
+
+
+    @Test
     public void MakeRuleFromSql() throws Exception {
         long id = CalendarRule.InsertRow(myDb,"first",9,"05:45","21:12");
         CalendarRule found = CalendarRule.FindCalendarRule(myDb, id);
         com.prismaqf.callblocker.rules.CalendarRule theRule = com.prismaqf.callblocker.rules.CalendarRule.makeRule(found);
         assertEquals("The name","first",theRule.getName());
         assertEquals("DayMask", 9, theRule.getBinaryMask());
-        assertEquals("Start Hour",5,theRule.getStartHour());
-        assertEquals("Start Min",45,theRule.getStartMin());
-        assertEquals("End Hour",21,theRule.getEndHour());
-        assertEquals("Start Hour",12,theRule.getEndMin());
+        assertEquals("Start Hour", 5, theRule.getStartHour());
+        assertEquals("Start Min", 45, theRule.getStartMin());
+        assertEquals("End Hour", 21, theRule.getEndHour());
+        assertEquals("Start Hour", 12, theRule.getEndMin());
     }
 }
