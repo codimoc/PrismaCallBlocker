@@ -1,10 +1,16 @@
 package com.prismaqf.callblocker;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.prismaqf.callblocker.rules.CalendarRule;
 
@@ -55,6 +62,58 @@ public class NewEditCalendarRule extends ActionBarActivity {
             validate(mySource, myTarget, myUsedNames, text);
         }
     }
+
+    @SuppressLint("ValidFragment")
+    public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+
+        CalendarRule rule;
+        String startEnd;
+        NewEditCalendarRule parent;
+
+
+        public TimePickerFragment(CalendarRule rule, String startEnd, NewEditCalendarRule parent) {
+            this.rule = rule;
+            this.startEnd = startEnd;
+            this.parent = parent;
+        }
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            int hour, minute;
+
+            if (rule != null && startEnd!=null) {
+                if (startEnd.toLowerCase().equals("start")) {
+                    hour = rule.getStartHour();
+                    minute = rule.getStartMin();
+                } else {
+                    hour = rule.getEndHour();
+                    minute = rule.getEndMin();
+                }
+                return new TimePickerDialog(getActivity(), this, hour, minute,
+                        DateFormat.is24HourFormat(getActivity()));
+            }
+            Log.e(TAG,"Can't initialise a TimePicker");
+            return new TimePickerDialog(getActivity(),this,0,0,DateFormat.is24HourFormat(getActivity()));
+        }
+
+
+        @Override
+        public void onTimeSet(TimePicker timePicker, int i, int i1) {
+            if (rule != null && startEnd != null)
+                if (startEnd.toLowerCase().equals("start")) {
+                    rule.setStartHour(timePicker.getCurrentHour());
+                    rule.setStartMin(timePicker.getCurrentMinute());
+                } else {
+                    rule.setEndHour(timePicker.getCurrentHour());
+                    rule.setEndMin(timePicker.getCurrentMinute());
+                }
+            else Log.e(TAG, "Can't set time from TimePicker");
+
+            parent.refreshWidgets(true);
+        }
+    }
+
 
     private static final String TAG = NewEditCalendarRule.class.getCanonicalName();
     public static final String ACTION_KEY  = "com.prismaqft.callblocker:key";
@@ -116,11 +175,12 @@ public class NewEditCalendarRule extends ActionBarActivity {
             myAction = ACTION_CREATE;
         }
     }
-    
+
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putParcelable(KEY_NEW, myNewRule);
-        savedInstanceState.putParcelable(KEY_ORIG,myOrigRule);
+        savedInstanceState.putParcelable(KEY_ORIG, myOrigRule);
         savedInstanceState.putString(ACTION_KEY, myAction);
         savedInstanceState.putBoolean(KEY_ISNAMEVALID, isNameValid);
         savedInstanceState.putStringArrayList(KEY_RULENAMES, myRuleNames);
@@ -137,7 +197,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
         myAction = savedInstanceState.getString(ACTION_KEY);
         isNameValid = savedInstanceState.getBoolean(KEY_ISNAMEVALID);
         myRuleNames = savedInstanceState.getStringArrayList(KEY_RULENAMES);
-        String rule = savedInstanceState.getString(KEY_PTRULE);
+        String rule = savedInstanceState.getString(KEY_PTRULE,"");
         if (rule.equals("Original"))
             ptRule = myOrigRule;
         else
@@ -182,7 +242,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
                     isNameValid = true;
                 }
             });
-            refreshWidgets();
+            refreshWidgets(true);
             return true;
     }
 
@@ -193,12 +253,12 @@ public class NewEditCalendarRule extends ActionBarActivity {
 
     public void onAllDays(View view) {
         ptRule.setDayMask(EnumSet.allOf(CalendarRule.DayOfWeek.class));
-        refreshWidgets();
+        refreshWidgets(true);
     }
 
     public void onNoDays(View view) {
         ptRule.setDayMask(EnumSet.noneOf(CalendarRule.DayOfWeek.class));
-        refreshWidgets();
+        refreshWidgets(true);
     }
 
     public void onWorkingDays(View view) {
@@ -207,19 +267,23 @@ public class NewEditCalendarRule extends ActionBarActivity {
                 CalendarRule.DayOfWeek.WEDNESDAY,
                 CalendarRule.DayOfWeek.THURSDAY,
                 CalendarRule.DayOfWeek.FRIDAY));
-        refreshWidgets();
+        refreshWidgets(true);
     }
 
     public void onWeekEnd(View view) {
         ptRule.getDayMask().addAll(EnumSet.of(CalendarRule.DayOfWeek.SATURDAY,
                                                  CalendarRule.DayOfWeek.SUNDAY));
-        refreshWidgets();
+        refreshWidgets(true);
     }
 
-    public void onFromTime(View view) {
+    public void onFromTime(final View view) {
+        DialogFragment newFragment = new TimePickerFragment(ptRule,"Start",this);
+        newFragment.show(getSupportFragmentManager(), "From Time");
     }
 
     public void onToTime(View view) {
+        DialogFragment newFragment = new TimePickerFragment(ptRule,"End",this);
+        newFragment.show(getSupportFragmentManager(), "To Time");
     }
 
     public void onCheckDay(View view) {
@@ -269,7 +333,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
     }
 
 
-    private void refreshWidgets() {
+    private void refreshWidgets(boolean validate) {
         ed_name.setText(ptRule.getName());
         cb_Monday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.MONDAY));
         cb_Tuesday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.TUESDAY));
@@ -280,7 +344,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
         cb_Sunday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.SUNDAY));
         bn_from.setText(ptRule.getStartTime());
         bn_to.setText(ptRule.getEndTime());
-        validateActions();
+        if (validate) validateActions();
     }
 
     private void validateActions() {

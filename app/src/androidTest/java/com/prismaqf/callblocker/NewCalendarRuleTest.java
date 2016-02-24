@@ -166,8 +166,52 @@ public class NewCalendarRuleTest {
         onView(ViewMatchers.withId(R.id.cb_Wednesday)).check(matches(isChecked()));
         onView(ViewMatchers.withId(R.id.cb_Wednesday)).perform(click());
         onView(ViewMatchers.withId(R.id.cb_Wednesday)).check(matches(isNotChecked()));
+        onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(new ReplaceTextAction("dummy"));
+        rotateScreen(activity);
+        onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).check(matches(withText("dummy")));
+        onView(ViewMatchers.withId(R.id.cb_Wednesday)).check(matches(isNotChecked()));
         rotateScreen(activity);
         onView(ViewMatchers.withId(R.id.cb_Wednesday)).check(matches(isNotChecked()));
+        onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).check(matches(withText("dummy")));
+    }
+
+//      todo: when the text is not valid rotation does not preserve. Need maybe some investigation
+//    @Test
+//    public void TestRotationWithEmptyText() throws Throwable {
+//        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+//        ctx.startActivity(intent);
+//        Activity activity = getCurrentActivity();
+//        onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(new ReplaceTextAction(""));;
+//        rotateScreen(activity);
+//        onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).check(matches(withText("")));;
+//    }
+
+    @Test
+    public void TestSingleDays() {
+        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+        ctx.startActivity(intent);
+        onView(ViewMatchers.withId(R.id.bt_no_days)).perform(click());
+        onView(ViewMatchers.withId(R.id.cb_Monday)).check(matches(isNotChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Monday)).perform(click());
+        onView(ViewMatchers.withId(R.id.cb_Monday)).check(matches(isChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Tuesday)).check(matches(isNotChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Tuesday)).perform(click());
+        onView(ViewMatchers.withId(R.id.cb_Tuesday)).check(matches(isChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Wednesday)).check(matches(isNotChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Wednesday)).perform(click());
+        onView(ViewMatchers.withId(R.id.cb_Wednesday)).check(matches(isChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Thursday)).check(matches(isNotChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Thursday)).perform(click());
+        onView(ViewMatchers.withId(R.id.cb_Thursday)).check(matches(isChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Friday)).check(matches(isNotChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Friday)).perform(click());
+        onView(ViewMatchers.withId(R.id.cb_Friday)).check(matches(isChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Saturday)).check(matches(isNotChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Saturday)).perform(click());
+        onView(ViewMatchers.withId(R.id.cb_Saturday)).check(matches(isChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Sunday)).check(matches(isNotChecked()));
+        onView(ViewMatchers.withId(R.id.cb_Sunday)).perform(click());
+        onView(ViewMatchers.withId(R.id.cb_Sunday)).check(matches(isChecked()));
     }
 
     private void rotateScreen(Activity currentActivity) {
