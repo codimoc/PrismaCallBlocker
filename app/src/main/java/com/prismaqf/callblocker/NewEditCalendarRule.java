@@ -154,7 +154,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
     private MenuItem mi_save, mi_delete, mi_change;
     private EditText ed_name;
     private TextView tx_validation;
-    private Button bn_from, bn_to;
+    private Button bn_from, bn_to, bn_alldays, bn_nodays, bn_workdays, bn_we;
     private CalendarRule myNewRule, myOrigRule, ptRule;  //ptRule is an alias to the active rule
     private ArrayList<String> myRuleNames;
     private String myAction;
@@ -176,6 +176,10 @@ public class NewEditCalendarRule extends ActionBarActivity {
         ed_name.clearFocus();
         bn_from = (Button) findViewById(R.id.bt_from_time);
         bn_to = (Button) findViewById(R.id.bt_to_time);
+        bn_alldays = (Button) findViewById(R.id.bt_all_days);
+        bn_nodays = (Button) findViewById(R.id.bt_no_days);
+        bn_workdays = (Button) findViewById(R.id.bt_working_days);
+        bn_we = (Button) findViewById(R.id.bt_week_end);
         tx_validation = (TextView)findViewById(R.id.tx_calendar_rule_validation);
 
 
@@ -194,11 +198,15 @@ public class NewEditCalendarRule extends ActionBarActivity {
             ptRule = myOrigRule;
             myAction = ACTION_UPDATE;
 
+            enableWidgets(false,false);
+
         } else {
             myNewRule = new CalendarRule(); //always active by default (all days of week and full day)
             myOrigRule = null;
             ptRule = myNewRule;
             myAction = ACTION_CREATE;
+
+            enableWidgets(true,true);
         }
     }
 
@@ -279,6 +287,9 @@ public class NewEditCalendarRule extends ActionBarActivity {
         switch (id) {
             case R.id.action_save_rule:
                 saveCalendarRule();
+                return true;
+            case R.id.action_change_rule:
+                changeCalendarRule();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -363,6 +374,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
                 else
                     ptRule.getDayMask().remove(CalendarRule.DayOfWeek.SUNDAY);
         }
+        validateActions();
     }
 
 
@@ -386,9 +398,34 @@ public class NewEditCalendarRule extends ActionBarActivity {
         mi_change.setVisible(myAction.equals(ACTION_UPDATE) && ptRule == myOrigRule);
     }
 
+    private void enableWidgets(boolean nameFlag, boolean widgetFlag) {
+        ed_name.setEnabled(nameFlag);
+        cb_Monday.setEnabled(widgetFlag);
+        cb_Tuesday.setEnabled(widgetFlag);
+        cb_Wednesday.setEnabled(widgetFlag);
+        cb_Thursday.setEnabled(widgetFlag);
+        cb_Friday.setEnabled(widgetFlag);
+        cb_Saturday.setEnabled(widgetFlag);
+        cb_Sunday.setEnabled(widgetFlag);
+        bn_from.setEnabled(widgetFlag);
+        bn_to.setEnabled(widgetFlag);
+        bn_alldays.setEnabled(widgetFlag);
+        bn_nodays.setEnabled(widgetFlag);
+        bn_workdays.setEnabled(widgetFlag);
+        bn_we.setEnabled(widgetFlag);
+        tx_validation.setEnabled(widgetFlag);
+    }
+
     private void saveCalendarRule() {
         new SaveOperation().execute(ptRule);
     }
+
+    private void changeCalendarRule() {
+        ptRule = myNewRule;
+        enableWidgets(false,true);
+        validateActions();
+    }
+
 
 
 }
