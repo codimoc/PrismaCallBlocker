@@ -7,7 +7,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -15,8 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0.1">
+            android:layout_marginRight="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -24,11 +23,12 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/tx_rule_name"
                 android:layout_marginLeft="10dp"
-                android:layout_gravity="left"
-                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:layout_gravity="start"
                 android:singleLine="false"
                 android:gravity="center_vertical"
                 android:focusable="true"
+                android:layout_weight="0.3"
                 android:focusableInTouchMode="true"/>
 
             <EditText
@@ -36,8 +36,9 @@
                 android:layout_height="match_parent"
                 android:id="@+id/edit_calendar_rule_name"
                 android:layout_marginRight="10dp"
-                android:layout_gravity="right"
-                android:layout_weight="2"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="end"
+                android:layout_weight="0.7"
                 android:inputType="text" />
         </LinearLayout>
 
@@ -49,8 +50,7 @@
             android:columnCount="3"
             android:rowCount="3"
             android:background="@drawable/rounded_corner_yellow"
-            android:id="@+id/grid_day_mask"
-            android:layout_weight="0.3">
+            android:id="@+id/grid_day_mask">
 
             <CheckBox
                 android:layout_width="wrap_content"
@@ -117,8 +117,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0.1">
+            android:layout_marginRight="10dp">
 
             <Button
                 android:layout_width="wrap_content"
@@ -127,9 +126,11 @@
                 android:textAllCaps="false"
                 android:id="@+id/bt_all_days"
                 android:layout_marginLeft="4dp"
+                android:layout_marginStart="1dp"
                 android:onClick="onAllDays"
+                android:layout_weight="0.25"
                 android:layout_marginRight="1dp"
-                android:layout_weight="1"/>
+                android:layout_marginEnd="1dp"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -138,8 +139,8 @@
                 android:id="@+id/bt_no_days"
                 android:layout_marginLeft="1dp"
                 android:onClick="onNoDays"
-                android:layout_marginRight="1dp"
-                android:layout_weight="1"/>
+                android:layout_weight="0.25"
+                android:layout_marginRight="1dp"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -148,8 +149,8 @@
                 android:id="@+id/bt_working_days"
                 android:layout_marginLeft="1dp"
                 android:onClick="onWorkingDays"
-                android:layout_marginRight="1dp"
-                android:layout_weight="1"/>
+                android:layout_weight="0.25"
+                android:layout_marginRight="1dp"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -157,9 +158,11 @@
                 android:textAllCaps="false"
                 android:id="@+id/bt_week_end"
                 android:layout_marginLeft="1dp"
+                android:layout_marginStart="1dp"
                 android:onClick="onWeekEnd"
                 android:layout_marginRight="4dp"
-                android:layout_weight="1"/>
+                android:layout_marginEnd="1dp"
+                android:layout_weight="0.25"/>
         </LinearLayout>
 
         <LinearLayout
@@ -170,33 +173,36 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_weight="0.1"
             android:id="@+id/bt_time_buttons">
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:layout_weight="0.5"
                 android:text="@string/tx_from_time"
                 android:id="@+id/bt_from_time"
                 android:textAllCaps="false"
                 android:layout_marginLeft="4dp"
-                android:layout_weight="1"
+                android:layout_marginStart="4dp"
                 android:onClick="onFromTime"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:layout_gravity="end"
                 android:text="@string/tx_to_time"
                 android:id="@+id/bt_to_time"
                 android:textAllCaps="false"
                 android:layout_marginRight="4dp"
-                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
                 android:onClick="onToTime"/>
         </LinearLayout>
 
         <TextView
             android:id ="@+id/tx_calendar_rule_validation"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="0dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:background="@drawable/rounded_corner_purple"
             android:text="@string/tx_rule_validation"
@@ -204,7 +210,7 @@
             android:layout_marginBottom="20dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:layout_weight="0.4"/>
 
     </LinearLayout>

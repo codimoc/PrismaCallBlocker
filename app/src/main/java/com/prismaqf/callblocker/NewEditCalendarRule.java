@@ -117,14 +117,26 @@ public class NewEditCalendarRule extends ActionBarActivity {
         }
     }
 
-    private class SaveOperation extends AsyncTask<CalendarRule, Void, Void> {
+    private class DbOperation extends AsyncTask<CalendarRule, Void, Void> {
 
+        private final String action;
+        private final long ruleid;
+
+        DbOperation(String action, long ruleid) {
+            this.action = action;
+            this.ruleid = ruleid;
+        }
         @Override
         protected Void doInBackground(CalendarRule... rules) {
             SQLiteDatabase db = new DbHelper(NewEditCalendarRule.this).getWritableDatabase();
             CalendarRule rule = rules[0];
             try {
-                com.prismaqf.callblocker.sql.CalendarRule.InsertRow(db, rule.getName(), rule.getBinaryMask(), rule.getBareStartTime(), rule.getBareEndTime());
+                if (action.equals(ACTION_CREATE))
+                    com.prismaqf.callblocker.sql.CalendarRule.InsertRow(db, rule.getName(), rule.getBinaryMask(), rule.getBareStartTime(), rule.getBareEndTime());
+                else if (action.equals(ACTION_UPDATE))
+                    com.prismaqf.callblocker.sql.CalendarRule.UpdateCalendarRule(db,ruleid,rule.getBinaryMask(),rule.getBareStartTime(), rule.getBareEndTime());
+                else //ACTION_DELETE
+                    com.prismaqf.callblocker.sql.CalendarRule.DeleteCalendarRule(db,ruleid);
             }
             finally {
                 db.close();    
@@ -148,8 +160,10 @@ public class NewEditCalendarRule extends ActionBarActivity {
     public static final String KEY_ISNAMEVALID  = "com.prismaqft.callblocker:namevalid";
     public static final String KEY_RULENAMES  = "com.prismaqft.callblocker:rulenames";
     public static final String KEY_PTRULE  = "com.prismaqft.callblocker:ptrule";
+    public static final String KEY_RULEID = "com.prismaqft.callblocker:ruleid";;
     public static final String ACTION_CREATE  = "com.prismaqf.callblocker:create";
     public static final String ACTION_UPDATE  = "com.prismaqf.callblocker:update";
+    public static final String ACTION_DELETE  = "com.prismaqf.callblocker:delete";
     private CheckBox cb_Monday, cb_Tuesday, cb_Wednesday, cb_Thursday, cb_Friday, cb_Saturday, cb_Sunday;
     private MenuItem mi_save, mi_delete, mi_change;
     private EditText ed_name;
@@ -158,6 +172,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
     private CalendarRule myNewRule, myOrigRule, ptRule;  //ptRule is an alias to the active rule
     private ArrayList<String> myRuleNames;
     private String myAction;
+    private long myRuleId=0;
     private boolean isNameValid = true;
 
     @Override
@@ -195,6 +210,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
                 Log.e(TAG, "Could not clone original rule");
                 myNewRule =  CalendarRule.makeRule(intent.getExtras());
             }
+            myRuleId = intent.getLongExtra(KEY_RULEID,0);
             ptRule = myOrigRule;
             myAction = ACTION_UPDATE;
 
@@ -290,6 +306,9 @@ public class NewEditCalendarRule extends ActionBarActivity {
                 return true;
             case R.id.action_change_rule:
                 changeCalendarRule();
+                return true;
+            case R.id.action_delete_rule:
+                deleteCalendarRule();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -417,13 +436,17 @@ public class NewEditCalendarRule extends ActionBarActivity {
     }
 
     private void saveCalendarRule() {
-        new SaveOperation().execute(ptRule);
+        new DbOperation(myAction,myRuleId).execute(ptRule);
     }
 
     private void changeCalendarRule() {
         ptRule = myNewRule;
         enableWidgets(false,true);
         validateActions();
+    }
+
+    private void deleteCalendarRule() {
+        new DbOperation(ACTION_DELETE,myRuleId).execute(ptRule);
     }
 
 

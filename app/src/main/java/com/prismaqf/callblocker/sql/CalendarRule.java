@@ -173,6 +173,28 @@ public class CalendarRule {
         db.update(DbContract.CalendarRules.TABLE_NAME,vals,selection,selectionArgs);
     }
 
+    /**
+     * Delete a rule by id
+     * @param db the SQlite connection
+     * @param ruleid the rule id
+     */
+    public static void DeleteCalendarRule(SQLiteDatabase db, long ruleid) {
+        String where = DbContract.CalendarRules._ID + " = ?";
+        String[] args = {String.valueOf(ruleid)};
+        db.delete(DbContract.CalendarRules.TABLE_NAME, where, args);
+    }
+
+    /**
+     * Delete a rule by name
+     * @param db the SQlite connection
+     * @param name the rule name
+     */
+    public static void DeleteCalendarRule(SQLiteDatabase db, String name) {
+        String where = DbContract.CalendarRules.COLUMN_NAME_RULENAME + " = ?";
+        String[] args = {name};
+        db.delete(DbContract.CalendarRules.TABLE_NAME, where, args);
+    }
+
     public static CalendarRule FindCalendarRule(SQLiteDatabase db, long ruleid) {
         String selection = DbContract.CalendarRules._ID + " = ?";
         String[] selectionArgs = { String.valueOf(ruleid) };

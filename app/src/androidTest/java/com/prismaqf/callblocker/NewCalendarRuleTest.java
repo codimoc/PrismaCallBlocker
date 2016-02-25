@@ -48,7 +48,6 @@ public class NewCalendarRuleTest {
 
     @Rule
     public final ActivityTestRule<EditCalendarRules> myActivityRule = new ActivityTestRule(EditCalendarRules.class);
-    private Activity currentActivity;
 
     @Before
     public void before() {
