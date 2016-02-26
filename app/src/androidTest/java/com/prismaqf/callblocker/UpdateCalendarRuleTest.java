@@ -114,6 +114,22 @@ public class UpdateCalendarRuleTest {
         Espresso.unregisterIdlingResources(idlingResource);
     }
 
+    @Test
+    public void TestDeleteAction() throws Throwable {
+        onView(ViewMatchers.withText(TEST_RULE)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText(TEST_RULE)).perform(click());
+        View v = getCurrentActivity().findViewById(R.id.edit_calendar_rule_name);
+        //wait using an IdlingResourse
+        IdlingResource idlingResource = new ViewIdlingResource(v);
+        onView(ViewMatchers.withId(R.id.action_delete_rule)).check(matches(isEnabled()));
+        //click the delete rule
+        onView(ViewMatchers.withId(R.id.action_delete_rule)).perform(click());
+        //a dialog confirmation should appear
+        onView(ViewMatchers.withText(myActivityRule.getActivity().getString(R.string.tx_calendar_rule_delete_confirm)))
+                .check(matches(isDisplayed()));
+        Espresso.unregisterIdlingResources(idlingResource);
+    }
+
 
     Activity getCurrentActivity() throws Throwable {
         getInstrumentation().waitForIdleSync();

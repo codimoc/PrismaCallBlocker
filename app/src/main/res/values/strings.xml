@@ -41,7 +41,7 @@
     <string name="tx_to_time">To 23:59</string>
     <string name="tx_rule_validation">Rule validation:</string>
     <string name="tx_new_calendar_rule">New calendar rule</string>
-    <string name="ac_edit_calendar_rule">Edit a calendar Rule</string>
+    <string name="ac_edit_calendar_rule">Edit a calendar rule</string>
     <string name="ky_calendar_rule_names">names</string>
     <string name="tx_calendar_rule_name">Name:</string>
     <string name="tx_calendar_rule_format">Format:</string>
@@ -55,13 +55,17 @@
     <string name="tx_logged_call_rule_matched">Rule matched:</string>
     <string name="tx_service_run_start">Start service:</string>
     <string name="tx_service_run_stop">End service:</string>
-    <string name="tx_service_run_tot_received">Total Received:</string>
-    <string name="tx_service_run_tot_triggered">Total Triggered:</string>
-    <string name="mn_save_rule">Save Rule</string>
+    <string name="tx_service_run_tot_received">Total received:</string>
+    <string name="tx_service_run_tot_triggered">Total triggered:</string>
+    <string name="mn_save_rule">Save a rule</string>
     <string name="mn_delete_rule">Delete rule</string>
     <string name="mn_change_rule">Change a rule</string>
     <string name="tx_validation_rule_name_empty">Rule name can not be empty.\nNo saving allowed</string>
     <string name="tx_validation_rule_name_used">Rule name already used.\nNo saving allowed</string>
     <string name="tx_validation_rule_valid">The rule is valid.\nSaving allowed</string>
+    <string name="tx_calendar_rule_delete_confirm">Doy you want to delete this rule?</string>
+    <string name="bt_yes_delete">Yes, delete</string>
+    <string name="bt_no_keep">No, keep</string>
+    <string name="mn_undo_rule">Undo a change</string>
 
 </resources>

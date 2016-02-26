@@ -18,4 +18,9 @@
         android:icon="@drawable/ic_change_circle"
         android:orderInCategory="30"
         com.prismaqf.callblocker:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_undo_rule"
+        android:title="@string/mn_undo_rule"
+        android:icon="@drawable/ic_undo_circle"
+        android:orderInCategory="40"
+        com.prismaqf.callblocker:showAsAction="ifRoom"/>
 </menu>

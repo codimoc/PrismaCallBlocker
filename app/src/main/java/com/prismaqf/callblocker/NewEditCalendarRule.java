@@ -1,8 +1,10 @@
 package com.prismaqf.callblocker;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -165,7 +167,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
     public static final String ACTION_UPDATE  = "com.prismaqf.callblocker:update";
     public static final String ACTION_DELETE  = "com.prismaqf.callblocker:delete";
     private CheckBox cb_Monday, cb_Tuesday, cb_Wednesday, cb_Thursday, cb_Friday, cb_Saturday, cb_Sunday;
-    private MenuItem mi_save, mi_delete, mi_change;
+    private MenuItem mi_save, mi_delete, mi_change, mi_undo;
     private EditText ed_name;
     private TextView tx_validation;
     private Button bn_from, bn_to, bn_alldays, bn_nodays, bn_workdays, bn_we;
@@ -262,6 +264,8 @@ public class NewEditCalendarRule extends ActionBarActivity {
             mi_save = menu.findItem(R.id.action_save_rule);
             mi_delete = menu.findItem(R.id.action_delete_rule);
             mi_change = menu.findItem(R.id.action_change_rule);
+            mi_undo = menu.findItem(R.id.action_undo_rule);
+            mi_undo.setVisible(false);
             if (myAction.equals(ACTION_CREATE)) {
                 mi_delete.setVisible(false);
                 mi_change.setVisible(false);
@@ -300,12 +304,16 @@ public class NewEditCalendarRule extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        //todo: add undo and back action
         switch (id) {
             case R.id.action_save_rule:
                 saveCalendarRule();
                 return true;
             case R.id.action_change_rule:
                 changeCalendarRule();
+                return true;
+            case R.id.action_undo_rule:
+                undoChanges();
                 return true;
             case R.id.action_delete_rule:
                 deleteCalendarRule();
@@ -412,9 +420,14 @@ public class NewEditCalendarRule extends ActionBarActivity {
     }
 
     private void validateActions() {
+        //todo use text field at the bottom for hints
         mi_save.setVisible(!myNewRule.equals(myOrigRule) && isNameValid);
         mi_delete.setVisible(myAction.equals(ACTION_UPDATE) && ptRule == myOrigRule);
         mi_change.setVisible(myAction.equals(ACTION_UPDATE) && ptRule == myOrigRule);
+        mi_undo.setVisible(myAction.equals(ACTION_UPDATE) &&
+                ptRule == myNewRule &&
+                !myNewRule.equals(myOrigRule) &&
+                isNameValid);
     }
 
     private void enableWidgets(boolean nameFlag, boolean widgetFlag) {
@@ -445,8 +458,29 @@ public class NewEditCalendarRule extends ActionBarActivity {
         validateActions();
     }
 
+    private void undoChanges() {
+        ptRule = myOrigRule;
+        try {
+            myNewRule  = (CalendarRule)myOrigRule.clone();
+        } catch (CloneNotSupportedException e) {
+            Log.e(TAG, "Could not clone original rule");
+        }
+        refreshWidgets(true);
+        enableWidgets(false,false);
+    }
+
     private void deleteCalendarRule() {
-        new DbOperation(ACTION_DELETE,myRuleId).execute(ptRule);
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.tx_calendar_rule_delete_confirm)
+                .setCancelable(false)
+                .setPositiveButton(R.string.bt_yes_delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new DbOperation(ACTION_DELETE, myRuleId).execute(ptRule);
+                    }
+                })
+                .setNegativeButton(R.string.bt_no_keep,null)
+                .show();
     }
 
 
