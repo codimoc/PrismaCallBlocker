@@ -30,24 +30,39 @@
         </activity>
         <activity android:name=".ShowServiceRuns"
                   android:label="@string/ac_show_runs">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CallBlockerManager" />
+
         </activity>
 
         <activity android:name=".ShowLoggedCalls"
-            android:label="@string/ac_show_calls">
+                  android:label="@string/ac_show_calls">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CallBlockerManager" />
         </activity>
 
         <activity android:name=".EditCalendarRules"
-            android:label="@string/ac_show_calendar_rules">
+                  android:label="@string/ac_show_calendar_rules">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CallBlockerManager" />
         </activity>
 
         <activity android:name=".SettingActivity"
                   android:label="@string/ac_setting">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CallBlockerManager" />
 
         </activity>
 
         <activity android:name=".NewEditCalendarRule"
-            android:label="@string/ac_edit_calendar_rule">
-
+                  android:label="@string/ac_edit_calendar_rule">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".EditCalendarRules" />
         </activity>
 
         <service

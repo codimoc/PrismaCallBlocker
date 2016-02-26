@@ -67,5 +67,7 @@
     <string name="bt_yes_delete">Yes, delete</string>
     <string name="bt_no_keep">No, keep</string>
     <string name="mn_undo_rule">Undo a change</string>
+    <string name="tx_validation_rule_no_changes">No changes yet.\nSaving not allowed</string>
+    <string name="tx_validation_rule_has_changed">Rule has changed.\nSaving or undo changes is allowed</string>
 
 </resources>

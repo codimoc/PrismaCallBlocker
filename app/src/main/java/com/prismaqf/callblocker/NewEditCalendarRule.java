@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -162,7 +163,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
     public static final String KEY_ISNAMEVALID  = "com.prismaqft.callblocker:namevalid";
     public static final String KEY_RULENAMES  = "com.prismaqft.callblocker:rulenames";
     public static final String KEY_PTRULE  = "com.prismaqft.callblocker:ptrule";
-    public static final String KEY_RULEID = "com.prismaqft.callblocker:ruleid";;
+    public static final String KEY_RULEID = "com.prismaqft.callblocker:ruleid";
     public static final String ACTION_CREATE  = "com.prismaqf.callblocker:create";
     public static final String ACTION_UPDATE  = "com.prismaqf.callblocker:update";
     public static final String ACTION_DELETE  = "com.prismaqf.callblocker:delete";
@@ -226,6 +227,9 @@ public class NewEditCalendarRule extends ActionBarActivity {
 
             enableWidgets(true,true);
         }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 
 
@@ -304,7 +308,6 @@ public class NewEditCalendarRule extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //todo: add undo and back action
         switch (id) {
             case R.id.action_save_rule:
                 saveCalendarRule();
@@ -317,6 +320,9 @@ public class NewEditCalendarRule extends ActionBarActivity {
                 return true;
             case R.id.action_delete_rule:
                 deleteCalendarRule();
+                return true;
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -420,7 +426,6 @@ public class NewEditCalendarRule extends ActionBarActivity {
     }
 
     private void validateActions() {
-        //todo use text field at the bottom for hints
         mi_save.setVisible(!myNewRule.equals(myOrigRule) && isNameValid);
         mi_delete.setVisible(myAction.equals(ACTION_UPDATE) && ptRule == myOrigRule);
         mi_change.setVisible(myAction.equals(ACTION_UPDATE) && ptRule == myOrigRule);
@@ -428,6 +433,13 @@ public class NewEditCalendarRule extends ActionBarActivity {
                 ptRule == myNewRule &&
                 !myNewRule.equals(myOrigRule) &&
                 isNameValid);
+        if (myAction.equals(ACTION_UPDATE)) {
+            if (myNewRule.equals(myOrigRule))
+                tx_validation.setText(R.string.tx_validation_rule_no_changes);
+            else
+                tx_validation.setText(R.string.tx_validation_rule_has_changed);
+        }
+
     }
 
     private void enableWidgets(boolean nameFlag, boolean widgetFlag) {

@@ -130,6 +130,32 @@ public class UpdateCalendarRuleTest {
         Espresso.unregisterIdlingResources(idlingResource);
     }
 
+    @Test
+    public void TestUndoAction() throws Throwable {
+        onView(ViewMatchers.withText(TEST_RULE)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText(TEST_RULE)).perform(click());
+        View v = getCurrentActivity().findViewById(R.id.edit_calendar_rule_name);
+        //wait using an IdlingResourse
+        IdlingResource idlingResource = new ViewIdlingResource(v);
+        //go in edit mode
+        onView(ViewMatchers.withId(R.id.action_change_rule)).perform(click());
+        //now make a change
+        onView(ViewMatchers.withId(R.id.bt_no_days)).perform(click());
+        //the change action is not displayed
+        onView(ViewMatchers.withId(R.id.action_change_rule)).check(doesNotExist());
+        //but save and undo should appear after the change
+        onView(ViewMatchers.withId(R.id.action_save_rule)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withId(R.id.action_undo_rule)).check(matches(isDisplayed()));
+        //now undo
+        onView(ViewMatchers.withId(R.id.action_undo_rule)).perform(click());
+        //change button should re-appear
+        onView(ViewMatchers.withId(R.id.action_change_rule)).check(matches(isDisplayed()));
+        //and undo disappear
+        onView(ViewMatchers.withId(R.id.action_undo_rule)).check(doesNotExist());
+
+        Espresso.unregisterIdlingResources(idlingResource);
+    }
+
 
     Activity getCurrentActivity() throws Throwable {
         getInstrumentation().waitForIdleSync();
