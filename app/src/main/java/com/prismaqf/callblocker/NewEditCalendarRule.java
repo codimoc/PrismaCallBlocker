@@ -20,9 +20,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -321,6 +324,9 @@ public class NewEditCalendarRule extends ActionBarActivity {
             case R.id.action_delete_rule:
                 deleteCalendarRule();
                 return true;
+            case R.id.action_help_rule:
+                showHelp();
+                return true;
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
@@ -478,7 +484,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
             Log.e(TAG, "Could not clone original rule");
         }
         refreshWidgets(true);
-        enableWidgets(false,false);
+        enableWidgets(false, false);
     }
 
     private void deleteCalendarRule() {
@@ -493,6 +499,28 @@ public class NewEditCalendarRule extends ActionBarActivity {
                 })
                 .setNegativeButton(R.string.bt_no_keep,null)
                 .show();
+    }
+
+    private void showHelp() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(R.string.tx_calendar_rule_help_title);
+
+        WebView wv = new WebView(this);
+        wv.loadUrl("file:///android_asset/html/calendar_rule_edit.html");
+        ScrollView scroll = new ScrollView(this);
+        scroll.setVerticalScrollBarEnabled(true);
+        scroll.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                                          ViewGroup.LayoutParams.MATCH_PARENT));
+        scroll.addView(wv);
+
+        alert.setView(scroll);
+        alert.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
     }
 
 

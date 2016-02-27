@@ -10,7 +10,7 @@
         com.prismaqf.callblocker:showAsAction="ifRoom"/>
     <item android:id="@+id/action_delete_rule"
         android:title="@string/mn_delete_rule"
-        android:icon="@drawable/ic_minus_circle"
+        android:icon="@drawable/ic_delete_circle"
         android:orderInCategory="20"
         com.prismaqf.callblocker:showAsAction="ifRoom"/>
     <item android:id="@+id/action_change_rule"
@@ -23,4 +23,9 @@
         android:icon="@drawable/ic_undo_circle"
         android:orderInCategory="40"
         com.prismaqf.callblocker:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_help_rule"
+        android:title="@string/mn_help"
+        android:icon="@drawable/ic_help_circle"
+        android:orderInCategory="50"
+        com.prismaqf.callblocker:showAsAction="always"/>
 </menu>
