@@ -3,9 +3,7 @@ package com.prismaqf.callblocker.rules;
 import android.os.Bundle;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import static org.mockito.Mockito.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
@@ -92,20 +90,6 @@ public class TestCalendarRule {
         assertTrue("Friday is in set", set.contains(CalendarRule.DayOfWeek.FRIDAY));
         assertFalse("Saturday is not in set", set.contains(CalendarRule.DayOfWeek.SATURDAY));
         assertTrue("Sunday is in set", set.contains(CalendarRule.DayOfWeek.SUNDAY));
-    }
-
-    @Test
-    public void testMakeRuleFromBundle() {
-        Bundle b = Mockito.mock(Bundle.class);
-        when(b.getString(CalendarRule.KEY_NAME)).thenReturn("dummy");
-        when(b.getInt(CalendarRule.KEY_DAY_MASK,0)).thenReturn(86);
-        when(b.getInt(CalendarRule.KEY_START_HOUR,0)).thenReturn(5);
-        when(b.getInt(CalendarRule.KEY_START_MIN,0)).thenReturn(25);
-        when(b.getInt(CalendarRule.KEY_END_HOUR,23)).thenReturn(21);
-        when(b.getInt(CalendarRule.KEY_END_MIN,59)).thenReturn(7);
-
-        CalendarRule rule = CalendarRule.makeRule(b);
-        assertEquals("Rule summary", "Name=dummy, Days=-TW-F-S, from 05:25 to 21:07", rule.toString());
     }
 
     @Test

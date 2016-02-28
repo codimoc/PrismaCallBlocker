@@ -214,7 +214,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
                 myNewRule  = (CalendarRule)myOrigRule.clone();
             } catch (CloneNotSupportedException e) {
                 Log.e(TAG, "Could not clone original rule");
-                myNewRule =  CalendarRule.makeRule(intent.getExtras());
+                myNewRule =  intent.getParcelableExtra(KEY_ORIG);
             }
             myRuleId = intent.getLongExtra(KEY_RULEID,0);
             ptRule = myOrigRule;

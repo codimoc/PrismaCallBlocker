@@ -1,6 +1,5 @@
 package com.prismaqf.callblocker.rules;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,13 +13,6 @@ import java.util.Locale;
  * @author ConteDiMonteCristo.
  */
 public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
-
-    public final static String KEY_NAME = "com.prismaqf.callblocker:name";
-    public final static String KEY_DAY_MASK = "com.prismaqf.callblocker:daymask";
-    public final static String KEY_START_HOUR = "com.prismaqf.callblocker:starthour";
-    public final static String KEY_START_MIN = "com.prismaqf.callblocker:startmin";
-    public final static String KEY_END_HOUR = "com.prismaqf.callblocker:endhour";
-    public final static String KEY_END_MIN = "com.prismaqf.callblocker:endmin";
 
     private String name;
     private EnumSet<DayOfWeek> dayMask;
@@ -155,17 +147,6 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
             rule.setEndHour(Integer.valueOf(end[0]));
             rule.setEndMin(Integer.valueOf(end[1]));
         }
-        return rule;
-    }
-
-    public static CalendarRule makeRule(Bundle extras) {
-        CalendarRule rule = new CalendarRule();
-        rule.setName(extras.getString(KEY_NAME));
-        rule.setDayMask(makeMask(extras.getInt(KEY_DAY_MASK,0)));
-        rule.setStartHour(extras.getInt(KEY_START_HOUR,0));
-        rule.setStartMin(extras.getInt(KEY_START_MIN,0));
-        rule.setEndHour(extras.getInt(KEY_END_HOUR,23));
-        rule.setEndMin(extras.getInt(KEY_END_MIN,59));
         return rule;
     }
 
