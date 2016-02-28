@@ -20,11 +20,11 @@ import com.prismaqf.callblocker.sql.DbHelper;
  */
 public abstract class EditListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    protected SimpleCursorAdapter myAdapter;
-    protected SQLiteDatabase myDbConnection;
+    private SimpleCursorAdapter myAdapter;
+    SQLiteDatabase myDbConnection;
 
-    public abstract SimpleCursorAdapter getAdapter();
-    public abstract void initLoader();
+    protected abstract SimpleCursorAdapter getAdapter();
+    protected abstract void initLoader();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){

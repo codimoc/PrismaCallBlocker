@@ -16,8 +16,8 @@ import com.prismaqf.callblocker.sql.DbHelper;
  */
 public abstract class ShowListActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>  {
 
-    protected SimpleCursorAdapter myAdapter;
-    protected SQLiteDatabase myDbConnection;
+    private SimpleCursorAdapter myAdapter;
+    SQLiteDatabase myDbConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,6 @@ public abstract class ShowListActivity extends ListActivity implements LoaderMan
         myAdapter.swapCursor(null);
     }
 
-    public abstract SimpleCursorAdapter getAdapter();
-    public abstract void initLoader();
+    protected abstract SimpleCursorAdapter getAdapter();
+    protected abstract void initLoader();
 }

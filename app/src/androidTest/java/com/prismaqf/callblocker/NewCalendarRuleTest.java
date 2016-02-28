@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.EnumSet;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
@@ -222,7 +221,7 @@ public class NewCalendarRuleTest {
                         ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    Activity getCurrentActivity() throws Throwable {
+    private Activity getCurrentActivity() {
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
         getInstrumentation().runOnMainSync(new Runnable() {

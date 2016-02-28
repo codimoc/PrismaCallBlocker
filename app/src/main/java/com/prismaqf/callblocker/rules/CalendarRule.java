@@ -133,7 +133,7 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
         endMin = in.readInt();
     }
 
-    public static CalendarRule makeRule(com.prismaqf.callblocker.sql.CalendarRule sqlrule) throws Exception {
+    public static CalendarRule makeRule(com.prismaqf.callblocker.sql.CalendarRule sqlrule) {
         CalendarRule rule = new CalendarRule();
         rule.setName(sqlrule.getName());
         rule.setDayMask(makeMask(sqlrule.getDaymask()));
@@ -190,7 +190,7 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
             SATURDAY(6),
             SUNDAY(7);
 
-        private int value;
+        private final int value;
         DayOfWeek(int value) {
             this.value = value;
         }

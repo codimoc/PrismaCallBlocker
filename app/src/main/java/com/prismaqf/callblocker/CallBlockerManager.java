@@ -34,7 +34,7 @@ public class CallBlockerManager extends ActionBarActivity {
     private CallDetectService myService;
     private boolean isBound;
 
-    private ServiceConnection myConnection = new ServiceConnection() {
+    private final ServiceConnection myConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {

@@ -4,9 +4,7 @@ package com.prismaqf.callblocker;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
 import android.support.test.espresso.Espresso;
-import android.support.test.espresso.IdlingPolicies;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.core.deps.guava.collect.Iterables;
 import android.support.test.espresso.matcher.ViewMatchers;
@@ -157,7 +155,7 @@ public class UpdateCalendarRuleTest {
     }
 
 
-    Activity getCurrentActivity() throws Throwable {
+    private Activity getCurrentActivity() {
         getInstrumentation().waitForIdleSync();
         final Activity[] activity = new Activity[1];
         getInstrumentation().runOnMainSync(new Runnable() {

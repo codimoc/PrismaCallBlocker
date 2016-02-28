@@ -6,7 +6,7 @@ import java.util.Date;
  * Interface for checking if a rule is active at a given moment in time
  * @author ConteDiMonteCristo
  */
-public interface ICalendarRule {
+interface ICalendarRule {
 
     /**
      * Check if a rule is currently active

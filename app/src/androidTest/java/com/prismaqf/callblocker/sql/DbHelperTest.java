@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -193,7 +192,7 @@ public class DbHelperTest {
 
     @Test
     public void CalendarRuleCheckTimeStamp() {
-        long id = CalendarRule.InsertRow(myDb, "first", 9, "05:45", "21:12");
+        CalendarRule.InsertRow(myDb, "first", 9, "05:45", "21:12");
         Cursor c = CalendarRule.LatestCalendarRules(myDb,1,true);
         c.moveToFirst();
         String ts = c.getString(c.getColumnIndex(DbContract.CalendarRules.COLUMN_NAME_TIMESTAMP));

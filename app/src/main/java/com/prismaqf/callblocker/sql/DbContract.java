@@ -10,15 +10,15 @@ public class DbContract {
     private DbContract() {}
 
     //general purpose tokens
-    public static final String COMMA_SEP = ", ";
-    public static final String OPEN_BRAC = " (";
-    public static final String CLOSE_BRAC = ") ";
-    public static final String IPK = " INTEGER PRIMARY KEY NOT NULL, ";
-    public static final String TYPE_TEXT = " TEXT";
-    public static final String TYPE_INT = " INTEGER";
-    public static final String NOT_NULL = " NOT NULL";
+    private static final String COMMA_SEP = ", ";
+    private static final String OPEN_BRAC = " (";
+    private static final String CLOSE_BRAC = ") ";
+    private static final String IPK = " INTEGER PRIMARY KEY NOT NULL, ";
+    private static final String TYPE_TEXT = " TEXT";
+    private static final String TYPE_INT = " INTEGER";
+    private static final String NOT_NULL = " NOT NULL";
     public static final String DATE_FORMAT = "d MMM yyyy 'at' HH:mm:ss z";
-    public static final String DEF_TIMESTAMP = " DEFAULT (DATETIME('now','localtime'))";
+    private static final String DEF_TIMESTAMP = " DEFAULT (DATETIME('now','localtime'))";
 
     /**
      * Schema for a table on service runs: a service run contains the

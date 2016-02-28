@@ -2,16 +2,8 @@ package com.prismaqf.callblocker.sql;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * @author ConteDiMonteCristo.
@@ -82,7 +74,6 @@ public class LoggedCall {
      * @return the new call id
      */
     public static long InsertRow(SQLiteDatabase db, long runid, String number, String description, Integer ruleid) {
-        Calendar cal = Calendar.getInstance(Locale.getDefault());
         ContentValues vals = new ContentValues();
         vals.put(DbContract.LoggedCalls.COLUMN_NAME_RUNID,runid);
         if (number == null)

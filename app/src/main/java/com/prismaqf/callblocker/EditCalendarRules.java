@@ -15,7 +15,6 @@ import com.prismaqf.callblocker.sql.CalendarRule;
 import com.prismaqf.callblocker.sql.DbHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Base activity for editable list with action bar

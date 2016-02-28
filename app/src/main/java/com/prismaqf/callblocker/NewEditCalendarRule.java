@@ -75,9 +75,9 @@ public class NewEditCalendarRule extends ActionBarActivity {
     @SuppressLint("ValidFragment")
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
-        CalendarRule rule;
-        String startEnd;
-        NewEditCalendarRule parent;
+        final CalendarRule rule;
+        final String startEnd;
+        final NewEditCalendarRule parent;
 
 
         public TimePickerFragment(CalendarRule rule, String startEnd, NewEditCalendarRule parent) {
@@ -161,15 +161,15 @@ public class NewEditCalendarRule extends ActionBarActivity {
 
     private static final String TAG = NewEditCalendarRule.class.getCanonicalName();
     public static final String ACTION_KEY  = "com.prismaqft.callblocker:key";
-    public static final String KEY_NEW  = "com.prismaqft.callblocker:keynew";
+    private static final String KEY_NEW  = "com.prismaqft.callblocker:keynew";
     public static final String KEY_ORIG  = "com.prismaqft.callblocker:keyorig";
-    public static final String KEY_ISNAMEVALID  = "com.prismaqft.callblocker:namevalid";
-    public static final String KEY_RULENAMES  = "com.prismaqft.callblocker:rulenames";
-    public static final String KEY_PTRULE  = "com.prismaqft.callblocker:ptrule";
+    private static final String KEY_ISNAMEVALID  = "com.prismaqft.callblocker:namevalid";
+    private static final String KEY_RULENAMES  = "com.prismaqft.callblocker:rulenames";
+    private static final String KEY_PTRULE  = "com.prismaqft.callblocker:ptrule";
     public static final String KEY_RULEID = "com.prismaqft.callblocker:ruleid";
     public static final String ACTION_CREATE  = "com.prismaqf.callblocker:create";
     public static final String ACTION_UPDATE  = "com.prismaqf.callblocker:update";
-    public static final String ACTION_DELETE  = "com.prismaqf.callblocker:delete";
+    private static final String ACTION_DELETE  = "com.prismaqf.callblocker:delete";
     private CheckBox cb_Monday, cb_Tuesday, cb_Wednesday, cb_Thursday, cb_Friday, cb_Saturday, cb_Sunday;
     private MenuItem mi_save, mi_delete, mi_change, mi_undo;
     private EditText ed_name;

@@ -1,6 +1,5 @@
 package com.prismaqf.callblocker.sql;
 
-import android.app.Service;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -12,7 +11,6 @@ import com.prismaqf.callblocker.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Helper class extending SQLiteOpenHelper to manage the DB in Android fashion
@@ -27,7 +25,7 @@ public class DbHelper extends SQLiteOpenHelper{
      * implementation they throw an exception becase a single version is
      * assumed. The proper implentation should try to preserve the data
      */
-    public static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 9;
     private static final String TAG = DbHelper.class.getCanonicalName();
 
     public DbHelper(Context context) {
@@ -87,7 +85,7 @@ public class DbHelper extends SQLiteOpenHelper{
         throw new SQLException(msg);
     }
 
-    public void dropAllTables(SQLiteDatabase db) {
+    private void dropAllTables(SQLiteDatabase db) {
         String msg = String.format("Dropping all tables from DB %s",db.getPath());
         Log.w(TAG, msg);
         db.execSQL(DbContract.CalendarRules.SQL_DROP_TABLE);
