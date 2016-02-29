@@ -2,6 +2,8 @@ package com.prismaqf.callblocker.rules;
 
 import org.junit.Test;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static junit.framework.Assert.assertEquals;
@@ -136,5 +138,57 @@ public class TestFilterRule {
         assertFalse("No pattern to match", fr.Matches("4512779"));
         assertFalse("No pattern to match", fr.Matches(""));
         assertFalse("No pattern to match", fr.Matches(null));
+    }
+
+    @Test
+    public void TestEquality() {
+        FilterRule fr1 = new FilterRule("first","The first rule");
+        FilterRule fr2 = new FilterRule("first","The first rule");
+        assertEquals("The two rules are equal",fr1,fr2);
+        assertEquals("The hash code are the same",fr1.hashCode(),fr2.hashCode());
+        fr2.setDescription("This is actually the second");
+        assertFalse("The two rules are different", fr1.equals(fr2));
+        assertFalse("The hash code are different", fr1.hashCode() == fr2.hashCode());
+        fr2.setDescription(fr1.getDescription());
+        fr2.setName("second");
+        assertFalse("The two rules are different", fr1.equals(fr2));
+        assertFalse("The hash code are different", fr1.hashCode() == fr2.hashCode());
+        fr2.setName(fr1.getName());
+        assertEquals("The two rules are equal", fr1, fr2);
+        assertEquals("The hash code are the same", fr1.hashCode(), fr2.hashCode());
+        fr1.addPattern("123");
+        assertFalse("The two rules are different (fr1+Pattern)", fr1.equals(fr2));
+        assertFalse("The hash code are different (fr1+Pattern)", fr1.hashCode() == fr2.hashCode());
+        fr2.addPattern("456");
+        assertFalse("The two rules are different ( diff. Pattern)", fr1.equals(fr2));
+        assertFalse("The hash code are different (diff. Pattern)", fr1.hashCode() == fr2.hashCode());
+        fr2.removePattern("456");
+        fr2.addPattern("123");
+        assertEquals("The two rules are equal (1 Pattern)", fr1, fr2);
+        assertEquals("The hash code are the same (1 Pattern)", fr1.hashCode(), fr2.hashCode());
+        fr1.addPattern("456");
+        fr2.addPattern("456");
+        assertEquals("The two rules are equal (2 Pattern)", fr1, fr2);
+        assertEquals("The hash code are the same (2 Pattern)", fr1.hashCode(), fr2.hashCode());
+        fr2.removePattern("456");
+        fr2.addPattern("4*56");
+        assertFalse("The two rules are different ( 2nd Pattern diff.)", fr1.equals(fr2));
+        assertFalse("The hash code are different ( 2nd. Pattern diff)", fr1.hashCode() == fr2.hashCode());
+    }
+
+    @Test
+    public void TestSetInclusion() {
+        FilterRule fr1 = new FilterRule("first","The first rule");
+        Set<FilterRule> theSet = new HashSet<>();
+        theSet.add(fr1);
+        assertTrue("Test set inclusion",theSet.contains(fr1));
+    }
+
+    @Test
+    public void TestCloning() throws CloneNotSupportedException {
+        FilterRule fr1 = new FilterRule("first","The first rule");
+        FilterRule fr2 = (FilterRule)fr1.clone();
+        assertEquals("Cloning works properly",fr1,fr2);
+        assertFalse("Equality is not identity",fr1==fr2);
     }
 }

@@ -130,11 +130,15 @@ public class UpdateCalendarRuleTest {
 
     @Test
     public void TestUndoAction() throws Throwable {
+        Activity ca = getCurrentActivity();
+        View v1 = ca.findViewById(R.id.list_fragment_holder);
+        IdlingResource r1 = new ViewIdlingResource(v1);
+
         onView(ViewMatchers.withText(TEST_RULE)).check(matches(isDisplayed()));
         onView(ViewMatchers.withText(TEST_RULE)).perform(click());
-        View v = getCurrentActivity().findViewById(R.id.edit_calendar_rule_name);
+        View v2 = getCurrentActivity().findViewById(R.id.edit_calendar_rule_name);
         //wait using an IdlingResourse
-        IdlingResource idlingResource = new ViewIdlingResource(v);
+        IdlingResource r2 = new ViewIdlingResource(v2);
         //go in edit mode
         onView(ViewMatchers.withId(R.id.action_change_rule)).perform(click());
         //now make a change
@@ -151,7 +155,8 @@ public class UpdateCalendarRuleTest {
         //and undo disappear
         onView(ViewMatchers.withId(R.id.action_undo_rule)).check(doesNotExist());
 
-        Espresso.unregisterIdlingResources(idlingResource);
+        Espresso.unregisterIdlingResources(r1);
+        Espresso.unregisterIdlingResources(r2);
     }
 
 

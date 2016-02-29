@@ -90,4 +90,35 @@ public class DbContract {
                 CLOSE_BRAC;
         public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
+
+    public static abstract class FilterRules  implements BaseColumns {
+        public static final String TABLE_NAME = "filterrules";
+        public static final String COLUMN_NAME_RULENAME = "name";
+        public static final String COLUMN_NAME_DESCRIPTION = "description";
+        public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
+
+        //sql table creation and deletion
+        public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + OPEN_BRAC +
+                _ID + IPK +
+                COLUMN_NAME_RULENAME + TYPE_TEXT + NOT_NULL + COMMA_SEP +
+                COLUMN_NAME_DESCRIPTION + TYPE_TEXT + COMMA_SEP +
+                COLUMN_NAME_TIMESTAMP + TYPE_TEXT + DEF_TIMESTAMP +
+                CLOSE_BRAC;
+        public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+    }
+
+    public static abstract class FilterPatterns implements BaseColumns {
+        public static final String TABLE_NAME = "filterpatterns";
+        public static final String COLUMN_NAME_RULEID = "ruleid";
+        public static final String COLUMN_NAME_PATTERN = "pattern";
+        public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
+        //sql table creation and deletion
+        public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + OPEN_BRAC +
+                _ID + IPK +
+                COLUMN_NAME_RULEID + TYPE_INT + NOT_NULL + COMMA_SEP +
+                COLUMN_NAME_PATTERN + TYPE_TEXT + NOT_NULL + COMMA_SEP +
+                COLUMN_NAME_TIMESTAMP + TYPE_TEXT + DEF_TIMESTAMP +
+                CLOSE_BRAC;
+        public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+    }
 }

@@ -29,7 +29,7 @@ public class FilterRule implements IFilterRule, Cloneable, Parcelable{
      * @param name the name of the filter (e.g. blacklist)
      * @param description a description of the purpouse of this filter
      */
-    FilterRule(String name, String description) {
+    public FilterRule(String name, String description) {
         this.name = name;
         this.description = description;
         patterns = new HashMap<>();
