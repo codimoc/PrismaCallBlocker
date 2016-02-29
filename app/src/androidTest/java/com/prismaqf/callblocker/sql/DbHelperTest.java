@@ -7,6 +7,8 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 
+import com.prismaqf.callblocker.rules.CalendarRule;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,14 +25,12 @@ public class DbHelperTest {
 
     private static final String DB_NAME = "unitTest.db";
 
-    private Context myContext;
-    private DbHelper myDbHelper;
     private SQLiteDatabase myDb;
 
     @Before
     public void before() {
-        myContext = InstrumentationRegistry.getTargetContext();
-        myDbHelper = new DbHelper(myContext,DB_NAME);
+        Context myContext = InstrumentationRegistry.getTargetContext();
+        DbHelper myDbHelper = new DbHelper(myContext, DB_NAME);
         myDb = myDbHelper.getWritableDatabase();
         myDb.delete(DbContract.ServiceRuns.TABLE_NAME,null,null);
         myDb.delete(DbContract.LoggedCalls.TABLE_NAME,null,null);
@@ -48,7 +48,7 @@ public class DbHelperTest {
         Date start = cal.getTime();
         cal.add(Calendar.HOUR, 1);
         Date end = cal.getTime();
-        ServiceRun.InsertRow(myDb,start,end,2,1);
+        ServiceRunProvider.InsertRow(myDb, new ServiceRunProvider.ServiceRun(-1,start, end, 2, 1));
         Cursor c = myDb.rawQuery("select * from serviceruns", null);
         assertEquals("one row expected", 1, c.getCount());
         c.moveToFirst();
@@ -62,7 +62,7 @@ public class DbHelperTest {
 
     @Test
     public void GetLatestServiceRunWhenTableIsEmpty() {
-        ServiceRun latest = ServiceRun.LatestRun(myDb);
+        ServiceRunProvider.ServiceRun latest = ServiceRunProvider.LatestRun(myDb);
         assertEquals("dummy id",0, latest.getId());
         assertEquals("received",0, latest.getNumReceived());
         assertEquals("triggered",0, latest.getNumTriggered());
@@ -74,13 +74,13 @@ public class DbHelperTest {
         Date start = cal.getTime();
         cal.add(Calendar.HOUR, 1);
         Date end = cal.getTime();
-        ServiceRun.InsertRow(myDb,start,end,2,1);
+        ServiceRunProvider.InsertRow(myDb, new ServiceRunProvider.ServiceRun(-1, start, end, 2, 1));
         cal.add(Calendar.HOUR, 1);
         start = cal.getTime();
         cal.add(Calendar.HOUR, 1);
         end = cal.getTime();
-        ServiceRun.InsertRow(myDb,start,end,4,1);
-        ServiceRun latest = ServiceRun.LatestRun(myDb);
+        ServiceRunProvider.InsertRow(myDb, new ServiceRunProvider.ServiceRun(-1,start, end, 4, 1));
+        ServiceRunProvider.ServiceRun latest = ServiceRunProvider.LatestRun(myDb);
         assertEquals("id",2, latest.getId());
         assertEquals("received",4, latest.getNumReceived());
         assertEquals("triggered",1, latest.getNumTriggered());
@@ -89,14 +89,14 @@ public class DbHelperTest {
     @Test
     public void TestRecordWhenStartStoppingTheService() {
         //...when the service starts
-        long id = ServiceRun.InsertAtServiceStart(myDb);
+        long id = ServiceRunProvider.InsertAtServiceStart(myDb);
         //end of service
-        ServiceRun.UpdateAtServiceStop(myDb, id, 2, 1);
+        ServiceRunProvider.UpdateAtServiceStop(myDb, id, 2, 1);
         //service starts again
-        id = ServiceRun.InsertAtServiceStart(myDb);
+        id = ServiceRunProvider.InsertAtServiceStart(myDb);
         //2nd end of service
-        ServiceRun.UpdateAtServiceStop(myDb, id, 3, 1);
-        ServiceRun latest = ServiceRun.LatestRun(myDb);
+        ServiceRunProvider.UpdateAtServiceStop(myDb, id, 3, 1);
+        ServiceRunProvider.ServiceRun latest = ServiceRunProvider.LatestRun(myDb);
         //tests
         assertEquals("There should be two records",2, latest.getId());
         assertEquals("Total of 3 calls received",3, latest.getNumReceived());
@@ -105,17 +105,17 @@ public class DbHelperTest {
 
     @Test
     public void LoggedCallsInsertRows() {
-        LoggedCall.InsertRow(myDb, 15, "123", "a dummy", null);
-        LoggedCall.InsertRow(myDb, 21, "321", "another dummy", 1);
-        Cursor c = LoggedCall.LatestCalls(myDb,5);
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15,-1, "123", "a dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(21,-1, "321", "another dummy"));
+        Cursor c = LoggedCallProvider.LatestCalls(myDb, 5);
         assertEquals("There should be two records",2,c.getCount());
     }
 
     @Test
     public void LoggedCallsLatest() {
-        LoggedCall.InsertRow(myDb,15, "123","a dummy",null);
-        LoggedCall.InsertRow(myDb, 21,"321", "another dummy", 1);
-        Cursor c = LoggedCall.LatestCalls(myDb,5);
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15,-1, "123", "a dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(21,1, "321", "another dummy"));
+        Cursor c = LoggedCallProvider.LatestCalls(myDb, 5);
         //they should appear in reverse order
         c.moveToFirst();
         assertEquals("Check the second run id", 21, c.getInt(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_RUNID)));
@@ -132,8 +132,8 @@ public class DbHelperTest {
 
     @Test
     public void LoggedCallCheckTimeStamp() {
-        LoggedCall.InsertRow(myDb, 15, "123", "a dummy", null);
-        Cursor c = LoggedCall.LatestCalls(myDb,5);
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15,-1, "123", "a dummy"));
+        Cursor c = LoggedCallProvider.LatestCalls(myDb, 5);
         c.moveToFirst();
         String ts = c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_TIMESTAMP));
         assertNotNull("The timestamp is not null", ts);
@@ -142,17 +142,17 @@ public class DbHelperTest {
 
     @Test
     public void InsertCalendarRule(){
-        CalendarRule.InsertRow(myDb, "first", 9, "05:45", "21:12");
-        CalendarRule.InsertRow(myDb, "second", 96, null, null);
-        Cursor c = CalendarRule.AllCalendarRules(myDb);
+        CalendarRuleProvider.InsertRow(myDb, new CalendarRule("first", CalendarRule.makeMask(9), 5,45,21,12));
+        CalendarRuleProvider.InsertRow(myDb, new CalendarRule("second", CalendarRule.makeMask(96)));
+        Cursor c = CalendarRuleProvider.AllCalendarRules(myDb);
         assertEquals("There should be two records", 2, c.getCount());
     }
 
     @Test
     public void RetrieveCalendarRules() {
-        CalendarRule.InsertRow(myDb,"first",9,"05:45","21:12");
-        CalendarRule.InsertRow(myDb,"second",96,null,null);
-        Cursor c = CalendarRule.AllCalendarRules(myDb);
+        CalendarRuleProvider.InsertRow(myDb, new CalendarRule("first", CalendarRule.makeMask(9), 5,45,21,12));
+        CalendarRuleProvider.InsertRow(myDb, new CalendarRule("second", CalendarRule.makeMask(96)));
+        Cursor c = CalendarRuleProvider.AllCalendarRules(myDb);
         c.moveToFirst();
         assertEquals("Name of first", "first", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_RULENAME)));
         assertEquals("Mask of first",9,c.getInt(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_DAYMASK)));
@@ -169,9 +169,9 @@ public class DbHelperTest {
 
     @Test
     public void UpdateCalendarRule() {
-        long id =  CalendarRule.InsertRow(myDb,"first",9,"05:45","21:12");
-        CalendarRule.UpdateCalendarRule(myDb, id, 9, "06:05", "21:12");
-        Cursor c = CalendarRule.AllCalendarRules(myDb);
+        long id =  CalendarRuleProvider.InsertRow(myDb, new CalendarRule("first", CalendarRule.makeMask(9), 5, 45, 21, 12));
+        CalendarRuleProvider.UpdateCalendarRule(myDb, id, new CalendarRule("first",CalendarRule.makeMask(9), 6,5,21,12));
+        Cursor c = CalendarRuleProvider.AllCalendarRules(myDb);
         assertEquals("There should be one record1", 1, c.getCount());
         c.moveToFirst();
         assertEquals("Name of first", "first", c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_RULENAME)));
@@ -182,9 +182,9 @@ public class DbHelperTest {
 
     @Test
     public void TestAllNames() {
-        CalendarRule.InsertRow(myDb, "first", 9, "05:45", "21:12");
-        CalendarRule.InsertRow(myDb, "second", 96, null, null);
-        List<String> names = CalendarRule.AllRuleNames(myDb);
+        CalendarRuleProvider.InsertRow(myDb, new CalendarRule("first", CalendarRule.makeMask(9), 5,45,21,12));
+        CalendarRuleProvider.InsertRow(myDb, new CalendarRule("second", CalendarRule.makeMask(96)));
+        List<String> names = CalendarRuleProvider.AllRuleNames(myDb);
         assertEquals("Two names found",2,names.size());
         assertTrue("Name first found", names.contains("first"));
         assertTrue("Name second found", names.contains("second"));
@@ -192,8 +192,8 @@ public class DbHelperTest {
 
     @Test
     public void CalendarRuleCheckTimeStamp() {
-        CalendarRule.InsertRow(myDb, "first", 9, "05:45", "21:12");
-        Cursor c = CalendarRule.LatestCalendarRules(myDb,1,true);
+        CalendarRuleProvider.InsertRow(myDb, new CalendarRule("first", CalendarRule.makeMask(9), 5,45,21,12));
+        Cursor c = CalendarRuleProvider.LatestCalendarRules(myDb, 1, true);
         c.moveToFirst();
         String ts = c.getString(c.getColumnIndex(DbContract.CalendarRules.COLUMN_NAME_TIMESTAMP));
         assertNotNull("The timestamp is not null", ts);
@@ -203,9 +203,8 @@ public class DbHelperTest {
 
     @Test
     public void MakeRuleFromSql() throws Exception {
-        long id = CalendarRule.InsertRow(myDb,"first",9,"05:45","21:12");
-        CalendarRule found = CalendarRule.FindCalendarRule(myDb, id);
-        com.prismaqf.callblocker.rules.CalendarRule theRule = com.prismaqf.callblocker.rules.CalendarRule.makeRule(found);
+        long id =  CalendarRuleProvider.InsertRow(myDb, new CalendarRule("first", CalendarRule.makeMask(9), 5,45,21,12));
+        CalendarRule theRule = CalendarRuleProvider.FindCalendarRule(myDb, id);
         assertEquals("The name","first",theRule.getName());
         assertEquals("DayMask", 9, theRule.getBinaryMask());
         assertEquals("Start Hour", 5, theRule.getStartHour());

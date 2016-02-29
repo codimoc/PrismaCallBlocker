@@ -15,69 +15,71 @@ import java.util.Locale;
 /**
  * @author ConteDiMonteCristo.
  */
-public class ServiceRun {
+public class ServiceRunProvider {
 
-    private static final String TAG = ServiceRun.class.getCanonicalName();
-    private static final String RUNNING = "running";
+    public static class ServiceRun {
+        private final long runId;
+        private final int numTriggered;
+        private final int numReceived;
+        private final Date start;
+        private final Date stop;
 
-    private final long id;
-    private final int numTriggered;
-    private final int numReceived;
-    private final Date start;
-    private final Date stop;
+        public ServiceRun(long runId, Date start, Date stop, int numReceived, int numTriggered) {
+            this.runId = runId;
+            this.start = start;
+            this.stop = stop;
+            this.numReceived = numReceived;
+            this.numTriggered = numTriggered;
+        }
+        public long getId() {return runId;}
 
-    private ServiceRun(long id, Date start, Date stop, int numReceived, int numTriggered) {
-        this.id = id;
-        this.start = start;
-        this.stop = stop;
-        this.numReceived = numReceived;
-        this.numTriggered = numTriggered;
+        public int getNumReceived() {
+            return numReceived;
+        }
+
+        public int getNumTriggered() {
+            return numTriggered;
+        }
+
+        public Date getStart() {
+            return start;
+        }
+
+        public Date getStop() {
+            return stop;
+        }
+
     }
 
+    private static final String TAG = ServiceRunProvider.class.getCanonicalName();
+    private static final String RUNNING = "running";
+
+
+
     public static ServiceRun deserialize(Cursor c) {
-        long myId = c.getLong(c.getColumnIndexOrThrow(DbContract.ServiceRuns._ID));
-        int myReceived  = c.getInt(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED));
-        int myTriggered  = c.getInt(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED));
-        Date myStart = null;
-        Date myStop = null;
+        long runId = c.getInt(c.getColumnIndexOrThrow(DbContract.ServiceRuns._ID));
+        int received  = c.getInt(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED));
+        int triggered  = c.getInt(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED));
+        Date start = null;
+        Date stop = null;
         try {
 
             DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
             String sstart = c.getString(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_START));
             String sstop = c.getString(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_STOP));
-            if (sstart != null) myStart = format.parse(sstart);
-            if (sstop != null && !sstop.equals(RUNNING)) myStop = format.parse(sstop);
+            if (sstart != null) start = format.parse(sstart);
+            if (sstop != null && !sstop.equals(RUNNING)) stop = format.parse(sstop);
         } catch (ParseException e) {
             Log.e(TAG, e.getMessage());
             //throw new SQLException(e.getMessage());
         }
-        return new ServiceRun(myId,myStart,myStop,myReceived,myTriggered);
+        return new ServiceRun(runId, start,stop,received,triggered);
     }
 
     public static void serialize(SQLiteDatabase db, ServiceRun sr) {
-        InsertRow(db,sr.getStart(),sr.getStop(),sr.getNumReceived(),sr.getNumTriggered());
+        InsertRow(db,sr);
     }
 
-
-    public long getId() {
-        return id;
-    }
-
-    public int getNumReceived() {
-        return numReceived;
-    }
-
-    public int getNumTriggered() {
-        return numTriggered;
-    }
-
-    public Date getStart() {
-        return start;
-    }
-
-    public Date getStop() {
-        return stop;
-    }
 
 
     /**
@@ -130,21 +132,18 @@ public class ServiceRun {
     /**
      * Insert a row in the serviceruns table
      * @param db the SQLite connection
-     * @param start the starting time
-     * @param stop the end time
-     * @param numReceived the total number of calls received
-     * @param numTriggered the total number of events triggered
+     * @param sr the service run
      * @return the new run id
      */
-    public static long InsertRow(SQLiteDatabase db, Date start, Date stop, int numReceived, int numTriggered) {
+    public static long InsertRow(SQLiteDatabase db, ServiceRun sr) {
         ContentValues vals = new ContentValues();
         DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
-        if (start != null)
-            vals.put(DbContract.ServiceRuns.COLUMN_NAME_START,format.format(start));
-        if (stop != null)
-            vals.put(DbContract.ServiceRuns.COLUMN_NAME_STOP,format.format(stop));
-        vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED, numReceived);
-        vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED, numTriggered);
+        if (sr.getStart() != null)
+            vals.put(DbContract.ServiceRuns.COLUMN_NAME_START,format.format(sr.getStart()));
+        if (sr.getStop() != null)
+            vals.put(DbContract.ServiceRuns.COLUMN_NAME_STOP,format.format(sr.getStop()));
+        vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_RECEIVED, sr.getNumReceived());
+        vals.put(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED, sr.getNumTriggered());
         return db.insert(DbContract.ServiceRuns.TABLE_NAME, DbContract.ServiceRuns.COLUMN_NAME_STOP, vals);
     }
 
@@ -198,7 +197,7 @@ public class ServiceRun {
         ServiceRun lrun = LatestRun(db);
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         Date start = cal.getTime();
-        return InsertRow(db, start, null, lrun.getNumReceived(), lrun.getNumTriggered());
+        return InsertRow(db, new ServiceRun(lrun.getId()+1, start, null, lrun.getNumReceived(), lrun.getNumTriggered()));
     }
 
     /**

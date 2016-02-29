@@ -6,98 +6,47 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.prismaqf.callblocker.rules.CalendarRule;
+
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 
 /**
  * @author ConteDiMonteCristo
  */
-public class CalendarRule {
-    private static final String TAG = CalendarRule.class.getCanonicalName();
+public class CalendarRuleProvider {
+    private static final String TAG = CalendarRuleProvider.class.getCanonicalName();
 
-    private final long id;
-    private final String name;
-    private final int daymask;
-    private final String from;
-    private final String to;
-
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getDaymask() {
-        return daymask;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public String getTo() {
-        return to;
-    }
-
-
-    private CalendarRule(long id, String name, int daymask, String from, String to) {
-        this.id = id;
-        this.name = name;
-        this.daymask = daymask;
-        this.from = from;
-        this.to = to;
-    }
 
     public static CalendarRule deserialize(Cursor c) {
-        long myId = c.getLong(c.getColumnIndexOrThrow(DbContract.CalendarRules._ID));
-        String myName = c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_RULENAME));
-        int myDayMask = c.getInt(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_DAYMASK));
-        String myFrom = c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_FROM));
-        String myTo = c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_TO));
+        String name = c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_RULENAME));
+        int dayMask = c.getInt(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_DAYMASK));
+        String fromTime = c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_FROM));
+        String toTime = c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_TO));
 
-        return new CalendarRule(myId,myName,myDayMask,myFrom,myTo);
+        return CalendarRule.makeRule(name,dayMask,fromTime,toTime);
     }
 
     public static void serialize(SQLiteDatabase db, CalendarRule cr) {
-        InsertRow(db,cr.getName(),cr.getDaymask(),cr.getFrom(),cr.getTo());
+        InsertRow(db,cr);
     }
 
     /**
      * Insert a row in the calendarrule table
      * @param db the SQLite connection
-     * @param name the name of the rule
-     * @param daymask the binary mask of days, Mo-Su
-     * @param from the start of the rule in hh:mm format
-     * @param to the end of the rule in hh:mm format
+     * @param rule the calendar rule
      * @return the new calendar rule id
      */
-    public static long InsertRow(SQLiteDatabase db, String name, int daymask, String from, String to) {
+    public static long InsertRow(SQLiteDatabase db, CalendarRule rule) {
         ContentValues vals = new ContentValues();
-        if (name == null) {
-            final String msg = "Rule name is required for a calendar rule";
-            Log.e(TAG, msg);
-            throw new SQLException(msg);
-        }
-        vals.put(DbContract.CalendarRules.COLUMN_NAME_RULENAME,name);
-        vals.put(DbContract.CalendarRules.COLUMN_NAME_DAYMASK, daymask);
-        if (from == null) from = "00:00";
-        if (!hasHHMMFormat(from)) {
-            final String msg = "Rule from tag is not in required format hh:mm";
-            Log.e(TAG, msg);
-            throw new SQLException(msg);
-        }
-        vals.put(DbContract.CalendarRules.COLUMN_NAME_FROM, from);
-        if (to == null) to="23:59";
-        if (!hasHHMMFormat(to)) {
-            final String msg = "Rule to tag is not in required format hh:mm";
-            Log.e(TAG, msg);
-            throw new SQLException(msg);
-        }
-        vals.put(DbContract.CalendarRules.COLUMN_NAME_TO, to);
-        vals.put(DbContract.CalendarRules.COLUMN_NAME_FORMAT, makeRuleFormat(daymask,from,to));
+        int binMask = rule.getBinaryMask();
+        String fromTime = rule.getBareStartTime();
+        String toTime = rule.getBareEndTime();
+        vals.put(DbContract.CalendarRules.COLUMN_NAME_RULENAME,rule.getName());
+        vals.put(DbContract.CalendarRules.COLUMN_NAME_DAYMASK, binMask);
+        vals.put(DbContract.CalendarRules.COLUMN_NAME_FROM, fromTime);
+        vals.put(DbContract.CalendarRules.COLUMN_NAME_TO, toTime);
+        vals.put(DbContract.CalendarRules.COLUMN_NAME_FORMAT, makeRuleFormat(binMask,fromTime,toTime));
         return db.insert(DbContract.CalendarRules.TABLE_NAME, null, vals);
     }
 
@@ -147,24 +96,17 @@ public class CalendarRule {
         return names;
     }
 
-    public static void UpdateCalendarRule(SQLiteDatabase db, long ruleid, int daymask, String from, String to) {
+    public static void UpdateCalendarRule(SQLiteDatabase db, long ruleId, CalendarRule cr) {
         ContentValues vals = new ContentValues();
-        vals.put(DbContract.CalendarRules.COLUMN_NAME_DAYMASK, daymask);
-        if (from == null || !hasHHMMFormat(from)) {
-            final String msg = "Rule from tag is not in required format hh:mm";
-            Log.e(TAG, msg);
-            throw new SQLException(msg);
-        }
-        vals.put(DbContract.CalendarRules.COLUMN_NAME_FROM, from);
-        if (to == null || !hasHHMMFormat(to)) {
-            final String msg = "Rule to tag is not in required format hh:mm";
-            Log.e(TAG, msg);
-            throw new SQLException(msg);
-        }
-        vals.put(DbContract.CalendarRules.COLUMN_NAME_TO, to);
-        vals.put(DbContract.CalendarRules.COLUMN_NAME_FORMAT, makeRuleFormat(daymask,from,to));
+        int binMask = cr.getBinaryMask();
+        String fromTime = cr.getBareStartTime();
+        String toTime = cr.getBareEndTime();
+        vals.put(DbContract.CalendarRules.COLUMN_NAME_DAYMASK, binMask);
+        vals.put(DbContract.CalendarRules.COLUMN_NAME_FROM, fromTime);
+        vals.put(DbContract.CalendarRules.COLUMN_NAME_TO, toTime);
+        vals.put(DbContract.CalendarRules.COLUMN_NAME_FORMAT, makeRuleFormat(binMask,fromTime,toTime));
         String selection = DbContract.CalendarRules._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(ruleid) };
+        String[] selectionArgs = { String.valueOf(ruleId) };
         db.update(DbContract.CalendarRules.TABLE_NAME,vals,selection,selectionArgs);
     }
 
@@ -201,11 +143,6 @@ public class CalendarRule {
         String msg = String.format("Could not find a calendar rule with id=%d",ruleid);
         Log.e(TAG,msg);
         throw new SQLException(msg);
-    }
-
-    private static boolean hasHHMMFormat(String in) {
-        String regex = "\\d{2}:\\d{2}";
-        return in.length() == 5 && Pattern.matches(regex, in);
     }
 
     private static String makeRuleFormat(int daymask, String from, String to) {

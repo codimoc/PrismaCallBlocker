@@ -14,7 +14,8 @@ import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 import android.support.test.runner.lifecycle.Stage;
 import android.view.View;
 
-import com.prismaqf.callblocker.sql.CalendarRule;
+import com.prismaqf.callblocker.rules.CalendarRule;
+import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.utils.ViewIdlingResource;
 
@@ -48,8 +49,8 @@ public class UpdateCalendarRuleTest {
     @Before
     public void before() {
         SQLiteDatabase db = new DbHelper(myActivityRule.getActivity()).getWritableDatabase();
-        CalendarRule.DeleteCalendarRule(db,TEST_RULE);
-        myRuleId = CalendarRule.InsertRow(db, TEST_RULE, 9, "01:02", "23:22");
+        CalendarRuleProvider.DeleteCalendarRule(db, TEST_RULE);
+        myRuleId = CalendarRuleProvider.InsertRow(db, new CalendarRule(TEST_RULE,CalendarRule.makeMask(9), 1,2,23,22));
         db.close();
         Intent intent = new Intent(myActivityRule.getActivity(),EditCalendarRules.class);
         myActivityRule.getActivity().startActivity(intent); //relaunch
@@ -58,7 +59,7 @@ public class UpdateCalendarRuleTest {
     @After
     public void after() {
         SQLiteDatabase db = new DbHelper(myActivityRule.getActivity()).getWritableDatabase();
-        CalendarRule.DeleteCalendarRule(db,myRuleId);
+        CalendarRuleProvider.DeleteCalendarRule(db, myRuleId);
         db.close();
     }
 

@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.prismaqf.callblocker.rules.CalendarRule;
+import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
 
 import java.util.ArrayList;
@@ -138,11 +139,11 @@ public class NewEditCalendarRule extends ActionBarActivity {
             CalendarRule rule = rules[0];
             try {
                 if (action.equals(ACTION_CREATE))
-                    com.prismaqf.callblocker.sql.CalendarRule.InsertRow(db, rule.getName(), rule.getBinaryMask(), rule.getBareStartTime(), rule.getBareEndTime());
+                    CalendarRuleProvider.InsertRow(db, rule);
                 else if (action.equals(ACTION_UPDATE))
-                    com.prismaqf.callblocker.sql.CalendarRule.UpdateCalendarRule(db,ruleid,rule.getBinaryMask(),rule.getBareStartTime(), rule.getBareEndTime());
+                    CalendarRuleProvider.UpdateCalendarRule(db, ruleid, rule);
                 else //ACTION_DELETE
-                    com.prismaqf.callblocker.sql.CalendarRule.DeleteCalendarRule(db,ruleid);
+                    CalendarRuleProvider.DeleteCalendarRule(db, ruleid);
             }
             finally {
                 db.close();    

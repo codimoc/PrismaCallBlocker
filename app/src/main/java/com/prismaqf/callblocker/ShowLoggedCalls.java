@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 import android.widget.SimpleCursorAdapter;
 
 import com.prismaqf.callblocker.sql.DbContract;
-import com.prismaqf.callblocker.sql.LoggedCall;
+import com.prismaqf.callblocker.sql.LoggedCallProvider;
 
 /**
  * Activity to show a list of recent logged calls with
@@ -38,7 +38,7 @@ import com.prismaqf.callblocker.sql.LoggedCall;
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
                         String key = getString(R.string.pk_sql_limit);
                         int limit = Integer.parseInt(prefs.getString(key,"10"));
-                        return LoggedCall.LatestCalls(myDbConnection, limit);
+                        return LoggedCallProvider.LatestCalls(myDbConnection, limit);
                     }
                 };
             default:

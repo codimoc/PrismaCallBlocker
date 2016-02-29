@@ -11,7 +11,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import com.prismaqf.callblocker.sql.CalendarRule;
+import com.prismaqf.callblocker.rules.CalendarRule;
+import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbContract;
 import com.prismaqf.callblocker.sql.DbHelper;
 
@@ -53,7 +54,7 @@ public class CalendarRulesFragment extends EditListFragment{
                 {
                     @Override
                     public Cursor loadInBackground() {
-                        return CalendarRule.AllCalendarRules(myDbConnection);
+                        return CalendarRuleProvider.AllCalendarRules(myDbConnection);
                     }
                 };
             default:
@@ -70,12 +71,11 @@ public class CalendarRulesFragment extends EditListFragment{
             public void run() {
                SQLiteDatabase db = new DbHelper(getActivity()).getReadableDatabase();
                 try {
-                    com.prismaqf.callblocker.sql.CalendarRule sqlrule = com.prismaqf.callblocker.sql.CalendarRule.FindCalendarRule(db, ruleid);
-                    com.prismaqf.callblocker.rules.CalendarRule rule = com.prismaqf.callblocker.rules.CalendarRule.makeRule(sqlrule);
+                    CalendarRule rule = CalendarRuleProvider.FindCalendarRule(db, ruleid);
                     Intent intent = new Intent(getActivity(),NewEditCalendarRule.class);
                     intent.putExtra(NewEditCalendarRule.ACTION_KEY,NewEditCalendarRule.ACTION_UPDATE);
                     intent.putExtra(NewEditCalendarRule.KEY_ORIG,rule);
-                    intent.putExtra(NewEditCalendarRule.KEY_RULEID,sqlrule.getId());
+                    intent.putExtra(NewEditCalendarRule.KEY_RULEID,ruleid);
                     startActivity(intent);
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());

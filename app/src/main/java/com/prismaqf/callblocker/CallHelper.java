@@ -14,8 +14,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.prismaqf.callblocker.sql.DbHelper;
-import com.prismaqf.callblocker.sql.LoggedCall;
-import com.prismaqf.callblocker.sql.ServiceRun;
+import com.prismaqf.callblocker.sql.LoggedCallProvider;
+import com.prismaqf.callblocker.sql.ServiceRunProvider;
 
 /**
  * Helper class to detect incoming and outgoing calls
@@ -95,9 +95,10 @@ class CallHelper {
                             try {
                                 //todo: get rule id
                                 String contactDescription = resolveContactDescription(incomingNumber);
-                                LoggedCall.InsertRow(db,myRunId,incomingNumber,contactDescription,null);
+                                LoggedCallProvider.LoggedCall lc = new LoggedCallProvider.LoggedCall(myRunId,-1,incomingNumber,contactDescription);
+                                LoggedCallProvider.InsertRow(db, lc);
                                 //todo: only numreceived is updated for the time being
-                                ServiceRun.UpdateWhileRunning(db,myRunId,numReceived,numTriggered);
+                                ServiceRunProvider.UpdateWhileRunning(db, myRunId, numReceived, numTriggered);
                             }
                             finally {
                                 db.close();
@@ -167,17 +168,17 @@ class CallHelper {
         SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
         try {
 
-            ServiceRun lastRun = ServiceRun.LatestRun(db);
+            ServiceRunProvider.ServiceRun lastRun = ServiceRunProvider.LatestRun(db);
             setNumReceived(lastRun.getNumReceived());
             setNumTriggered(lastRun.getNumTriggered());
             if (lastRun.getId()==0 || lastRun.getStop() != null) {
                 //new run
-                myRunId = ServiceRun.InsertAtServiceStart(db);
+                myRunId = ServiceRunProvider.InsertAtServiceStart(db);
             } //otherwise the service was restarted and continue with old run
             else {
                 myRunId = lastRun.getId();
             }
-            ServiceRun.UpdateWhileRunning(db,myRunId,-1,-1);
+            ServiceRunProvider.UpdateWhileRunning(db, myRunId, -1, -1);
         }
         finally {
             db.close();
@@ -197,10 +198,10 @@ class CallHelper {
      * Closing the DB connection and updating the service run record
      */
     public void recordServiceStop() {
-        Log.i(TAG, "Closing the DB connection and updating the ServiceRun record");
+        Log.i(TAG, "Closing the DB connection and updating the ServiceRunProvider record");
         SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
         try {
-            ServiceRun.UpdateAtServiceStop(db, myRunId, numReceived, numTriggered);
+            ServiceRunProvider.UpdateAtServiceStop(db, myRunId, numReceived, numTriggered);
         }
         finally {
             db.close();

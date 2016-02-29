@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.prismaqf.callblocker.sql.DbHelper;
-import com.prismaqf.callblocker.sql.ServiceRun;
+import com.prismaqf.callblocker.sql.ServiceRunProvider;
 
 public class CallBlockerManager extends ActionBarActivity {
 
@@ -220,7 +220,7 @@ public class CallBlockerManager extends ActionBarActivity {
         textDetectState.setText((R.string.tx_detect));
         //todo: might need to use an async task
         SQLiteDatabase db = new DbHelper(this).getReadableDatabase();
-        ServiceRun last = ServiceRun.LatestRun(db);
+        ServiceRunProvider.ServiceRun last = ServiceRunProvider.LatestRun(db);
         buttonReceived.setText(String.valueOf(last.getNumReceived()));
         buttonTriggered.setText(String.valueOf(last.getNumTriggered()));
     }

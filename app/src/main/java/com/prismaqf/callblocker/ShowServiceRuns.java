@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 import android.widget.SimpleCursorAdapter;
 
 import com.prismaqf.callblocker.sql.DbContract;
-import com.prismaqf.callblocker.sql.ServiceRun;
+import com.prismaqf.callblocker.sql.ServiceRunProvider;
 
 /**
  * Activity to show a list of recent service runs with
@@ -40,7 +40,7 @@ public class ShowServiceRuns extends ShowListActivity {
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
                         String key = getString(R.string.pk_sql_limit);
                         int limit = Integer.parseInt(prefs.getString(key, "10"));
-                        return ServiceRun.LatestRuns(myDbConnection, limit);
+                        return ServiceRunProvider.LatestRuns(myDbConnection, limit);
                     }
                 };
             default:

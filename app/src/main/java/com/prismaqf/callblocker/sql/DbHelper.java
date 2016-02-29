@@ -48,33 +48,33 @@ public class DbHelper extends SQLiteOpenHelper{
         String msg = String.format("The DB version has changed from v.%d to v.%d and a destructive upgrade (drop/recreate) is performed",oldVersion,newVersion);
         Log.w(TAG, msg);
 
-        Cursor c = ServiceRun.LatestRuns(db,-1,false);
-        List<ServiceRun> serviceRuns = new ArrayList<>();
+        Cursor c = ServiceRunProvider.LatestRuns(db, -1, false);
+        List<ServiceRunProvider.ServiceRun> serviceRuns = new ArrayList<>();
         while (c.moveToNext())
-            serviceRuns.add(ServiceRun.deserialize(c));
+            serviceRuns.add(ServiceRunProvider.deserialize(c));
 
-        c = LoggedCall.LatestCalls(db,-1,false);
-        List<LoggedCall> loggedCalls = new ArrayList<>();
+        c = LoggedCallProvider.LatestCalls(db, -1, false);
+        List<LoggedCallProvider.LoggedCall> loggedCalls = new ArrayList<>();
         while (c.moveToNext())
-            loggedCalls.add(LoggedCall.deserialize(c));
+            loggedCalls.add(LoggedCallProvider.deserialize(c));
 
 /*
-        c = CalendarRule.AllCalendarRules(db);
-        List<CalendarRule> calendarRules= new ArrayList<>();
+        c = CalendarRuleProvider.AllCalendarRules(db);
+        List<CalendarRuleProvider> calendarRules= new ArrayList<>();
         while (c.moveToNext())
-            calendarRules.add(CalendarRule.deserialize(c));
+            calendarRules.add(CalendarRuleProvider.deserialize(c));
 */
         dropAllTables(db);
 
         onCreate(db);
 
         //and now reserialize
-        for (ServiceRun run : serviceRuns)
-            ServiceRun.serialize(db,run);
-        for (LoggedCall lc : loggedCalls)
-            LoggedCall.serialize(db, lc);
- /*       for (CalendarRule cr : calendarRules)
-            CalendarRule.serialize(db, cr);
+        for (ServiceRunProvider.ServiceRun run : serviceRuns)
+            ServiceRunProvider.serialize(db, run);
+        for (LoggedCallProvider.LoggedCall lc : loggedCalls)
+            LoggedCallProvider.serialize(db, lc);
+ /*       for (CalendarRuleProvider cr : calendarRules)
+            CalendarRuleProvider.serialize(db, cr);
 */
     }
 

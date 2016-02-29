@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.prismaqf.callblocker.sql.CalendarRule;
+import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class EditCalendarRules extends ActionBarActivity {
         @Override
         protected ArrayList<String> doInBackground(SQLiteDatabase... dbs) {
             try {
-                return CalendarRule.AllRuleNames(dbs[0]);
+                return CalendarRuleProvider.AllRuleNames(dbs[0]);
             }
             finally {
                 dbs[0].close();

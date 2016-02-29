@@ -133,16 +133,16 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
         endMin = in.readInt();
     }
 
-    public static CalendarRule makeRule(com.prismaqf.callblocker.sql.CalendarRule sqlrule) {
+    public static CalendarRule makeRule(String name, int dayMask, String from, String to) {
         CalendarRule rule = new CalendarRule();
-        rule.setName(sqlrule.getName());
-        rule.setDayMask(makeMask(sqlrule.getDaymask()));
-        String[] start = sqlrule.getFrom().split(":");
+        rule.setName(name);
+        rule.setDayMask(makeMask(dayMask));
+        String[] start = from.split(":");
         if (start.length==2) {
             rule.setStartHour(Integer.valueOf(start[0]));
             rule.setStartMin(Integer.valueOf(start[1]));
         }
-        String[] end = sqlrule.getTo().split(":");
+        String[] end = to.split(":");
         if (end.length==2) {
             rule.setEndHour(Integer.valueOf(end[0]));
             rule.setEndMin(Integer.valueOf(end[1]));
