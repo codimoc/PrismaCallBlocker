@@ -16,6 +16,9 @@ import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 import android.support.test.runner.lifecycle.Stage;
 
 import com.prismaqf.callblocker.rules.CalendarRule;
+import com.prismaqf.callblocker.sql.DbHelper;
+import com.prismaqf.callblocker.sql.DbHelperTest;
+import com.prismaqf.callblocker.utils.DebugHelper;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -40,7 +43,11 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-public class NewCalendarRuleTest {
+public class NewCalendarRuleTest extends DebugHelper {
+
+    static {
+        DbHelper.SetDebugDb(myKey, DbHelperTest.DB_NAME);
+    }
 
     private Intent intent;
     private Context ctx;

@@ -9,6 +9,10 @@ import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.prismaqf.callblocker.sql.DbHelper;
+import com.prismaqf.callblocker.sql.DbHelperTest;
+import com.prismaqf.callblocker.utils.DebugHelper;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,8 +27,12 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
-public class CallBlockerManagerTest
+public class CallBlockerManagerTest extends DebugHelper
 {
+    static {
+        DbHelper.SetDebugDb(myKey, DbHelperTest.DB_NAME);
+    }
+
     @Rule
     public final ActivityTestRule<CallBlockerManager> mActivityRule = new ActivityTestRule(CallBlockerManager.class);
 

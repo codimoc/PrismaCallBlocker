@@ -140,9 +140,7 @@ public class CalendarRuleProvider {
             c.moveToFirst();
             return deserialize(c);
         }
-        String msg = String.format("Could not find a calendar rule with id=%d",ruleid);
-        Log.e(TAG,msg);
-        throw new SQLException(msg);
+        return null;
     }
 
     private static String makeRuleFormat(int daymask, String from, String to) {

@@ -17,6 +17,8 @@ import android.view.View;
 import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
+import com.prismaqf.callblocker.sql.DbHelperTest;
+import com.prismaqf.callblocker.utils.DebugHelper;
 import com.prismaqf.callblocker.utils.ViewIdlingResource;
 
 import org.junit.After;
@@ -37,7 +39,11 @@ import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-public class UpdateCalendarRuleTest {
+public class UpdateCalendarRuleTest extends DebugHelper{
+
+    static {
+        DbHelper.SetDebugDb(myKey, DbHelperTest.DB_NAME);
+    }
 
     private long myRuleId;
     private static final String TEST_RULE = "My rule for testing";

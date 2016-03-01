@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.prismaqf.callblocker.R;
+import com.prismaqf.callblocker.rules.CalendarRule;
+import com.prismaqf.callblocker.rules.FilterRule;
+import com.prismaqf.callblocker.utils.DebugHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +28,23 @@ public class DbHelper extends SQLiteOpenHelper{
      * implementation they throw an exception becase a single version is
      * assumed. The proper implentation should try to preserve the data
      */
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
     private static final String TAG = DbHelper.class.getCanonicalName();
 
+    private static String debugDb = null;
+
     public DbHelper(Context context) {
-        super(context, context.getString(R.string.db_file_name), null, DATABASE_VERSION);
+        super(context, debugDb==null? context.getString(R.string.db_file_name) : debugDb, null, DATABASE_VERSION);
     }
 
     public DbHelper(Context context, String dbname) {
         super(context, dbname, null, DATABASE_VERSION);
+    }
+
+    public synchronized static void SetDebugDb(DebugHelper.DbKey key, String dbname) {
+        //check the key is valid
+        assert(key != null);
+        debugDb = dbname;
     }
 
     @Override
@@ -41,6 +52,8 @@ public class DbHelper extends SQLiteOpenHelper{
         db.execSQL(DbContract.ServiceRuns.SQL_CREATE_TABLE);
         db.execSQL(DbContract.LoggedCalls.SQL_CREATE_TABLE);
         db.execSQL(DbContract.CalendarRules.SQL_CREATE_TABLE);
+        db.execSQL(DbContract.FilterRules.SQL_CREATE_TABLE);
+        db.execSQL(DbContract.FilterPatterns.SQL_CREATE_TABLE);
     }
 
     @Override
@@ -58,11 +71,20 @@ public class DbHelper extends SQLiteOpenHelper{
         while (c.moveToNext())
             loggedCalls.add(LoggedCallProvider.deserialize(c));
 
-/*
+
         c = CalendarRuleProvider.AllCalendarRules(db);
-        List<CalendarRuleProvider> calendarRules= new ArrayList<>();
+        List<CalendarRule> calendarRules= new ArrayList<>();
         while (c.moveToNext())
             calendarRules.add(CalendarRuleProvider.deserialize(c));
+
+/*
+        c = FilterRuleProvider.AllFilterRules(db);
+        List<FilterRule> filterRules = new ArrayList<>();
+        while (c.moveToNext()) {
+            long ruleId = c.getLong(c.getColumnIndexOrThrow(DbContract.FilterRules._ID));
+            filterRules.add(FilterRuleProvider.FindFilterRule(db,ruleId));
+
+        }
 */
         dropAllTables(db);
 
@@ -73,9 +95,10 @@ public class DbHelper extends SQLiteOpenHelper{
             ServiceRunProvider.serialize(db, run);
         for (LoggedCallProvider.LoggedCall lc : loggedCalls)
             LoggedCallProvider.serialize(db, lc);
- /*       for (CalendarRuleProvider cr : calendarRules)
+        for (CalendarRule cr : calendarRules)
             CalendarRuleProvider.serialize(db, cr);
-*/
+  /*      for (FilterRule fr : filterRules)
+            FilterRuleProvider.InsertRow(db,fr);*/
     }
 
     @Override
@@ -88,6 +111,8 @@ public class DbHelper extends SQLiteOpenHelper{
     private void dropAllTables(SQLiteDatabase db) {
         String msg = String.format("Dropping all tables from DB %s",db.getPath());
         Log.w(TAG, msg);
+        db.execSQL(DbContract.FilterPatterns.SQL_DROP_TABLE);
+        db.execSQL(DbContract.FilterRules.SQL_DROP_TABLE);
         db.execSQL(DbContract.CalendarRules.SQL_DROP_TABLE);
         db.execSQL(DbContract.LoggedCalls.SQL_DROP_TABLE);
         db.execSQL(DbContract.ServiceRuns.SQL_DROP_TABLE);

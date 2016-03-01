@@ -8,11 +8,13 @@ import android.support.test.runner.AndroidJUnit4;
 
 
 import com.prismaqf.callblocker.rules.CalendarRule;
+import com.prismaqf.callblocker.rules.FilterRule;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +25,7 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class DbHelperTest {
 
-    private static final String DB_NAME = "unitTest.db";
+    public static final String DB_NAME = "unitTest.db";
 
     private SQLiteDatabase myDb;
 
@@ -35,11 +37,13 @@ public class DbHelperTest {
         myDb.delete(DbContract.ServiceRuns.TABLE_NAME,null,null);
         myDb.delete(DbContract.LoggedCalls.TABLE_NAME,null,null);
         myDb.delete(DbContract.CalendarRules.TABLE_NAME,null,null);
+        myDb.delete(DbContract.FilterRules.TABLE_NAME,null,null);
+        myDb.delete(DbContract.FilterPatterns.TABLE_NAME,null,null);
     }
 
     @Test
     public void dbSmokeTest() {
-        assertEquals("DB version", 9, myDb.getVersion());
+        assertEquals("DB version", 10, myDb.getVersion());
     }
 
     @Test
@@ -105,8 +109,8 @@ public class DbHelperTest {
 
     @Test
     public void LoggedCallsInsertRows() {
-        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15,-1, "123", "a dummy"));
-        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(21,-1, "321", "another dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15, -1, "123", "a dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(21, -1, "321", "another dummy"));
         Cursor c = LoggedCallProvider.LatestCalls(myDb, 5);
         assertEquals("There should be two records",2,c.getCount());
     }
@@ -132,7 +136,7 @@ public class DbHelperTest {
 
     @Test
     public void LoggedCallCheckTimeStamp() {
-        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15,-1, "123", "a dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15, -1, "123", "a dummy"));
         Cursor c = LoggedCallProvider.LatestCalls(myDb, 5);
         c.moveToFirst();
         String ts = c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_TIMESTAMP));
@@ -142,7 +146,7 @@ public class DbHelperTest {
 
     @Test
     public void InsertCalendarRule(){
-        CalendarRuleProvider.InsertRow(myDb, new CalendarRule("first", CalendarRule.makeMask(9), 5,45,21,12));
+        CalendarRuleProvider.InsertRow(myDb, new CalendarRule("first", CalendarRule.makeMask(9), 5, 45, 21, 12));
         CalendarRuleProvider.InsertRow(myDb, new CalendarRule("second", CalendarRule.makeMask(96)));
         Cursor c = CalendarRuleProvider.AllCalendarRules(myDb);
         assertEquals("There should be two records", 2, c.getCount());
@@ -170,7 +174,7 @@ public class DbHelperTest {
     @Test
     public void UpdateCalendarRule() {
         long id =  CalendarRuleProvider.InsertRow(myDb, new CalendarRule("first", CalendarRule.makeMask(9), 5, 45, 21, 12));
-        CalendarRuleProvider.UpdateCalendarRule(myDb, id, new CalendarRule("first",CalendarRule.makeMask(9), 6,5,21,12));
+        CalendarRuleProvider.UpdateCalendarRule(myDb, id, new CalendarRule("first", CalendarRule.makeMask(9), 6, 5, 21, 12));
         Cursor c = CalendarRuleProvider.AllCalendarRules(myDb);
         assertEquals("There should be one record1", 1, c.getCount());
         c.moveToFirst();
@@ -181,8 +185,8 @@ public class DbHelperTest {
     }
 
     @Test
-    public void TestAllNames() {
-        CalendarRuleProvider.InsertRow(myDb, new CalendarRule("first", CalendarRule.makeMask(9), 5,45,21,12));
+    public void TestAllCalendarRuleNames() {
+        CalendarRuleProvider.InsertRow(myDb, new CalendarRule("first", CalendarRule.makeMask(9), 5, 45, 21, 12));
         CalendarRuleProvider.InsertRow(myDb, new CalendarRule("second", CalendarRule.makeMask(96)));
         List<String> names = CalendarRuleProvider.AllRuleNames(myDb);
         assertEquals("Two names found",2,names.size());
@@ -211,5 +215,70 @@ public class DbHelperTest {
         assertEquals("Start Min", 45, theRule.getStartMin());
         assertEquals("End Hour", 21, theRule.getEndHour());
         assertEquals("Start Hour", 12, theRule.getEndMin());
+    }
+
+    @Test
+    public void InsertAndTestFilterRules(){
+        FilterRule fr1 = new FilterRule("first","The first rule");
+        fr1.addPattern("123");
+        fr1.addPattern("4*56");
+        FilterRule fr2 = new FilterRule("second","The second rule");
+        FilterRuleProvider.InsertRow(myDb, fr1);
+        FilterRuleProvider.InsertRow(myDb, fr2);
+        ArrayList<FilterRule> rules = FilterRuleProvider.AllFilterRules(myDb);
+        assertEquals("There should be two records", 2, rules.size());
+        assertEquals("The deserialized first rule equals the original",fr1,rules.get(0));
+        assertEquals("The deserialized second rule equals the original",fr2,rules.get(1));
+    }
+
+    @Test
+    public void TestAllFilterRuleNames() {
+        FilterRule fr1 = new FilterRule("first","The first rule");
+        fr1.addPattern("123");
+        fr1.addPattern("4*56");
+        FilterRule fr2 = new FilterRule("second","The second rule");
+        FilterRuleProvider.InsertRow(myDb, fr1);
+        FilterRuleProvider.InsertRow(myDb, fr2);
+        ArrayList<String> names = FilterRuleProvider.AllRuleNames(myDb);
+        assertEquals("Two names expected",2,names.size());
+        assertTrue("Contains first", names.contains("first"));
+        assertTrue("Contains second", names.contains("second"));
+    }
+
+    @Test
+    public void TestFindAndUpdateFilterRule() {
+        FilterRule fr1 = new FilterRule("first","The first rule");
+        fr1.addPattern("123");
+        fr1.addPattern("4*56");
+        long ruleid = FilterRuleProvider.InsertRow(myDb, fr1);
+        FilterRule fr2 = FilterRuleProvider.FindFilterRule(myDb,ruleid);
+        assertEquals("The two rules are equals", fr1, fr2);
+        FilterRule fr3 = new FilterRule("first","The first rule updated");
+        fr3.addPattern("123");
+        FilterRuleProvider.UpdateFilterRule(myDb, ruleid, fr3);
+        FilterRule fr4 = FilterRuleProvider.FindFilterRule(myDb,ruleid);
+        assertEquals("The two rules are equals after update", fr3, fr4);
+    }
+
+    @Test
+    public void TestDeleteFilterRuleByName() {
+        FilterRule fr1 = new FilterRule("first","The first rule");
+        fr1.addPattern("123");
+        fr1.addPattern("4*56");
+        long ruleid = FilterRuleProvider.InsertRow(myDb, fr1);
+        FilterRuleProvider.DeleteFilterRule(myDb, "first");
+        FilterRule fr2 = FilterRuleProvider.FindFilterRule(myDb,ruleid);
+        assertNull("Rule deleted and not found", fr2);
+    }
+
+    @Test
+    public void TestDeleteFilterRuleById() {
+        FilterRule fr1 = new FilterRule("first","The first rule");
+        fr1.addPattern("123");
+        fr1.addPattern("4*56");
+        long ruleid = FilterRuleProvider.InsertRow(myDb, fr1);
+        FilterRuleProvider.DeleteFilterRule(myDb,ruleid);
+        FilterRule fr2 = FilterRuleProvider.FindFilterRule(myDb,ruleid);
+        assertNull("Rule deleted and not found",fr2);
     }
 }
