@@ -16,4 +16,7 @@
     <item android:id="@+id/action_show_calendar_rules"
         android:orderInCategory="30"
         android:title="@string/ac_show_calendar_rules" />
+    <item android:id="@+id/action_show_filter_rules"
+        android:orderInCategory="40"
+        android:title="@string/ac_show_filter_rules" />
 </menu>

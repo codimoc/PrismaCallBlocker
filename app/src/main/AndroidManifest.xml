@@ -50,6 +50,13 @@
                 android:value=".CallBlockerManager" />
         </activity>
 
+        <activity android:name=".EditFilterRules"
+            android:label="@string/ac_show_filter_rules">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CallBlockerManager" />
+        </activity>
+
         <activity android:name=".SettingActivity"
                   android:label="@string/ac_setting">
             <meta-data
