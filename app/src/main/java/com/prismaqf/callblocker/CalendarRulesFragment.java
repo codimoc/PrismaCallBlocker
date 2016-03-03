@@ -73,9 +73,9 @@ public class CalendarRulesFragment extends EditListFragment{
                 try {
                     CalendarRule rule = CalendarRuleProvider.FindCalendarRule(db, ruleid);
                     Intent intent = new Intent(getActivity(),NewEditCalendarRule.class);
-                    intent.putExtra(NewEditCalendarRule.ACTION_KEY,NewEditCalendarRule.ACTION_UPDATE);
-                    intent.putExtra(NewEditCalendarRule.KEY_ORIG,rule);
-                    intent.putExtra(NewEditCalendarRule.KEY_RULEID,ruleid);
+                    intent.putExtra(NewEditActivity.ACTION_KEY, NewEditActivity.ACTION_UPDATE);
+                    intent.putExtra(NewEditActivity.KEY_ORIG,rule);
+                    intent.putExtra(NewEditActivity.KEY_RULEID,ruleid);
                     startActivity(intent);
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());

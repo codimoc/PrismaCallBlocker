@@ -59,7 +59,7 @@ public class NewCalendarRuleTest extends DebugHelper {
     public void before() {
         ctx = myActivityRule.getActivity();
         intent = new Intent(ctx,NewEditCalendarRule.class);
-        intent.putExtra(NewEditCalendarRule.ACTION_KEY, NewEditCalendarRule.ACTION_CREATE);
+        intent.putExtra(NewEditActivity.ACTION_KEY, NewEditActivity.ACTION_CREATE);
     }
 
     @Test

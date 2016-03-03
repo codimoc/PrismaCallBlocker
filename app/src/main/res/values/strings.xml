@@ -75,5 +75,6 @@
     <string name="tx_validation_rule_has_changed">Rule has changed.\nSaving or undo changes is allowed</string>
     <string name="mn_help">Help</string>
     <string name="tx_calendar_rule_help_title">Help on editing calendar rules</string>
+    <string name="tx_description">Description</string>
 
 </resources>

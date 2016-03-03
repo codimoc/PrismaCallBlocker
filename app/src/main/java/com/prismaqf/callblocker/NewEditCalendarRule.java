@@ -11,14 +11,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -40,38 +34,8 @@ import java.util.EnumSet;
  * Activity to create or edit a calendar rule
  * @author ConteDiMonteCristo
  */
-public class NewEditCalendarRule extends ActionBarActivity {
+public class NewEditCalendarRule extends NewEditActivity {
 
-
-    private abstract class RuleNameValidator implements TextWatcher {
-
-        private final TextView mySource, myTarget;
-        private final ArrayList<String> myUsedNames;
-
-        public RuleNameValidator(TextView source, TextView target, ArrayList<String> names) {
-            mySource = source;
-            myTarget = target;
-            myUsedNames = names;
-        }
-
-        public abstract void validate(TextView source, TextView target,  ArrayList<String> names, String text);
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            String text = mySource.getText().toString();
-            validate(mySource, myTarget, myUsedNames, text);
-        }
-    }
 
     @SuppressLint("ValidFragment")
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -138,9 +102,9 @@ public class NewEditCalendarRule extends ActionBarActivity {
             SQLiteDatabase db = new DbHelper(NewEditCalendarRule.this).getWritableDatabase();
             CalendarRule rule = rules[0];
             try {
-                if (action.equals(ACTION_CREATE))
+                if (action.equals(NewEditActivity.ACTION_CREATE))
                     CalendarRuleProvider.InsertRow(db, rule);
-                else if (action.equals(ACTION_UPDATE))
+                else if (action.equals(NewEditActivity.ACTION_UPDATE))
                     CalendarRuleProvider.UpdateCalendarRule(db, ruleid, rule);
                 else //ACTION_DELETE
                     CalendarRuleProvider.DeleteCalendarRule(db, ruleid);
@@ -158,21 +122,8 @@ public class NewEditCalendarRule extends ActionBarActivity {
         }
     }
 
-
-
     private static final String TAG = NewEditCalendarRule.class.getCanonicalName();
-    public static final String ACTION_KEY  = "com.prismaqft.callblocker:key";
-    private static final String KEY_NEW  = "com.prismaqft.callblocker:keynew";
-    public static final String KEY_ORIG  = "com.prismaqft.callblocker:keyorig";
-    private static final String KEY_ISNAMEVALID  = "com.prismaqft.callblocker:namevalid";
-    private static final String KEY_RULENAMES  = "com.prismaqft.callblocker:rulenames";
-    private static final String KEY_PTRULE  = "com.prismaqft.callblocker:ptrule";
-    public static final String KEY_RULEID = "com.prismaqft.callblocker:ruleid";
-    public static final String ACTION_CREATE  = "com.prismaqf.callblocker:create";
-    public static final String ACTION_UPDATE  = "com.prismaqf.callblocker:update";
-    private static final String ACTION_DELETE  = "com.prismaqf.callblocker:delete";
     private CheckBox cb_Monday, cb_Tuesday, cb_Wednesday, cb_Thursday, cb_Friday, cb_Saturday, cb_Sunday;
-    private MenuItem mi_save, mi_delete, mi_change, mi_undo;
     private EditText ed_name;
     private TextView tx_validation;
     private Button bn_from, bn_to, bn_alldays, bn_nodays, bn_workdays, bn_we;
@@ -185,7 +136,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.calendar_edit);
+        setContentView(R.layout.calendar_rule_edit);
 
         cb_Monday = (CheckBox) findViewById(R.id.cb_Monday);
         cb_Tuesday = (CheckBox) findViewById(R.id.cb_Tuesday);
@@ -209,17 +160,17 @@ public class NewEditCalendarRule extends ActionBarActivity {
         myRuleNames = intent.getStringArrayListExtra(getString(R.string.ky_calendar_rule_names));
 
 
-        if (intent.hasExtra(ACTION_KEY) && intent.getStringExtra(ACTION_KEY).equals(ACTION_UPDATE)) {
-            myOrigRule = intent.getParcelableExtra(KEY_ORIG);
+        if (intent.hasExtra(NewEditActivity.ACTION_KEY) && intent.getStringExtra(NewEditActivity.ACTION_KEY).equals(NewEditActivity.ACTION_UPDATE)) {
+            myOrigRule = intent.getParcelableExtra(NewEditActivity.KEY_ORIG);
             try {
                 myNewRule  = (CalendarRule)myOrigRule.clone();
             } catch (CloneNotSupportedException e) {
                 Log.e(TAG, "Could not clone original rule");
-                myNewRule =  intent.getParcelableExtra(KEY_ORIG);
+                myNewRule =  intent.getParcelableExtra(NewEditActivity.KEY_ORIG);
             }
-            myRuleId = intent.getLongExtra(KEY_RULEID,0);
+            myRuleId = intent.getLongExtra(NewEditActivity.KEY_RULEID,0);
             ptRule = myOrigRule;
-            myAction = ACTION_UPDATE;
+            myAction = NewEditActivity.ACTION_UPDATE;
 
             enableWidgets(false,false);
 
@@ -227,7 +178,7 @@ public class NewEditCalendarRule extends ActionBarActivity {
             myNewRule = new CalendarRule(); //always active by default (all days of week and full day)
             myOrigRule = null;
             ptRule = myNewRule;
-            myAction = ACTION_CREATE;
+            myAction = NewEditActivity.ACTION_CREATE;
 
             enableWidgets(true,true);
         }
@@ -236,15 +187,14 @@ public class NewEditCalendarRule extends ActionBarActivity {
 
     }
 
-
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putParcelable(KEY_NEW, myNewRule);
-        savedInstanceState.putParcelable(KEY_ORIG, myOrigRule);
-        savedInstanceState.putString(ACTION_KEY, myAction);
-        savedInstanceState.putBoolean(KEY_ISNAMEVALID, isNameValid);
-        savedInstanceState.putStringArrayList(KEY_RULENAMES, myRuleNames);
-        savedInstanceState.putString(KEY_PTRULE, ptRule == myOrigRule ? "Original" : "New");
+        savedInstanceState.putParcelable(NewEditActivity.KEY_NEW, myNewRule);
+        savedInstanceState.putParcelable(NewEditActivity.KEY_ORIG, myOrigRule);
+        savedInstanceState.putString(NewEditActivity.ACTION_KEY, myAction);
+        savedInstanceState.putBoolean(NewEditActivity.KEY_ISNAMEVALID, isNameValid);
+        savedInstanceState.putStringArrayList(NewEditActivity.KEY_RULENAMES, myRuleNames);
+        savedInstanceState.putString(NewEditActivity.KEY_PTRULE, ptRule == myOrigRule ? "Original" : "New");
 
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -252,87 +202,16 @@ public class NewEditCalendarRule extends ActionBarActivity {
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        myNewRule = savedInstanceState.getParcelable(KEY_NEW);
-        myOrigRule = savedInstanceState.getParcelable(KEY_ORIG);
-        myAction = savedInstanceState.getString(ACTION_KEY);
-        isNameValid = savedInstanceState.getBoolean(KEY_ISNAMEVALID);
-        myRuleNames = savedInstanceState.getStringArrayList(KEY_RULENAMES);
-        String rule = savedInstanceState.getString(KEY_PTRULE,"");
+        myNewRule = savedInstanceState.getParcelable(NewEditActivity.KEY_NEW);
+        myOrigRule = savedInstanceState.getParcelable(NewEditActivity.KEY_ORIG);
+        myAction = savedInstanceState.getString(NewEditActivity.ACTION_KEY);
+        isNameValid = savedInstanceState.getBoolean(NewEditActivity.KEY_ISNAMEVALID);
+        myRuleNames = savedInstanceState.getStringArrayList(NewEditActivity.KEY_RULENAMES);
+        String rule = savedInstanceState.getString(NewEditActivity.KEY_PTRULE,"");
         if (rule.equals("Original"))
             ptRule = myOrigRule;
         else
             ptRule = myNewRule;
-    }
-
-
-        @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-            // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.menu_edit_calendar_rules, menu);
-            mi_save = menu.findItem(R.id.action_save_rule);
-            mi_delete = menu.findItem(R.id.action_delete_rule);
-            mi_change = menu.findItem(R.id.action_change_rule);
-            mi_undo = menu.findItem(R.id.action_undo_rule);
-            mi_undo.setVisible(false);
-            if (myAction.equals(ACTION_CREATE)) {
-                mi_delete.setVisible(false);
-                mi_change.setVisible(false);
-            }
-            else {
-                mi_save.setVisible(false);
-            }
-
-            //add text validation
-            ed_name.addTextChangedListener(new RuleNameValidator(ed_name, tx_validation, myRuleNames) {
-                @Override
-                public void validate(TextView source, TextView target, ArrayList<String> names, String text) {
-                    if (source.getText().toString().equals("")) {
-                        target.setText(R.string.tx_validation_rule_name_empty);
-                        mi_save.setVisible(false);
-                        isNameValid = false;
-                        return;
-                    }
-                    if (names!= null && names.contains(source.getText().toString())) {
-                        target.setText(R.string.tx_validation_rule_name_used);
-                        mi_save.setVisible(false);
-                        isNameValid = false;
-                        return;
-                    }
-                    mi_save.setVisible(true);
-                    target.setText(R.string.tx_validation_rule_valid);
-                    ptRule.setName(text);
-                    isNameValid = true;
-                }
-            });
-            refreshWidgets(true);
-            return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.action_save_rule:
-                saveCalendarRule();
-                return true;
-            case R.id.action_change_rule:
-                changeCalendarRule();
-                return true;
-            case R.id.action_undo_rule:
-                undoChanges();
-                return true;
-            case R.id.action_delete_rule:
-                deleteCalendarRule();
-                return true;
-            case R.id.action_help_rule:
-                showHelp();
-                return true;
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public void onAllDays(View view) {
@@ -418,7 +297,8 @@ public class NewEditCalendarRule extends ActionBarActivity {
     }
 
 
-    private void refreshWidgets(boolean validate) {
+    @Override
+    protected void refreshWidgets(boolean validate) {
         ed_name.setText(ptRule.getName());
         cb_Monday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.MONDAY));
         cb_Tuesday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.TUESDAY));
@@ -429,18 +309,54 @@ public class NewEditCalendarRule extends ActionBarActivity {
         cb_Sunday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.SUNDAY));
         bn_from.setText(ptRule.getStartTime());
         bn_to.setText(ptRule.getEndTime());
-        if (validate) validateActions();
+        super.refreshWidgets(validate);
     }
 
-    private void validateActions() {
+    @Override
+    protected RuleNameValidator getRuleNameValidator() {
+        return new RuleNameValidator(ed_name, tx_validation, myRuleNames) {
+            @Override
+            public void validate(TextView source, TextView target, ArrayList<String> names, String text) {
+                if (source.getText().toString().equals("")) {
+                    target.setText(R.string.tx_validation_rule_name_empty);
+                    mi_save.setVisible(false);
+                    isNameValid = false;
+                    return;
+                }
+                if (names!= null && names.contains(source.getText().toString())) {
+                    target.setText(R.string.tx_validation_rule_name_used);
+                    mi_save.setVisible(false);
+                    isNameValid = false;
+                    return;
+                }
+                mi_save.setVisible(true);
+                target.setText(R.string.tx_validation_rule_valid);
+                ptRule.setName(text);
+                isNameValid = true;
+            }
+        };
+    }
+
+    @Override
+    protected EditText getNameEditField() {
+        return ed_name;
+    }
+
+    @Override
+    protected String getAction() {
+        return myAction;
+    }
+
+    @Override
+    protected void validateActions() {
         mi_save.setVisible(!myNewRule.equals(myOrigRule) && isNameValid);
-        mi_delete.setVisible(myAction.equals(ACTION_UPDATE) && ptRule == myOrigRule);
-        mi_change.setVisible(myAction.equals(ACTION_UPDATE) && ptRule == myOrigRule);
-        mi_undo.setVisible(myAction.equals(ACTION_UPDATE) &&
+        mi_delete.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptRule == myOrigRule);
+        mi_change.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptRule == myOrigRule);
+        mi_undo.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) &&
                 ptRule == myNewRule &&
                 !myNewRule.equals(myOrigRule) &&
                 isNameValid);
-        if (myAction.equals(ACTION_UPDATE)) {
+        if (myAction.equals(NewEditActivity.ACTION_UPDATE)) {
             if (myNewRule.equals(myOrigRule))
                 tx_validation.setText(R.string.tx_validation_rule_no_changes);
             else
@@ -449,7 +365,8 @@ public class NewEditCalendarRule extends ActionBarActivity {
 
     }
 
-    private void enableWidgets(boolean nameFlag, boolean widgetFlag) {
+    @Override
+    protected void enableWidgets(boolean nameFlag, boolean widgetFlag) {
         ed_name.setEnabled(nameFlag);
         cb_Monday.setEnabled(widgetFlag);
         cb_Tuesday.setEnabled(widgetFlag);
@@ -467,17 +384,20 @@ public class NewEditCalendarRule extends ActionBarActivity {
         tx_validation.setEnabled(widgetFlag);
     }
 
-    private void saveCalendarRule() {
+    @Override
+    protected void save() {
         new DbOperation(myAction,myRuleId).execute(ptRule);
     }
 
-    private void changeCalendarRule() {
+    @Override
+    protected void change() {
         ptRule = myNewRule;
         enableWidgets(false,true);
         validateActions();
     }
 
-    private void undoChanges() {
+    @Override
+    protected void undo() {
         ptRule = myOrigRule;
         try {
             myNewRule  = (CalendarRule)myOrigRule.clone();
@@ -488,21 +408,23 @@ public class NewEditCalendarRule extends ActionBarActivity {
         enableWidgets(false, false);
     }
 
-    private void deleteCalendarRule() {
+    @Override
+    protected void delete() {
         new AlertDialog.Builder(this)
                 .setMessage(R.string.tx_calendar_rule_delete_confirm)
                 .setCancelable(false)
                 .setPositiveButton(R.string.bt_yes_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new DbOperation(ACTION_DELETE, myRuleId).execute(ptRule);
+                        new DbOperation(NewEditActivity.ACTION_DELETE, myRuleId).execute(ptRule);
                     }
                 })
                 .setNegativeButton(R.string.bt_no_keep,null)
                 .show();
     }
 
-    private void showHelp() {
+    @Override
+    protected void help() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(R.string.tx_calendar_rule_help_title);
 
