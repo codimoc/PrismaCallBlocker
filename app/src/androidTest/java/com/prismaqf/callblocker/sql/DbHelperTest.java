@@ -22,6 +22,7 @@ import java.util.Locale;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("unused")
 @RunWith(AndroidJUnit4.class)
 public class DbHelperTest {
 

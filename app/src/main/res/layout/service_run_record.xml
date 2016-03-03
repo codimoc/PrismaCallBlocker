@@ -13,6 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
             android:text="@string/tx_service_run_start" />
@@ -21,6 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/text_start_time" />
 
@@ -34,6 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
             android:text="@string/tx_service_run_stop" />
@@ -42,6 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/text_end_time" />
     </RelativeLayout>
@@ -53,8 +57,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:layout_marginRight="4dp"
+            android:layout_marginEnd="4dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
             android:text="@string/tx_service_run_tot_received" />
@@ -63,6 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/text_num_received" />
 
@@ -70,6 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginRight="4dp"
+            android:layout_marginEnd="4dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
             android:text="@string/tx_service_run_tot_triggered" />

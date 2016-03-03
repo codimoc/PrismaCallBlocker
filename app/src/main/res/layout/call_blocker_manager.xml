@@ -14,6 +14,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:text="@string/tx_no_detect"
         android:textAppearance="?android:attr/textAppearanceLarge"/>
     <ToggleButton
@@ -21,6 +22,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@id/textDetectState"
         android:textOn="@string/tx_turn_off"
         android:textOff="@string/tx_turn_on" />
@@ -46,7 +48,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_centerInParent="true"
                 android:text="@string/tx_calls_received"/>
             <Button
@@ -54,7 +58,9 @@
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_marginTop="5dp"
                 android:text="@string/tx_call_received_default" />
 
@@ -71,7 +77,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_centerInParent="true"
                 android:text="@string/tx_trigger_events"/>
             <Button
@@ -79,7 +87,9 @@
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_marginTop="5dp"
                 android:text="@string/tx_call_triggered_default"/>
 
@@ -94,6 +104,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@id/stats_area"
         android:text="@string/tx_exit"/>
 </RelativeLayout>

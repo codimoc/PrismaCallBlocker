@@ -12,6 +12,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
             android:text="@string/tx_filter_rule_name" />
@@ -20,6 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/text_rule_name" />
     </RelativeLayout>
@@ -32,6 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
             android:text="@string/tx_filter_rule_description" />
@@ -40,6 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/text_rule_description" />
     </RelativeLayout>
