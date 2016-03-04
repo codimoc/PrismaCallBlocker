@@ -23,7 +23,7 @@ public class FilterRuleProvider {
      * @param fr the filter rule
      * @return the rule id
      */
-    public static long InsertRow(SQLiteDatabase db, FilterRule fr) {
+    public static synchronized long InsertRow(SQLiteDatabase db, FilterRule fr) {
         //the behaviour should be transactional, i.e. both insertion in filterrules
         //and filterpatterns should happen or everything should be unwound.
         //Hence the try-catch
@@ -57,7 +57,7 @@ public class FilterRuleProvider {
      * @param db the SQlite connection
      * @return a list of FilterRules
      */
-    public static ArrayList<FilterRule> AllFilterRules(SQLiteDatabase db) {
+    public static synchronized ArrayList<FilterRule> AllFilterRules(SQLiteDatabase db) {
         ArrayList<FilterRule> rules = new ArrayList<>();
         Cursor c1 = db.query(DbContract.FilterRules.TABLE_NAME, null, null, null, null, null, null, null);
         while (c1.moveToNext()) {
@@ -84,9 +84,9 @@ public class FilterRuleProvider {
      * @param db the SQLite connection
      * @return a list of names
      */
-    public static ArrayList<String> AllRuleNames(SQLiteDatabase db) {
+    public static synchronized ArrayList<String> AllRuleNames(SQLiteDatabase db) {
         Cursor c = db.query(DbContract.FilterRules.TABLE_NAME, null, null, null, null, null, null, null);
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<>();
         while (c.moveToNext()) {
             String name = c.getString(c.getColumnIndexOrThrow(DbContract.FilterRules.COLUMN_NAME_RULENAME));
             names.add(name);
@@ -101,7 +101,7 @@ public class FilterRuleProvider {
      * @param ruleId the filter rule identifier
      * @param fr the filter rule
      */
-    public static void UpdateFilterRule(SQLiteDatabase db, long ruleId, FilterRule fr) {
+    public static synchronized void UpdateFilterRule(SQLiteDatabase db, long ruleId, FilterRule fr) {
         ContentValues vals = new ContentValues();
         vals.put(DbContract.FilterRules.COLUMN_NAME_RULENAME,fr.getName());
         vals.put(DbContract.FilterRules.COLUMN_NAME_DESCRIPTION,fr.getDescription());
@@ -124,7 +124,7 @@ public class FilterRuleProvider {
      * @param db the SQlite connection
      * @param ruleid the rule id
      */
-    public static void DeleteFilterRule(SQLiteDatabase db, long ruleid) {
+    public static synchronized void DeleteFilterRule(SQLiteDatabase db, long ruleid) {
         String where = DbContract.FilterRules._ID + " = ?";
         String[] args = {String.valueOf(ruleid)};
         db.delete(DbContract.FilterRules.TABLE_NAME, where, args);
@@ -137,7 +137,7 @@ public class FilterRuleProvider {
      * @param db the SQlite connection
      * @param name the rule name
      */
-    public static void DeleteFilterRule(SQLiteDatabase db, String name) {
+    public static synchronized void DeleteFilterRule(SQLiteDatabase db, String name) {
         //find the rule id
         String where = DbContract.FilterRules.COLUMN_NAME_RULENAME + " = ?";
         String[] args = {name};
@@ -150,7 +150,7 @@ public class FilterRuleProvider {
         }
     }
 
-    public static FilterRule FindFilterRule(SQLiteDatabase db, long ruleid) {
+    public static synchronized FilterRule FindFilterRule(SQLiteDatabase db, long ruleid) {
         String selection = DbContract.FilterRules._ID + " = ?";
         String[] selectionArgs = { String.valueOf(ruleid) };
         Cursor c1 = db.query(DbContract.FilterRules.TABLE_NAME,null,selection,selectionArgs,null,null,null,null);

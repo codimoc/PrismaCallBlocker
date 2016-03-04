@@ -157,7 +157,7 @@ public class NewEditCalendarRule extends NewEditActivity {
 
 
         Intent intent = getIntent();
-        myRuleNames = intent.getStringArrayListExtra(getString(R.string.ky_calendar_rule_names));
+        myRuleNames = intent.getStringArrayListExtra(NewEditActivity.KEY_RULENAMES);
 
 
         if (intent.hasExtra(NewEditActivity.ACTION_KEY) && intent.getStringExtra(NewEditActivity.ACTION_KEY).equals(NewEditActivity.ACTION_UPDATE)) {

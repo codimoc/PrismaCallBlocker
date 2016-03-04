@@ -6,12 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
+import android.support.test.espresso.Espresso;
+import android.support.test.espresso.IdlingResource;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.View;
 
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.DbHelperTest;
 import com.prismaqf.callblocker.utils.DebugHelper;
+import com.prismaqf.callblocker.utils.ViewIdlingResource;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,11 +38,15 @@ public class CallBlockerManagerTest extends DebugHelper
     }
 
     @Rule
-    public final ActivityTestRule<CallBlockerManager> mActivityRule = new ActivityTestRule(CallBlockerManager.class);
+    public final ActivityTestRule<CallBlockerManager> mActivityRule = new ActivityTestRule<>(CallBlockerManager.class);
 
     @Before
     public void before() {
+        View v = mActivityRule.getActivity().findViewById(R.id.textDetectState);
+        IdlingResource idlingResource = new ViewIdlingResource(v);
+        Espresso.registerIdlingResources(idlingResource);
         stopRunningService();
+        Espresso.unregisterIdlingResources(idlingResource);
     }
 
 
@@ -55,10 +63,15 @@ public class CallBlockerManagerTest extends DebugHelper
         onView(withId(R.id.textDetectState)).check(matches(withText(R.string.tx_no_detect)));
         onView(withId(R.id.buttonDetectToggle)).check(matches(withText(R.string.tx_turn_on)));
         onView(withId(R.id.buttonDetectToggle)).perform(click());
+        View v = mActivityRule.getActivity().findViewById(R.id.textDetectState);
+        //wait using an IdlingResourse
+        IdlingResource idlingResource = new ViewIdlingResource(v);
+        Espresso.registerIdlingResources(idlingResource);
         //now check that the text has changed
         onView(withId(R.id.textDetectState)).check(matches(withText(R.string.tx_detect)));
         onView(withId(R.id.buttonDetectToggle)).check(matches(withText(R.string.tx_turn_off)));
         onView(withId(R.id.buttonDetectToggle)).perform(click()); //turn off
+        Espresso.unregisterIdlingResources(idlingResource);
     }
 
     @Test
@@ -110,6 +123,8 @@ public class CallBlockerManagerTest extends DebugHelper
 
     private void stopRunningService() {
         Activity myActivity = mActivityRule.getActivity();
+        /*       Intent intent = new Intent(myActivity, CallDetectService.class);
+        myActivity.stopService(intent);*/
         if (CallBlockerManager.isServiceRunning(myActivity)) {
             onView(withId(R.id.buttonDetectToggle)).perform(click());
         }

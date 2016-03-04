@@ -37,7 +37,7 @@ public class CalendarRuleProvider {
      * @param rule the calendar rule
      * @return the new calendar rule id
      */
-    public static long InsertRow(SQLiteDatabase db, CalendarRule rule) {
+    public static synchronized long InsertRow(SQLiteDatabase db, CalendarRule rule) {
         ContentValues vals = new ContentValues();
         int binMask = rule.getBinaryMask();
         String fromTime = rule.getBareStartTime();
@@ -59,7 +59,7 @@ public class CalendarRuleProvider {
      * @param descending a flag to inicate the sorting order, descending when the flag is true
      * @return a cursor
      */
-    public static Cursor LatestCalendarRules(SQLiteDatabase db, int maxRecords, boolean descending) {
+    public static synchronized Cursor LatestCalendarRules(SQLiteDatabase db, int maxRecords, boolean descending) {
         String orderby;
         if (descending)
             orderby= String.format("%s desc",DbContract.CalendarRules._ID);
@@ -87,7 +87,7 @@ public class CalendarRuleProvider {
      */
     public static ArrayList<String> AllRuleNames(SQLiteDatabase db) {
         Cursor c = AllCalendarRules(db);
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<>();
         while (c.moveToNext()) {
             String name = c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_RULENAME));
             names.add(name);
@@ -96,7 +96,7 @@ public class CalendarRuleProvider {
         return names;
     }
 
-    public static void UpdateCalendarRule(SQLiteDatabase db, long ruleId, CalendarRule cr) {
+    public static synchronized void UpdateCalendarRule(SQLiteDatabase db, long ruleId, CalendarRule cr) {
         ContentValues vals = new ContentValues();
         int binMask = cr.getBinaryMask();
         String fromTime = cr.getBareStartTime();
@@ -115,7 +115,7 @@ public class CalendarRuleProvider {
      * @param db the SQlite connection
      * @param ruleid the rule id
      */
-    public static void DeleteCalendarRule(SQLiteDatabase db, long ruleid) {
+    public static synchronized void DeleteCalendarRule(SQLiteDatabase db, long ruleid) {
         String where = DbContract.CalendarRules._ID + " = ?";
         String[] args = {String.valueOf(ruleid)};
         db.delete(DbContract.CalendarRules.TABLE_NAME, where, args);
@@ -126,13 +126,13 @@ public class CalendarRuleProvider {
      * @param db the SQlite connection
      * @param name the rule name
      */
-    public static void DeleteCalendarRule(SQLiteDatabase db, String name) {
+    public static synchronized void DeleteCalendarRule(SQLiteDatabase db, String name) {
         String where = DbContract.CalendarRules.COLUMN_NAME_RULENAME + " = ?";
         String[] args = {name};
         db.delete(DbContract.CalendarRules.TABLE_NAME, where, args);
     }
 
-    public static CalendarRule FindCalendarRule(SQLiteDatabase db, long ruleid) {
+    public static synchronized CalendarRule FindCalendarRule(SQLiteDatabase db, long ruleid) {
         String selection = DbContract.CalendarRules._ID + " = ?";
         String[] selectionArgs = { String.valueOf(ruleid) };
         Cursor c = db.query(DbContract.CalendarRules.TABLE_NAME,null,selection,selectionArgs,null,null,null,null);

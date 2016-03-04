@@ -87,7 +87,7 @@ public class ServiceRunProvider {
      * @param db the SQLite connection
      * @return the new run id
      */
-    public static ServiceRun LatestRun(SQLiteDatabase db) {
+    public static synchronized ServiceRun LatestRun(SQLiteDatabase db) {
         String orderby = String.format("%s desc",DbContract.ServiceRuns._ID);
         String limit = "1";
         Cursor c = db.query(DbContract.ServiceRuns.TABLE_NAME, null, null, null, null, null, orderby, limit);
@@ -115,7 +115,7 @@ public class ServiceRunProvider {
      * @param descending a flag to inicate the sorting order, descending when the flag is true
      * @return a cursor
      */
-    public static Cursor LatestRuns(SQLiteDatabase db, int maxRecords, boolean descending) {
+    public static synchronized Cursor LatestRuns(SQLiteDatabase db, int maxRecords, boolean descending) {
         String orderby;
         if (descending)
             orderby= String.format("%s desc",DbContract.ServiceRuns._ID);
@@ -135,7 +135,7 @@ public class ServiceRunProvider {
      * @param sr the service run
      * @return the new run id
      */
-    public static long InsertRow(SQLiteDatabase db, ServiceRun sr) {
+    public static synchronized long InsertRow(SQLiteDatabase db, ServiceRun sr) {
         ContentValues vals = new ContentValues();
         DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
         if (sr.getStart() != null)
@@ -156,7 +156,7 @@ public class ServiceRunProvider {
      * @param numTriggered the number of events triggered during the service run
      * @return the number of rows updated
      */
-    private static int UpdateRow(SQLiteDatabase db, long runid, Date stop, int numReceived, int numTriggered) {
+    private static synchronized int UpdateRow(SQLiteDatabase db, long runid, Date stop, int numReceived, int numTriggered) {
         ContentValues vals = new ContentValues();
         DateFormat format = new SimpleDateFormat(DbContract.DATE_FORMAT, Locale.getDefault());
         vals.put(DbContract.ServiceRuns.COLUMN_NAME_STOP,format.format(stop));
@@ -175,7 +175,7 @@ public class ServiceRunProvider {
      * @param numReceived the number of calls received during the service run (negative number to skip this value update)
      * @param numTriggered the number of events triggered during the service run (negative number to skip this value update)
      */
-    public static void UpdateWhileRunning(SQLiteDatabase db, long runid, int numReceived, int numTriggered) {
+    public static synchronized void UpdateWhileRunning(SQLiteDatabase db, long runid, int numReceived, int numTriggered) {
         ContentValues vals = new ContentValues();
         vals.put(DbContract.ServiceRuns.COLUMN_NAME_STOP, RUNNING);
         if (numReceived >= 0)

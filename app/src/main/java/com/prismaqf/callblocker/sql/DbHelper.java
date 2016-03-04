@@ -32,6 +32,7 @@ public class DbHelper extends SQLiteOpenHelper{
     private static final String TAG = DbHelper.class.getCanonicalName();
 
     private static String debugDb = null;
+    private static final Object lock = new Object();
 
     public DbHelper(Context context) {
         super(context, debugDb==null? context.getString(R.string.db_file_name) : debugDb, null, DATABASE_VERSION);
@@ -49,33 +50,36 @@ public class DbHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(DbContract.ServiceRuns.SQL_CREATE_TABLE);
-        db.execSQL(DbContract.LoggedCalls.SQL_CREATE_TABLE);
-        db.execSQL(DbContract.CalendarRules.SQL_CREATE_TABLE);
-        db.execSQL(DbContract.FilterRules.SQL_CREATE_TABLE);
-        db.execSQL(DbContract.FilterPatterns.SQL_CREATE_TABLE);
+        synchronized (lock) {
+            db.execSQL(DbContract.ServiceRuns.SQL_CREATE_TABLE);
+            db.execSQL(DbContract.LoggedCalls.SQL_CREATE_TABLE);
+            db.execSQL(DbContract.CalendarRules.SQL_CREATE_TABLE);
+            db.execSQL(DbContract.FilterRules.SQL_CREATE_TABLE);
+            db.execSQL(DbContract.FilterPatterns.SQL_CREATE_TABLE);
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String msg = String.format("The DB version has changed from v.%d to v.%d and a destructive upgrade (drop/recreate) is performed",oldVersion,newVersion);
-        Log.w(TAG, msg);
+        synchronized (lock) {
+            String msg = String.format("The DB version has changed from v.%d to v.%d and a destructive upgrade (drop/recreate) is performed",oldVersion,newVersion);
+            Log.w(TAG, msg);
 
-        Cursor c = ServiceRunProvider.LatestRuns(db, -1, false);
-        List<ServiceRunProvider.ServiceRun> serviceRuns = new ArrayList<>();
-        while (c.moveToNext())
-            serviceRuns.add(ServiceRunProvider.deserialize(c));
+            Cursor c = ServiceRunProvider.LatestRuns(db, -1, false);
+            List<ServiceRunProvider.ServiceRun> serviceRuns = new ArrayList<>();
+            while (c.moveToNext())
+                serviceRuns.add(ServiceRunProvider.deserialize(c));
 
-        c = LoggedCallProvider.LatestCalls(db, -1, false);
-        List<LoggedCallProvider.LoggedCall> loggedCalls = new ArrayList<>();
-        while (c.moveToNext())
-            loggedCalls.add(LoggedCallProvider.deserialize(c));
+            c = LoggedCallProvider.LatestCalls(db, -1, false);
+            List<LoggedCallProvider.LoggedCall> loggedCalls = new ArrayList<>();
+            while (c.moveToNext())
+                loggedCalls.add(LoggedCallProvider.deserialize(c));
 
 
-        c = CalendarRuleProvider.AllCalendarRules(db);
-        List<CalendarRule> calendarRules= new ArrayList<>();
-        while (c.moveToNext())
-            calendarRules.add(CalendarRuleProvider.deserialize(c));
+            c = CalendarRuleProvider.AllCalendarRules(db);
+            List<CalendarRule> calendarRules= new ArrayList<>();
+            while (c.moveToNext())
+                calendarRules.add(CalendarRuleProvider.deserialize(c));
 
 /*
         c = FilterRuleProvider.AllFilterRules(db);
@@ -86,19 +90,20 @@ public class DbHelper extends SQLiteOpenHelper{
 
         }
 */
-        dropAllTables(db);
+            dropAllTables(db);
 
-        onCreate(db);
+            onCreate(db);
 
-        //and now reserialize
-        for (ServiceRunProvider.ServiceRun run : serviceRuns)
-            ServiceRunProvider.serialize(db, run);
-        for (LoggedCallProvider.LoggedCall lc : loggedCalls)
-            LoggedCallProvider.serialize(db, lc);
-        for (CalendarRule cr : calendarRules)
-            CalendarRuleProvider.serialize(db, cr);
+            //and now reserialize
+            for (ServiceRunProvider.ServiceRun run : serviceRuns)
+                ServiceRunProvider.serialize(db, run);
+            for (LoggedCallProvider.LoggedCall lc : loggedCalls)
+                LoggedCallProvider.serialize(db, lc);
+            for (CalendarRule cr : calendarRules)
+                CalendarRuleProvider.serialize(db, cr);
   /*      for (FilterRule fr : filterRules)
             FilterRuleProvider.InsertRow(db,fr);*/
+        }
     }
 
     @Override
@@ -111,11 +116,15 @@ public class DbHelper extends SQLiteOpenHelper{
     private void dropAllTables(SQLiteDatabase db) {
         String msg = String.format("Dropping all tables from DB %s",db.getPath());
         Log.w(TAG, msg);
-        db.execSQL(DbContract.FilterPatterns.SQL_DROP_TABLE);
-        db.execSQL(DbContract.FilterRules.SQL_DROP_TABLE);
-        db.execSQL(DbContract.CalendarRules.SQL_DROP_TABLE);
-        db.execSQL(DbContract.LoggedCalls.SQL_DROP_TABLE);
-        db.execSQL(DbContract.ServiceRuns.SQL_DROP_TABLE);
+
+        synchronized (lock) {
+            db.execSQL(DbContract.FilterPatterns.SQL_DROP_TABLE);
+            db.execSQL(DbContract.FilterRules.SQL_DROP_TABLE);
+            db.execSQL(DbContract.CalendarRules.SQL_DROP_TABLE);
+            db.execSQL(DbContract.LoggedCalls.SQL_DROP_TABLE);
+            db.execSQL(DbContract.ServiceRuns.SQL_DROP_TABLE);
+        }
+
     }
 
 

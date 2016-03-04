@@ -44,7 +44,6 @@
     <string name="tx_rule_validation">Rule validation:</string>
     <string name="tx_new_calendar_rule">New calendar rule</string>
     <string name="ac_edit_calendar_rule">Edit a calendar rule</string>
-    <string name="ky_calendar_rule_names">names</string>
     <string name="tx_calendar_rule_name">Name:</string>
     <string name="tx_calendar_rule_format">Format:</string>
     <string name="tx_call_received_default">0</string>

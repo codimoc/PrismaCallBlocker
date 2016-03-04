@@ -50,7 +50,7 @@ public class UpdateCalendarRuleTest extends DebugHelper{
 
     //Make the rule but don't start the activity
     @Rule
-    public final ActivityTestRule<CallBlockerManager> myActivityRule = new ActivityTestRule(CallBlockerManager.class);
+    public final ActivityTestRule<CallBlockerManager> myActivityRule = new ActivityTestRule<>(CallBlockerManager.class);
 
     @Before
     public void before() {
@@ -105,6 +105,7 @@ public class UpdateCalendarRuleTest extends DebugHelper{
         View v = ca.findViewById(R.id.edit_calendar_rule_name);
         //wait using an IdlingResourse
         IdlingResource idlingResource = new ViewIdlingResource(v);
+        Espresso.registerIdlingResources(idlingResource);
         //now the view is idle, continue with the tests. Check that the button below is enables
         onView(ViewMatchers.withId(R.id.bt_no_days)).check(matches(isEnabled()));
         //and that the delete button has disappeared
@@ -126,6 +127,7 @@ public class UpdateCalendarRuleTest extends DebugHelper{
         View v = getCurrentActivity().findViewById(R.id.edit_calendar_rule_name);
         //wait using an IdlingResourse
         IdlingResource idlingResource = new ViewIdlingResource(v);
+        Espresso.registerIdlingResources(idlingResource);
         onView(ViewMatchers.withId(R.id.action_delete_rule)).check(matches(isEnabled()));
         //click the delete rule
         onView(ViewMatchers.withId(R.id.action_delete_rule)).perform(click());
@@ -140,12 +142,14 @@ public class UpdateCalendarRuleTest extends DebugHelper{
         Activity ca = getCurrentActivity();
         View v1 = ca.findViewById(R.id.list_fragment_holder);
         IdlingResource r1 = new ViewIdlingResource(v1);
+        Espresso.registerIdlingResources(r1);
 
         onView(ViewMatchers.withText(TEST_RULE)).check(matches(isDisplayed()));
         onView(ViewMatchers.withText(TEST_RULE)).perform(click());
         View v2 = getCurrentActivity().findViewById(R.id.edit_calendar_rule_name);
         //wait using an IdlingResourse
         IdlingResource r2 = new ViewIdlingResource(v2);
+        Espresso.registerIdlingResources(r2);
         //go in edit mode
         onView(ViewMatchers.withId(R.id.action_change_rule)).perform(click());
         //now make a change

@@ -39,7 +39,7 @@ public class EditCalendarRules extends ActionBarActivity {
         protected void onPostExecute (ArrayList<String> names) {
             Intent intent = new Intent(EditCalendarRules.this, NewEditCalendarRule.class);
             intent.putExtra(NewEditActivity.ACTION_KEY, NewEditActivity.ACTION_CREATE);
-            intent.putStringArrayListExtra(getString(R.string.ky_calendar_rule_names), names);
+            intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, names);
             startActivity(intent);
         }
 

@@ -64,7 +64,7 @@ public class LoggedCallProvider {
      * @param lc the logged call
      * @return the new call id
      */
-    public static long InsertRow(SQLiteDatabase db, LoggedCall lc) {
+    public static synchronized long InsertRow(SQLiteDatabase db, LoggedCall lc) {
         ContentValues vals = new ContentValues();
         vals.put(DbContract.LoggedCalls.COLUMN_NAME_RUNID,lc.getRunid());
         vals.put(DbContract.LoggedCalls.COLUMN_NAME_NUMBER,lc.getNumber());
@@ -92,7 +92,7 @@ public class LoggedCallProvider {
      * @param descending a flag to inicate the sorting order, descending when the flag is true
      * @return a cursor
      */
-    public static Cursor LatestCalls(SQLiteDatabase db, int maxRecords, boolean descending) {
+    public static synchronized Cursor LatestCalls(SQLiteDatabase db, int maxRecords, boolean descending) {
         String orderby;
         if (descending)
             orderby= String.format("%s desc",DbContract.LoggedCalls._ID);

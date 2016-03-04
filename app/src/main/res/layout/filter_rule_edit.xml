@@ -111,7 +111,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/ed_insert_pattern"/>
+                android:id="@+id/edit_insert_pattern"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/layout_filter_rule_patterns"
@@ -123,7 +123,7 @@
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/patterns_list_view"
+                android:id="@+id/list_view_patterns"
                 android:clickable="false"
                 android:fastScrollEnabled="true"
                 android:footerDividersEnabled="false"

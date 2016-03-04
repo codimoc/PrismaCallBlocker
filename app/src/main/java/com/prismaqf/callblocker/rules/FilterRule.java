@@ -174,7 +174,7 @@ public class FilterRule implements IFilterRule, Cloneable, Parcelable{
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         FilterRule other = (FilterRule) super.clone();
         other.patterns = new HashMap<>();
         for (String key: patterns.keySet())

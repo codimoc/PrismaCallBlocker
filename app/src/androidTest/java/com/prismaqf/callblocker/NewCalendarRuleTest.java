@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
@@ -53,7 +54,7 @@ public class NewCalendarRuleTest extends DebugHelper {
     private Context ctx;
 
     @Rule
-    public final ActivityTestRule<EditCalendarRules> myActivityRule = new ActivityTestRule(EditCalendarRules.class);
+    public final ActivityTestRule<EditCalendarRules> myActivityRule = new ActivityTestRule<>(EditCalendarRules.class);
 
     @Before
     public void before() {
@@ -64,7 +65,7 @@ public class NewCalendarRuleTest extends DebugHelper {
 
     @Test
     public void TestActionOnCreating() {
-        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
         onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).check(matches(isEnabled()));
         onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).check(matches(isDisplayed()));
@@ -82,7 +83,7 @@ public class NewCalendarRuleTest extends DebugHelper {
 
     @Test
     public void TestEmptyNameShouldFlag() {
-        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
         onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(new ReplaceTextAction(""));
         onView(ViewMatchers.withId(R.id.tx_calendar_rule_validation)).check(matches(withText(containsString("can not be empty"))));
@@ -90,8 +91,8 @@ public class NewCalendarRuleTest extends DebugHelper {
 
     @Test
     public void TestUsedNameShouldFlag() {
-        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names),
-                new ArrayList<>(Arrays.asList("first")));
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES,
+                new ArrayList<>(Collections.singletonList("first")));
         ctx.startActivity(intent);
         onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(new ReplaceTextAction("first"));
         onView(ViewMatchers.withId(R.id.tx_calendar_rule_validation)).check(matches(withText(containsString("name already used"))));
@@ -99,7 +100,7 @@ public class NewCalendarRuleTest extends DebugHelper {
 
     @Test
     public void TestSaveAction() {
-        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
         onView(ViewMatchers.withId(R.id.action_save_rule)).check(matches(isDisplayed()));
         //now empty the rule name, the action disappears
@@ -112,21 +113,21 @@ public class NewCalendarRuleTest extends DebugHelper {
 
     @Test
     public void TestDeleteActionMissingOnCreate(){
-        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
         onView(ViewMatchers.withId(R.id.action_delete_rule)).check(doesNotExist());
     }
 
     @Test
     public void TestChangeActionMissingOnCreate(){
-        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
         onView(ViewMatchers.withId(R.id.action_change_rule)).check(doesNotExist());
     }
 
     @Test
     public void TestNoDays() {
-        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
         onView(ViewMatchers.withId(R.id.bt_no_days)).perform(click());
         onView(ViewMatchers.withId(R.id.cb_Monday)).check(matches(isNotChecked()));
@@ -140,7 +141,7 @@ public class NewCalendarRuleTest extends DebugHelper {
 
     @Test
     public void TestAllDays() {
-        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
         onView(ViewMatchers.withId(R.id.bt_no_days)).perform(click());
         onView(ViewMatchers.withId(R.id.bt_all_days)).perform(click());
@@ -165,7 +166,7 @@ public class NewCalendarRuleTest extends DebugHelper {
 
     @Test
     public void TestDynamicStateOnRotation() throws Throwable {
-        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
         Activity activity = getCurrentActivity();
         onView(ViewMatchers.withId(R.id.cb_Wednesday)).check(matches(isChecked()));
@@ -193,7 +194,7 @@ public class NewCalendarRuleTest extends DebugHelper {
 
     @Test
     public void TestSingleDays() {
-        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
         onView(ViewMatchers.withId(R.id.bt_no_days)).perform(click());
         onView(ViewMatchers.withId(R.id.cb_Monday)).check(matches(isNotChecked()));
