@@ -37,11 +37,10 @@ public class EditFilterRules extends ActionBarActivity {
 
         @Override
         protected void onPostExecute (ArrayList<String> names) {
-            //todo: implement this
-/*            Intent intent = new Intent(EditCalendarRules.this, NewEditCalendarRule.class);
-            intent.putExtra(NewEditCalendarRule.ACTION_KEY,NewEditCalendarRule.ACTION_CREATE);
-            intent.putStringArrayListExtra(getString(R.string.ky_calendar_rule_names), names);
-            startActivity(intent);*/
+            Intent intent = new Intent(EditFilterRules.this, NewEditFilterRule.class);
+            intent.putExtra(NewEditActivity.ACTION_KEY,NewEditCalendarRule.ACTION_CREATE);
+            intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, names);
+            startActivity(intent);
         }
 
     }

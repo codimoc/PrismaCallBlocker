@@ -6,13 +6,11 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.prismaqf.callblocker.rules.FilterRule;
@@ -20,7 +18,6 @@ import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.FilterRuleProvider;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class to create and edit a filter rule
@@ -68,11 +65,10 @@ public class NewEditFilterRule extends NewEditActivity {
     }
     private static final String TAG = NewEditFilterRule.class.getCanonicalName();
 
-    private EditText ed_name, ed_description, ed_pattern;
-    private Button bn_pickLog, bn_delSelected, bn_insPattern;
-    private ListView lv_patterns;
-    private TextView tv_validation;
-    private ArrayList<String> myRuleNames, myPatterns;
+    private EditText ed_name, ed_description;
+    private Button bn_managePatterns;
+    private TextView tv_patterns, tv_validation;
+    private ArrayList<String> myRuleNames;
     private String myAction;
     private FilterRule myNewRule, myOrigRule, ptRule;  //ptRule is an alias to the active rule
     private boolean isNameValid = true;
@@ -86,11 +82,8 @@ public class NewEditFilterRule extends NewEditActivity {
         ed_name = (EditText) findViewById(R.id.edit_filter_rule_name);
         ed_name.clearFocus();
         ed_description = (EditText) findViewById(R.id.edit_filter_rule_description);
-        bn_pickLog = (Button) findViewById(R.id.bt_pick_log);
-        bn_delSelected = (Button) findViewById(R.id.bt_delete_selected);
-        bn_insPattern = (Button) findViewById(R.id.bt_insert_pattern);
-        ed_pattern = (EditText) findViewById(R.id.edit_insert_pattern);
-        lv_patterns = (ListView) findViewById(R.id.list_view_patterns);
+        bn_managePatterns = (Button) findViewById(R.id.bt_filter_rule_patterns);
+        tv_patterns = (TextView) findViewById(R.id.tx_rule_description);
         tv_validation = (TextView) findViewById(R.id.tx_filter_rule_validation);
 
         Intent intent = getIntent();
@@ -119,11 +112,34 @@ public class NewEditFilterRule extends NewEditActivity {
 
             enableWidgets(true,true);
         }
-        myPatterns = new ArrayList<>();
-        myPatterns.addAll(ptRule.getPatternKeys());
-        lv_patterns.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,myPatterns));
+        tv_patterns.setText(makeRuleDescription());
+
+        ed_description.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (ptRule != null)
+                    ptRule.setDescription(ed_description.getText().toString());
+            }
+        });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private String makeRuleDescription() {
+        StringBuilder builder = new StringBuilder("Patterns in rule:\n");
+        if (ptRule!=null) {
+            for (String p : ptRule.getPatternKeys()){
+                builder.append(p);
+                builder.append("  ");
+            }
+        }
+        return builder.toString();
     }
 
     @Override
@@ -253,22 +269,16 @@ public class NewEditFilterRule extends NewEditActivity {
     protected void enableWidgets(boolean nameFlag, boolean widgetFlag) {
         ed_name.setEnabled(nameFlag);
         ed_description.setEnabled(widgetFlag);
-        bn_pickLog.setEnabled(widgetFlag);
-        bn_delSelected.setEnabled(widgetFlag);
-        bn_insPattern.setEnabled(widgetFlag);
-        ed_pattern.setEnabled(widgetFlag);
-        lv_patterns.setEnabled(widgetFlag);
+        bn_managePatterns.setEnabled(widgetFlag);
+        tv_patterns.setEnabled(widgetFlag);
         tv_validation.setEnabled(widgetFlag);
     }
 
     @Override
     protected void refreshWidgets(boolean validate) {
         ed_name.setText(ptRule.getName());
-        ed_description.setText(ptRule.getName());
-        ed_pattern.setText("");
-        myPatterns.clear();
-        myPatterns.addAll(ptRule.getPatternKeys());
-        lv_patterns.getAdapter().notify();
+        ed_description.setText(ptRule.getDescription());
+        tv_patterns.setText(makeRuleDescription());
         super.refreshWidgets(validate);
     }
 }

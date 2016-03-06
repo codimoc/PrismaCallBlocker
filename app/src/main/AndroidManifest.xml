@@ -72,6 +72,14 @@
                 android:value=".EditCalendarRules" />
         </activity>
 
+        <activity android:name=".NewEditFilterRule"
+            android:label="@string/ac_edit_filter_rule"
+            android:windowSoftInputMode="stateVisible|adjustPan">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".EditFilterRules" />
+        </activity>
+
         <service
             android:name=".CallDetectService"
             android:enabled="true"

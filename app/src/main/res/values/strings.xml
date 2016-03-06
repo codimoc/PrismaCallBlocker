@@ -44,6 +44,7 @@
     <string name="tx_rule_validation">Rule validation:</string>
     <string name="tx_new_calendar_rule">New calendar rule</string>
     <string name="ac_edit_calendar_rule">Edit a calendar rule</string>
+    <string name="ac_edit_filter_rule">Edit a filter rule</string>
     <string name="tx_calendar_rule_name">Name:</string>
     <string name="tx_calendar_rule_format">Format:</string>
     <string name="tx_call_received_default">0</string>
@@ -75,5 +76,10 @@
     <string name="mn_help">Help</string>
     <string name="tx_calendar_rule_help_title">Help on editing calendar rules</string>
     <string name="tx_description">Description</string>
+    <string name="tx_pick_from_log">Pick From Log</string>
+    <string name="tx_delete_selected">Delete Selected</string>
+    <string name="tx_insert_pattern">Insert Pattern</string>
+    <string name="bt_manage_patterns">Manage Patterns</string>
+    <string name="tx_patterns_in_rule">Patterns in rule:\n</string>
 
 </resources>
