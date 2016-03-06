@@ -83,9 +83,9 @@ public class UpdateCalendarRuleTest extends DebugHelper{
     public void TestActions() {
         onView(ViewMatchers.withText(TEST_RULE)).check(matches(isDisplayed()));
         onView(ViewMatchers.withText(TEST_RULE)).perform(click());
-        onView(ViewMatchers.withId(R.id.action_save_rule)).check(doesNotExist());
-        onView(ViewMatchers.withId(R.id.action_delete_rule)).check(matches(isDisplayed()));
-        onView(ViewMatchers.withId(R.id.action_change_rule)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withId(R.id.action_save)).check(doesNotExist());
+        onView(ViewMatchers.withId(R.id.action_delete)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withId(R.id.action_change)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -97,7 +97,7 @@ public class UpdateCalendarRuleTest extends DebugHelper{
         //in update mode all widgets should be disabled to start
         onView(ViewMatchers.withId(R.id.bt_no_days)).check(matches(not((isEnabled()))));
         //click on the change action to edit the rule
-        onView(ViewMatchers.withId(R.id.action_change_rule)).perform(click());
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
         //now wait until the activity is ready. This is done with a IdleResource pattern
         //this should not really needed in Espresso, but it is
         Activity ca = getCurrentActivity();
@@ -109,13 +109,13 @@ public class UpdateCalendarRuleTest extends DebugHelper{
         //now the view is idle, continue with the tests. Check that the button below is enables
         onView(ViewMatchers.withId(R.id.bt_no_days)).check(matches(isEnabled()));
         //and that the delete button has disappeared
-        onView(ViewMatchers.withId(R.id.action_delete_rule)).check(doesNotExist());
+        onView(ViewMatchers.withId(R.id.action_delete)).check(doesNotExist());
         //and that there is no save action  (no changes yet)
-        onView(ViewMatchers.withId(R.id.action_save_rule)).check(doesNotExist());
+        onView(ViewMatchers.withId(R.id.action_save)).check(doesNotExist());
         //now clivk on the "no days" button to perform changes
         onView(ViewMatchers.withId(R.id.bt_no_days)).perform(click());
         //the save action should appear
-        onView(ViewMatchers.withId(R.id.action_save_rule)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withId(R.id.action_save)).check(matches(isDisplayed()));
         //finally deregister
         Espresso.unregisterIdlingResources(idlingResource);
     }
@@ -128,9 +128,9 @@ public class UpdateCalendarRuleTest extends DebugHelper{
         //wait using an IdlingResourse
         IdlingResource idlingResource = new ViewIdlingResource(v);
         Espresso.registerIdlingResources(idlingResource);
-        onView(ViewMatchers.withId(R.id.action_delete_rule)).check(matches(isEnabled()));
+        onView(ViewMatchers.withId(R.id.action_delete)).check(matches(isEnabled()));
         //click the delete rule
-        onView(ViewMatchers.withId(R.id.action_delete_rule)).perform(click());
+        onView(ViewMatchers.withId(R.id.action_delete)).perform(click());
         //a dialog confirmation should appear
         onView(ViewMatchers.withText(myActivityRule.getActivity().getString(R.string.tx_calendar_rule_delete_confirm)))
                 .check(matches(isDisplayed()));
@@ -151,20 +151,20 @@ public class UpdateCalendarRuleTest extends DebugHelper{
         IdlingResource r2 = new ViewIdlingResource(v2);
         Espresso.registerIdlingResources(r2);
         //go in edit mode
-        onView(ViewMatchers.withId(R.id.action_change_rule)).perform(click());
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
         //now make a change
         onView(ViewMatchers.withId(R.id.bt_no_days)).perform(click());
         //the change action is not displayed
-        onView(ViewMatchers.withId(R.id.action_change_rule)).check(doesNotExist());
+        onView(ViewMatchers.withId(R.id.action_change)).check(doesNotExist());
         //but save and undo should appear after the change
-        onView(ViewMatchers.withId(R.id.action_save_rule)).check(matches(isDisplayed()));
-        onView(ViewMatchers.withId(R.id.action_undo_rule)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withId(R.id.action_save)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withId(R.id.action_undo)).check(matches(isDisplayed()));
         //now undo
-        onView(ViewMatchers.withId(R.id.action_undo_rule)).perform(click());
+        onView(ViewMatchers.withId(R.id.action_undo)).perform(click());
         //change button should re-appear
-        onView(ViewMatchers.withId(R.id.action_change_rule)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withId(R.id.action_change)).check(matches(isDisplayed()));
         //and undo disappear
-        onView(ViewMatchers.withId(R.id.action_undo_rule)).check(doesNotExist());
+        onView(ViewMatchers.withId(R.id.action_undo)).check(doesNotExist());
 
         Espresso.unregisterIdlingResources(r1);
         Espresso.unregisterIdlingResources(r2);

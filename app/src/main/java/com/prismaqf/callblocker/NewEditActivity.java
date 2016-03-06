@@ -35,10 +35,10 @@ public abstract class NewEditActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_edit_rules, menu);
-        mi_save = menu.findItem(R.id.action_save_rule);
-        mi_delete = menu.findItem(R.id.action_delete_rule);
-        mi_change = menu.findItem(R.id.action_change_rule);
-        mi_undo = menu.findItem(R.id.action_undo_rule);
+        mi_save = menu.findItem(R.id.action_save);
+        mi_delete = menu.findItem(R.id.action_delete);
+        mi_change = menu.findItem(R.id.action_change);
+        mi_undo = menu.findItem(R.id.action_undo);
         mi_undo.setVisible(false);
         if (getAction().equals(NewEditActivity.ACTION_CREATE)) {
             mi_delete.setVisible(false);
@@ -59,19 +59,19 @@ public abstract class NewEditActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_save_rule:
+            case R.id.action_save:
                 save();
                 return true;
-            case R.id.action_change_rule:
+            case R.id.action_change:
                 change();
                 return true;
-            case R.id.action_undo_rule:
+            case R.id.action_undo:
                 undo();
                 return true;
-            case R.id.action_delete_rule:
+            case R.id.action_delete:
                 delete();
                 return true;
-            case R.id.action_help_rule:
+            case R.id.action_help:
                 help();
                 return true;
             case android.R.id.home:

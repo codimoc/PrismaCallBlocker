@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -24,6 +25,9 @@ import java.util.ArrayList;
  * Created by ConteDiMonteCristo.
  */
 public class NewEditFilterRule extends NewEditActivity {
+
+
+    private static final int EDIT_PATTERNS = 1001;
 
     private class DbOperation extends AsyncTask<FilterRule, Void, Void> {
 
@@ -280,5 +284,11 @@ public class NewEditFilterRule extends NewEditActivity {
         ed_description.setText(ptRule.getDescription());
         tv_patterns.setText(makeRuleDescription());
         super.refreshWidgets(validate);
+    }
+    public void onManagePatterns(View view) {
+        Intent intent = new Intent(this, EditFilterPatterns.class);
+        intent.putExtra(KEY_PTRULE,ptRule);
+        //todo: implement the return logic
+        startActivityForResult(intent,EDIT_PATTERNS);
     }
 }

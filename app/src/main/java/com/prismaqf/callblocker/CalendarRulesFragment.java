@@ -20,7 +20,7 @@ import com.prismaqf.callblocker.sql.DbHelper;
  * Fragment for editing calendar rules
  * @author ConteDiMonteCristo
  */
-public class CalendarRulesFragment extends EditListFragment{
+public class CalendarRulesFragment extends EditCursorListFragment {
 
     private final String TAG = CalendarRulesFragment.class.getCanonicalName();
     private static final int URL_LOADER = 2; // Identifies a particular Loader being used in this component

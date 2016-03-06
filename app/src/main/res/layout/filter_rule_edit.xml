@@ -73,9 +73,8 @@
             android:text="@string/bt_manage_patterns"
             android:textAllCaps="false"
             android:layout_weight="1"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:id ="@+id/bt_filter_rule_patterns"/>
+            android:id ="@+id/bt_filter_rule_patterns"
+            android:onClick="onManagePatterns" />
     </LinearLayout>
 
     <TextView

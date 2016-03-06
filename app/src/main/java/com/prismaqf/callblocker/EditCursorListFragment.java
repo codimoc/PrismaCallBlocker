@@ -18,7 +18,7 @@ import com.prismaqf.callblocker.sql.DbHelper;
  * Fragment for editing lists bound to cursors
  * @author ConteDiMonteCristo
  */
-public abstract class EditListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public abstract class EditCursorListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private SimpleCursorAdapter myAdapter;
     SQLiteDatabase myDbConnection;

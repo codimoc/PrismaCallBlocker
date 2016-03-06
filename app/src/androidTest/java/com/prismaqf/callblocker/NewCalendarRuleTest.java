@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 
@@ -102,27 +101,27 @@ public class NewCalendarRuleTest extends DebugHelper {
     public void TestSaveAction() {
         intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
-        onView(ViewMatchers.withId(R.id.action_save_rule)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withId(R.id.action_save)).check(matches(isDisplayed()));
         //now empty the rule name, the action disappears
         onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(new ReplaceTextAction(""));
-        onView(ViewMatchers.withId(R.id.action_save_rule)).check(doesNotExist());
+        onView(ViewMatchers.withId(R.id.action_save)).check(doesNotExist());
         //reinsert a valid name, the action is back
         onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(new ReplaceTextAction("a"));
-        onView(ViewMatchers.withId(R.id.action_save_rule)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withId(R.id.action_save)).check(matches(isDisplayed()));
     }
 
     @Test
     public void TestDeleteActionMissingOnCreate(){
         intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
-        onView(ViewMatchers.withId(R.id.action_delete_rule)).check(doesNotExist());
+        onView(ViewMatchers.withId(R.id.action_delete)).check(doesNotExist());
     }
 
     @Test
     public void TestChangeActionMissingOnCreate(){
         intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
-        onView(ViewMatchers.withId(R.id.action_change_rule)).check(doesNotExist());
+        onView(ViewMatchers.withId(R.id.action_change)).check(doesNotExist());
     }
 
     @Test

@@ -80,6 +80,13 @@
                 android:value=".EditFilterRules" />
         </activity>
 
+        <activity android:name=".EditFilterPatterns"
+            android:label="@string/ac_edit_filter_patterns">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".NewEditFilterRule" />
+        </activity>
+
         <service
             android:name=".CallDetectService"
             android:enabled="true"

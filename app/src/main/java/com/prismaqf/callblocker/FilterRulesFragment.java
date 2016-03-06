@@ -8,14 +8,13 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbContract;
 
 /**
  * Fragment for editing filter rules
  * @author ConteDiMonteCristo
  */
-public class FilterRulesFragment extends EditListFragment {
+public class FilterRulesFragment extends EditCursorListFragment {
 
     private final String TAG = FilterRulesFragment.class.getCanonicalName();
     private static final int URL_LOADER = 3; // Identifies a particular Loader being used in this component
