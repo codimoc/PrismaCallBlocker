@@ -97,6 +97,13 @@ public class FilterRule implements IFilterRule, Cloneable, Parcelable{
     }
 
     /**
+     * Clear all patterns
+     */
+    public synchronized void clearPatterns() {
+        patterns.clear();
+    }
+
+    /**
      * Create a regex Pattern based on the client defined pattern,
      * transforming the client pattern into a proper regex. The syntax
      * allowed is very simple: groups of numbers separated by '*'.

@@ -18,7 +18,7 @@ import com.prismaqf.callblocker.sql.DbHelper;
 public abstract class ShowListActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>  {
 
     protected SimpleCursorAdapter myAdapter;
-    SQLiteDatabase myDbConnection;
+    protected SQLiteDatabase myDbConnection;
     protected String myAction;
 
     @Override

@@ -19,9 +19,9 @@ import java.util.ArrayList;
 public class EditPatternsFragment extends ListFragment {
 
     private final String TAG = EditPatternsFragment.class.getCanonicalName();
-    private FilterRule myRule;
+    private PatternAdapter myAdapter;
 
-    public FilterRule getFilterRule() {return myRule;}
+    public PatternAdapter getAdapter() {return myAdapter;}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -33,10 +33,11 @@ public class EditPatternsFragment extends ListFragment {
     public void onStart() {
         super.onStart();
         Bundle args = getArguments();
-        myRule = args.getParcelable(NewEditActivity.KEY_PTRULE);
-        if (myRule==null)
+        FilterRule rule = args.getParcelable(NewEditActivity.KEY_PTRULE);
+        if (rule==null)
             Log.e(TAG,"Missing FilterRule in the bundle when starting the fragment");
-        PatternAdapter adapter = new PatternAdapter(getActivity(),myRule);
-        setListAdapter(adapter);
+        ArrayList<String> checked = args.getStringArrayList(NewEditActivity.KEY_CHECKED);
+        myAdapter = new PatternAdapter(getActivity(),rule, checked);
+        setListAdapter(myAdapter);
     }
 }

@@ -25,6 +25,7 @@ public abstract class NewEditActivity extends ActionBarActivity {
     protected static final String ACTION_PICK  = "com.prismaqf.callblocker:pick";
     public static final String KEY_ACTION = "com.prismaqf.callblocker:action";
     public static final String KEY_NUMBER = "com.prismaqf.callblocker:number";
+    public static final String KEY_CHECKED = "com.prismaqf.callblocker:checked";
 
     protected MenuItem mi_save, mi_delete, mi_change, mi_undo;
 

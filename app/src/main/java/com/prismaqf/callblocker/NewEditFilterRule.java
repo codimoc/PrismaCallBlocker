@@ -1,5 +1,6 @@
 package com.prismaqf.callblocker;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -285,6 +286,18 @@ public class NewEditFilterRule extends NewEditActivity {
         tv_patterns.setText(makeRuleDescription());
         super.refreshWidgets(validate);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == EDIT_PATTERNS) {
+            FilterRule updatedRule = data.getParcelableExtra(KEY_PTRULE);
+            ptRule.clearPatterns();
+            for(String pattern: updatedRule.getPatternKeys())
+                ptRule.addPattern(pattern);
+            tv_patterns.setText(makeRuleDescription());
+        }
+    }
+
     public void onManagePatterns(View view) {
         Intent intent = new Intent(this, EditFilterPatterns.class);
         intent.putExtra(KEY_PTRULE,ptRule);

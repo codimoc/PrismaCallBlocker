@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.prismaqf.callblocker.utils.PatternAdapter;
+
 /**
  * @author ConteDiMonteCristo
  */
@@ -41,6 +43,13 @@ public class EditFilterPatterns extends ActionBarActivity {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putParcelable(NewEditActivity.KEY_PTRULE, myFragment.getAdapter().getRule());
+        savedInstanceState.putStringArrayList(NewEditActivity.KEY_CHECKED, myFragment.getAdapter().getMyChecked());
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
@@ -69,7 +78,9 @@ public class EditFilterPatterns extends ActionBarActivity {
                 help();
                 return true;
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                Intent intent = NavUtils.getParentActivityIntent(this);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                NavUtils.navigateUpTo(this, intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -88,7 +99,10 @@ public class EditFilterPatterns extends ActionBarActivity {
     }
 
     private void update() {
-        //todo: implement this
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(NewEditActivity.KEY_PTRULE,myFragment.getAdapter().getRule());
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
     }
 
     private void add() {
@@ -96,7 +110,10 @@ public class EditFilterPatterns extends ActionBarActivity {
     }
 
     private void delete() {
-        //todo: implement this
+        PatternAdapter adapter = myFragment.getAdapter();
+        for (String pattern:adapter.getMyChecked())
+            adapter.remove(pattern);
+        adapter.resetChecked();
     }
 
     private void help() {
@@ -107,7 +124,8 @@ public class EditFilterPatterns extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == RESULT_PICK) {
             String number = data.getStringExtra(NewEditActivity.KEY_NUMBER);
-            myFragment.getFilterRule().addPattern(number);
+
+            myFragment.getAdapter().add(number);
         }
     }
 }
