@@ -2,6 +2,7 @@ package com.prismaqf.callblocker;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,14 +17,20 @@ import com.prismaqf.callblocker.sql.DbHelper;
  */
 public abstract class ShowListActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>  {
 
-    private SimpleCursorAdapter myAdapter;
+    protected SimpleCursorAdapter myAdapter;
     SQLiteDatabase myDbConnection;
+    protected String myAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.data_bound_list_activity);
+        Intent intent = getIntent();
+        if (intent.hasExtra(NewEditActivity.KEY_ACTION))
+            myAction = intent.getStringExtra(NewEditActivity.KEY_ACTION);
+        else
+            myAction = "none";
 
         myDbConnection = new DbHelper(this).getReadableDatabase();
         myAdapter = getAdapter();

@@ -1,12 +1,17 @@
 package com.prismaqf.callblocker;
 
+import android.app.Activity;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.prismaqf.callblocker.sql.DbContract;
 import com.prismaqf.callblocker.sql.LoggedCallProvider;
@@ -65,5 +70,18 @@ import com.prismaqf.callblocker.sql.LoggedCallProvider;
     @Override
     public void initLoader() {
         getLoaderManager().initLoader(URL_LOADER, null, this);
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        if (myAction!=null && myAction.equals(NewEditActivity.ACTION_PICK)) {
+            Cursor c = (Cursor) myAdapter.getItem(position);
+            String number = c.getString(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_NUMBER));
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra(NewEditActivity.KEY_NUMBER,number);
+            setResult(Activity.RESULT_OK,returnIntent);
+            finish();
+        }
     }
 }

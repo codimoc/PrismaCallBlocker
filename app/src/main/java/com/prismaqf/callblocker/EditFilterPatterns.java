@@ -1,6 +1,8 @@
 package com.prismaqf.callblocker;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
@@ -15,6 +17,7 @@ public class EditFilterPatterns extends ActionBarActivity {
 
     private final String FRAGMENT = "EditFilterPatternsFragment";
     private EditPatternsFragment myFragment;
+    private final int RESULT_PICK = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +80,11 @@ public class EditFilterPatterns extends ActionBarActivity {
         //todo: implement this when ptRule is not saved
         super.onBackPressed();
     }
-    
+
     private void pick() {
-        //todo: implement this
+        Intent intent = new Intent(this, ShowLoggedCalls.class);
+        intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_PICK);
+        startActivityForResult(intent, RESULT_PICK);
     }
 
     private void update() {
@@ -96,5 +101,13 @@ public class EditFilterPatterns extends ActionBarActivity {
 
     private void help() {
         //todo: implement this
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == RESULT_PICK) {
+            String number = data.getStringExtra(NewEditActivity.KEY_NUMBER);
+            myFragment.getFilterRule().addPattern(number);
+        }
     }
 }
