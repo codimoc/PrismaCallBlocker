@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Filter;
 import java.util.regex.Pattern;
 
 import static junit.framework.Assert.assertEquals;
@@ -65,7 +66,7 @@ public class TestFilterRule {
     @Test
     public void TestRegexInvalidNumber() {
         final String number = "123ab456d78-";
-        Pattern p = FilterRule.makeRegex(number);
+        Pattern p = FilterRule.makeRegex(FilterRule.filterUnwanted(number));
         assertNotNull("The pattern is valid", p);
         assertEquals("The regex has stripped unwanted chars", "12345678", p.pattern());
     }
@@ -101,7 +102,7 @@ public class TestFilterRule {
     @Test
     public void TestRegexTwoGroupsTrimLeft() {
         final String number = "*123*456";
-        Pattern p = FilterRule.makeRegex(number);
+        Pattern p = FilterRule.makeRegex(FilterRule.filterUnwanted(number));
         assertNotNull("The pattern is valid",p);
         assertEquals("The regex has two groups","123\\d+456",p.pattern());
     }

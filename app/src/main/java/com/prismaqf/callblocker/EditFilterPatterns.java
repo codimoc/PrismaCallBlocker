@@ -1,14 +1,18 @@
 package com.prismaqf.callblocker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import com.prismaqf.callblocker.utils.PatternAdapter;
 
@@ -106,7 +110,26 @@ public class EditFilterPatterns extends ActionBarActivity {
     }
 
     private void add() {
-        //todo: implement this
+        //todo: restrict input to what allowed
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Type a pattern (* and digits)");
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_PHONE);
+        builder.setView(input);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                myFragment.getAdapter().add(input.getText().toString());
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     private void delete() {

@@ -84,6 +84,7 @@ public class FilterRule implements IFilterRule, Cloneable, Parcelable{
      */
     public synchronized void addPattern(String key) {
         if (patterns.containsKey(key)) return;
+        key = filterUnwanted(key);
         patterns.put(key, makeRegex(key));
     }
 
@@ -112,13 +113,7 @@ public class FilterRule implements IFilterRule, Cloneable, Parcelable{
      * @return a regex Pattern
      */
     static Pattern makeRegex(String key) {
-        //first clean up everything that is not a digit or a * sign
-        if (NOT_ALLOWED.matcher(key).find())
-            key = NOT_ALLOWED.matcher(key).replaceAll("");
-        if (LEFT_TRIM.matcher(key).find())
-            key = LEFT_TRIM.matcher(key).replaceFirst("");
-        if (RIGHT_TRIM.matcher(key).find())
-            key = RIGHT_TRIM.matcher(key).replaceFirst("");
+
         String[] tokens = SEPARATOR.split(key);
         if (tokens.length==0 || tokens[0].isEmpty()) return Pattern.compile("\\d*"); //always matching any digit
         sbuilder.setLength(0);
@@ -130,16 +125,22 @@ public class FilterRule implements IFilterRule, Cloneable, Parcelable{
         return Pattern.compile(sbuilder.toString());
     }
 
+    static String filterUnwanted(String key) {
+        //first clean up everything that is not a digit or a * sign
+        if (NOT_ALLOWED.matcher(key).find())
+            key = NOT_ALLOWED.matcher(key).replaceAll("");
+        if (LEFT_TRIM.matcher(key).find())
+            key = LEFT_TRIM.matcher(key).replaceFirst("");
+        if (RIGHT_TRIM.matcher(key).find())
+            key = RIGHT_TRIM.matcher(key).replaceFirst("");
+        return key;
+    }
+
     @Override
     public synchronized boolean Matches(String number) {
         if (number == null) return false;
         //purify the number
-        if (NOT_ALLOWED.matcher(number).find())
-            number = NOT_ALLOWED.matcher(number).replaceAll("");
-        if (LEFT_TRIM.matcher(number).find())
-            number = LEFT_TRIM.matcher(number).replaceFirst("");
-        if (RIGHT_TRIM.matcher(number).find())
-            number = RIGHT_TRIM.matcher(number).replaceFirst("");
+        number = filterUnwanted(number);
         //check first if the number is one of the patterns
         if (patterns.containsKey(number)) return true;
         for(Pattern p:patterns.values())
