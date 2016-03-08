@@ -75,6 +75,12 @@ public class LoggedCallProvider {
         return db.insert(DbContract.LoggedCalls.TABLE_NAME, DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION, vals);
     }
 
+    public static synchronized void DeleteLoggedCall(SQLiteDatabase db, long callid) {
+        String where = DbContract.LoggedCalls._ID + " = ?";
+        String[] args = {String.valueOf(callid)};
+        db.delete(DbContract.LoggedCalls.TABLE_NAME, where, args);
+    }
+
     /**
      * Retrieves the latest calls logged
      * @param db the SQLite connection
