@@ -20,6 +20,8 @@ public class CountingMatcher extends TypeSafeMatcher<String>{
 
     public int getCount() {return count;}
 
+    public void resetCount() {count = 0;}
+
 
     @Override
     public void describeTo(Description description) {
@@ -28,7 +30,7 @@ public class CountingMatcher extends TypeSafeMatcher<String>{
 
     @Override
     protected boolean matchesSafely(String item) {
-        if (item.contains(match)) {
+        if (item.contains(match) || match.equals("*")) {
             count++;
             return true;
         }

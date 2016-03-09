@@ -9,7 +9,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/cb_pattern" />
+        android:id="@+id/cb_pattern"/>
 
     <TextView
         android:layout_width="wrap_content"

@@ -2,19 +2,24 @@ package com.prismaqf.callblocker;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.core.deps.guava.base.Predicate;
+import android.support.test.espresso.core.deps.guava.collect.Iterables;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
+import android.support.test.runner.lifecycle.Stage;
+import android.view.WindowManager;
 
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.DbHelperTest;
 import com.prismaqf.callblocker.sql.LoggedCallProvider;
-import com.prismaqf.callblocker.utils.ConditionMatcher;
 import com.prismaqf.callblocker.utils.CountingMatcher;
 import com.prismaqf.callblocker.utils.DebugHelper;
+import com.prismaqf.callblocker.utils.InstrumentTestHelper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -27,11 +32,16 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.anything;
+import static org.hamcrest.CoreMatchers.containsString;
 
 @RunWith(AndroidJUnit4.class)
 public class ManageFilterPatternsTest extends DebugHelper{
@@ -47,6 +57,7 @@ public class ManageFilterPatternsTest extends DebugHelper{
 
     @Before
     public void before() {
+
         SQLiteDatabase db = new DbHelper(myActivityRule.getActivity()).getWritableDatabase();
         LoggedCallProvider.LoggedCall lc1 = new LoggedCallProvider.LoggedCall(1,-1,"123","dummy1");
         LoggedCallProvider.LoggedCall lc2 = new LoggedCallProvider.LoggedCall(2,-1,"456","dummy2");
@@ -82,15 +93,9 @@ public class ManageFilterPatternsTest extends DebugHelper{
         onView(ViewMatchers.withText("dummy1")).perform(click());
         onView(withText("123")).check(matches(isDisplayed()));
         final CountingMatcher matcher = new CountingMatcher("123");
-        final Predicate predicate = new Predicate() {
-
-            @Override
-            public boolean apply(Object o) {
-                return matcher.getCount()==1;
-            }
-        };
         //and here the check
-        onData(matcher).check(matches(new ConditionMatcher(predicate,"matcher count == 1")));
+        onData(matcher).check(matches(anything()));
+        assertEquals("Number of counts", 1, matcher.getCount());
     }
 
     @Test
@@ -111,15 +116,94 @@ public class ManageFilterPatternsTest extends DebugHelper{
         onView(withText("123")).check(matches(isDisplayed()));
         //now make sure it is only counted once
         final CountingMatcher matcher = new CountingMatcher("123");
-        final Predicate predicate = new Predicate() {
-
-            @Override
-            public boolean apply(Object o) {
-                return matcher.getCount()==1;
-            }
-        };
         //and here the check
-        onData(matcher).check(matches(new ConditionMatcher(predicate,"matcher count == 1")));
+        onData(matcher).check(matches(anything()));
+        assertEquals("Number of counts", 1, matcher.getCount());
+    }
+
+    @Test
+    public void PickFromLogWithScreenRotation() {
+        onView(withId(R.id.action_help_patterns)).check(matches(isDisplayed()));
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        //first time
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Pick from log")).perform(click());
+        onView(ViewMatchers.withText("dummy1")).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText("dummy1")).perform(click());
+        onView(withText("123")).check(matches(isDisplayed()));
+        //second time over
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Pick from log")).perform(click());
+        onView(ViewMatchers.withText("dummy2")).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText("dummy2")).perform(click());
+        onView(withText("456")).check(matches(isDisplayed()));
+        //Counting items
+        final CountingMatcher matcher = new CountingMatcher("*");
+        onData(matcher).atPosition(0).check(matches(anything()));
+        assertEquals("Number of counts", 2, matcher.getCount());
+        //now rotate
+        Activity ca = InstrumentTestHelper.getCurrentActivity();
+        InstrumentTestHelper.rotateScreen(ca);
+        matcher.resetCount();
+        onData(matcher).atPosition(0).check(matches(anything()));
+        assertEquals("Number of counts", 2, matcher.getCount());
+    }
+
+    @Test
+    public void TestCheckingPersistsWithRotation() {
+        onView(withId(R.id.action_help_patterns)).check(matches(isDisplayed()));
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        //first time
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Pick from log")).perform(click());
+        onView(ViewMatchers.withText("dummy1")).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText("dummy1")).perform(click());
+        onView(withText("123")).check(matches(isDisplayed()));
+        //second time over
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Pick from log")).perform(click());
+        onView(ViewMatchers.withText("dummy2")).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText("dummy2")).perform(click());
+        onView(withText("456")).check(matches(isDisplayed()));
+        //perform checking 456
+        onData(containsString("123")).onChildView(withId(R.id.cb_pattern)).check(matches(isNotChecked()));
+        onData(containsString("456")).onChildView(withId(R.id.cb_pattern)).check(matches(isNotChecked()));
+        onData(containsString("456")).onChildView(withId(R.id.cb_pattern)).perform(click());
+        onData(containsString("123")).onChildView(withId(R.id.cb_pattern)).check(matches(isNotChecked()));
+        onData(containsString("456")).onChildView(withId(R.id.cb_pattern)).check(matches(isChecked()));
+        //now rotate
+        Activity ca = InstrumentTestHelper.getCurrentActivity();
+        InstrumentTestHelper.rotateScreen(ca);
+        onData(containsString("123")).onChildView(withId(R.id.cb_pattern)).check(matches(isNotChecked()));
+        onData(containsString("456")).onChildView(withId(R.id.cb_pattern)).check(matches(isChecked()));
+    }
+
+    @Test
+    public void TestDeleteChecked() {
+        onView(withId(R.id.action_help_patterns)).check(matches(isDisplayed()));
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        //first time
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Pick from log")).perform(click());
+        onView(ViewMatchers.withText("dummy1")).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText("dummy1")).perform(click());
+        onView(withText("123")).check(matches(isDisplayed()));
+        //second time over
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Pick from log")).perform(click());
+        onView(ViewMatchers.withText("dummy2")).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText("dummy2")).perform(click());
+        onView(withText("456")).check(matches(isDisplayed()));
+        //perform checking 456
+        onData(containsString("456")).onChildView(withId(R.id.cb_pattern)).perform(click());
+        //now delete checked
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Delete selected patterns")).perform(click());
+        //Counting items
+        final CountingMatcher matcher = new CountingMatcher("123");
+        onData(matcher).atPosition(0).check(matches(anything()));
+        assertEquals("Number of counts", 1, matcher.getCount());
+        onView(withText("456")).check(doesNotExist());
     }
 
 }

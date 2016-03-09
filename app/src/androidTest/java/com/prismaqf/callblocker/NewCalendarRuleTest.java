@@ -3,22 +3,17 @@ package com.prismaqf.callblocker;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Parcel;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ReplaceTextAction;
-import android.support.test.espresso.core.deps.guava.collect.Iterables;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
-import android.support.test.runner.lifecycle.Stage;
 
 import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.DbHelperTest;
 import com.prismaqf.callblocker.utils.DebugHelper;
+import com.prismaqf.callblocker.utils.InstrumentTestHelper;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -29,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
@@ -167,15 +161,15 @@ public class NewCalendarRuleTest extends DebugHelper {
     public void TestDynamicStateOnRotation() throws Throwable {
         intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
         ctx.startActivity(intent);
-        Activity activity = getCurrentActivity();
+        Activity activity = InstrumentTestHelper.getCurrentActivity();
         onView(ViewMatchers.withId(R.id.cb_Wednesday)).check(matches(isChecked()));
         onView(ViewMatchers.withId(R.id.cb_Wednesday)).perform(click());
         onView(ViewMatchers.withId(R.id.cb_Wednesday)).check(matches(isNotChecked()));
         onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(new ReplaceTextAction("dummy"));
-        rotateScreen(activity);
+        InstrumentTestHelper.rotateScreen(activity);
         onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).check(matches(withText("dummy")));
         onView(ViewMatchers.withId(R.id.cb_Wednesday)).check(matches(isNotChecked()));
-        rotateScreen(activity);
+        InstrumentTestHelper.rotateScreen(activity);
         onView(ViewMatchers.withId(R.id.cb_Wednesday)).check(matches(isNotChecked()));
         onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).check(matches(withText("dummy")));
     }
@@ -218,28 +212,4 @@ public class NewCalendarRuleTest extends DebugHelper {
         onView(ViewMatchers.withId(R.id.cb_Sunday)).perform(click());
         onView(ViewMatchers.withId(R.id.cb_Sunday)).check(matches(isChecked()));
     }
-
-    private void rotateScreen(Activity currentActivity) {
-        Context context = InstrumentationRegistry.getTargetContext();
-        int orientation = context.getResources().getConfiguration().orientation;
-        currentActivity.setRequestedOrientation(
-                (orientation == Configuration.ORIENTATION_PORTRAIT) ?
-                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
-                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    }
-
-    private Activity getCurrentActivity() {
-        getInstrumentation().waitForIdleSync();
-        final Activity[] activity = new Activity[1];
-        getInstrumentation().runOnMainSync(new Runnable() {
-            @Override
-            public void run() {
-                java.util.Collection<Activity> activites = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
-                activity[0] = Iterables.getOnlyElement(activites);
-            }
-        });
-        return activity[0];
-    }
-
-
 }
