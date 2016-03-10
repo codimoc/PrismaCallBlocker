@@ -2,17 +2,11 @@ package com.prismaqf.callblocker;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.core.deps.guava.collect.Iterables;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
-import android.support.test.runner.lifecycle.Stage;
-import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.prismaqf.callblocker.sql.DbHelper;
@@ -28,10 +22,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
@@ -234,6 +228,71 @@ public class ManageFilterPatternsTest extends DebugHelper{
         onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("1-23*4+5)6"));
         onView(withText("OK")).perform(click());
         onView(withText("123*456")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void TestUpdateActionValidation() {
+        onView(withId(R.id.action_help_patterns)).check(matches(isDisplayed()));
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        //first does not exists
+        onView(withId(R.id.action_update_patterns)).check(doesNotExist());
+        //now modify the rule
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Add a pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("1-23*4+5)6"));
+        onView(withText("OK")).perform(click());
+        onView(withText("123*456")).check(matches(isDisplayed()));
+        //the update action should be available now
+        onView(withId(R.id.action_update_patterns)).check(matches(isDisplayed()));
+        //also upn rotation
+        InstrumentTestHelper.rotateScreen(InstrumentTestHelper.getCurrentActivity());
+        onView(withId(R.id.action_update_patterns)).check(matches(isDisplayed()));
+        //now remove the change
+        onData(containsString("456")).onChildView(withId(R.id.cb_pattern)).perform(click());
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Delete selected patterns")).perform(click());
+        //now the update action should disappear
+        onView(withId(R.id.action_update_patterns)).check(doesNotExist());
+    }
+
+    @Test
+    public void TestDeleteActionValidation() {
+        onView(withId(R.id.action_help_patterns)).check(matches(isDisplayed()));
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        //first does not exists
+        //now modify the rule
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Add a pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("1-23*4+5)6"));
+        onView(withText("OK")).perform(click());
+        onView(withText("123*456")).check(matches(isDisplayed()));
+        //the still unchecked, the delete action should be disables
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Delete selected patterns")).check(doesNotExist());
+        //now check it
+        pressBack();
+        onData(containsString("123")).onChildView(withId(R.id.cb_pattern)).perform(click());
+        //the delete should now be anabled
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Delete selected patterns")).check(matches(isDisplayed()));
+        onView(withText("Delete selected patterns")).perform(click());
+    }
+
+    @Test
+    public void TestUpdate() {
+        onView(withId(R.id.action_help_patterns)).check(matches(isDisplayed()));
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        //first time
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Add a pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("123*456"));
+        onView(withText("OK")).perform(click());
+        onView(withText("123*456")).check(matches(isDisplayed()));
+        //now update
+        onView(withId(R.id.action_update_patterns)).perform(click());
+        //we should have landed in the parent activity and the rule description should be unpdates
+        onView(withId(R.id.tx_rule_description)).check(matches(withText(containsString("123"))));
+
     }
 
 }

@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.prismaqf.callblocker.rules.FilterRule;
 import com.prismaqf.callblocker.utils.PatternAdapter;
 
 /**
@@ -24,7 +25,8 @@ public class EditFilterPatterns extends ActionBarActivity {
     private final String FRAGMENT = "EditFilterPatternsFragment";
     private EditPatternsFragment myFragment;
     private final int RESULT_PICK = 1001;
-    protected MenuItem mi_update, mi_delete;
+    private MenuItem mi_update, mi_delete;
+    private FilterRule myOrigRule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +35,14 @@ public class EditFilterPatterns extends ActionBarActivity {
         setContentView(R.layout.data_bound_edit_activity);
 
         myFragment = new EditPatternsFragment();
-        if (savedInstanceState == null)
+        if (savedInstanceState == null) {
             myFragment.setArguments(getIntent().getExtras());
-        else
+            if (myOrigRule == null)
+                myOrigRule = getIntent().getParcelableExtra(NewEditActivity.KEY_ORIG);
+        } else {
             myFragment.setArguments(savedInstanceState);
+            myOrigRule = getIntent().getParcelableExtra(NewEditActivity.KEY_ORIG);
+        }
 
 
         getFragmentManager().
@@ -50,6 +56,7 @@ public class EditFilterPatterns extends ActionBarActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putParcelable(NewEditActivity.KEY_PTRULE, myFragment.getAdapter().getRule());
+        savedInstanceState.putParcelable(NewEditActivity.KEY_ORIG, myOrigRule);
         savedInstanceState.putStringArrayList(NewEditActivity.KEY_CHECKED, myFragment.getAdapter().getMyChecked());
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -61,7 +68,7 @@ public class EditFilterPatterns extends ActionBarActivity {
         inflater.inflate(R.menu.menu_edit_patterns, menu);
         mi_update = menu.findItem(R.id.action_update_patterns);
         mi_delete = menu.findItem(R.id.action_delete_pattern);
-        //todo: add validation of items based on the state of the rule
+        validateActions();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -86,8 +93,13 @@ public class EditFilterPatterns extends ActionBarActivity {
                 help();
                 return true;
             case android.R.id.home:
+                FilterRule currentRule = myFragment.getAdapter().getRule();
+                if (currentRule !=null && !currentRule.equals(myOrigRule)) {
+                    update();
+                    return true;
+                }
                 Intent intent = NavUtils.getParentActivityIntent(this);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 NavUtils.navigateUpTo(this, intent);
                 return true;
         }
@@ -96,7 +108,11 @@ public class EditFilterPatterns extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        //todo: implement this when ptRule is not saved
+        FilterRule currentRule = myFragment.getAdapter().getRule();
+        if (currentRule !=null && !currentRule.equals(myOrigRule)) {
+            update();
+            return;
+        }
         super.onBackPressed();
     }
 
@@ -104,12 +120,13 @@ public class EditFilterPatterns extends ActionBarActivity {
         Intent intent = new Intent(this, ShowLoggedCalls.class);
         intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_PICK);
         startActivityForResult(intent, RESULT_PICK);
+        validateActions();
     }
 
     private void update() {
         Intent returnIntent = new Intent();
-        returnIntent.putExtra(NewEditActivity.KEY_PTRULE,myFragment.getAdapter().getRule());
-        setResult(Activity.RESULT_OK,returnIntent);
+        returnIntent.putExtra(NewEditActivity.KEY_PTRULE, myFragment.getAdapter().getRule());
+        setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
 
@@ -135,13 +152,15 @@ public class EditFilterPatterns extends ActionBarActivity {
         });
 
         builder.show();
+        validateActions();
     }
 
     private void delete() {
         PatternAdapter adapter = myFragment.getAdapter();
-        for (String pattern:adapter.getMyChecked())
+        for (String pattern : adapter.getMyChecked())
             adapter.remove(pattern);
         adapter.resetChecked();
+        validateActions();
     }
 
     private void help() {
@@ -156,4 +175,11 @@ public class EditFilterPatterns extends ActionBarActivity {
             myFragment.getAdapter().add(number);
         }
     }
+
+    public void validateActions() {
+        FilterRule currentRule = myFragment.getAdapter().getRule();
+        mi_update.setVisible(!currentRule.equals(myOrigRule));
+        mi_delete.setVisible(myFragment.getAdapter().getMyChecked().size() > 0);
+    }
+
 }

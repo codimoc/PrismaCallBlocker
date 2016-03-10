@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.prismaqf.callblocker.EditFilterPatterns;
 import com.prismaqf.callblocker.R;
 import com.prismaqf.callblocker.rules.FilterRule;
 
@@ -22,9 +23,11 @@ import java.util.Set;
 public class PatternAdapter extends ArrayAdapter<String> {
     private final FilterRule myRule;
     private final Set<String> myChecked;
+    private final EditFilterPatterns myActivity;
 
     public PatternAdapter(Context context, FilterRule rule, ArrayList<String> checked) {
         super(context, 0, new ArrayList<>(rule.getPatternKeys()));
+        myActivity = (EditFilterPatterns)context;
         myRule = rule;
         if (checked != null)
             myChecked = new HashSet<>(checked);
@@ -58,6 +61,7 @@ public class PatternAdapter extends ArrayAdapter<String> {
                     myChecked.add(pattern);
                 else
                     myChecked.remove(pattern);
+                if (myActivity!= null) myActivity.validateActions();
             }
         });
         return convertView;
@@ -68,6 +72,7 @@ public class PatternAdapter extends ArrayAdapter<String> {
         myRule.addPattern(pattern);
         super.clear();
         super.addAll(myRule.getPatternKeys());
+        if (myActivity!= null) myActivity.validateActions();
     }
 
     @Override
@@ -75,6 +80,7 @@ public class PatternAdapter extends ArrayAdapter<String> {
         myRule.removePattern(pattern);
         super.clear();
         super.addAll(myRule.getPatternKeys());
+        if (myActivity!= null) myActivity.validateActions();
     }
 
     public FilterRule getRule() {

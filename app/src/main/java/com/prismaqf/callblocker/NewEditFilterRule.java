@@ -137,11 +137,18 @@ public class NewEditFilterRule extends NewEditActivity {
     }
 
     private String makeRuleDescription() {
-        StringBuilder builder = new StringBuilder("Patterns in rule:\n");
+        StringBuilder builder = new StringBuilder("Patterns in rule. ");
         if (ptRule!=null) {
+            builder.append(String.format("Total of %d\n",ptRule.getPatternKeys().size()));
+            int i=0;
             for (String p : ptRule.getPatternKeys()){
                 builder.append(p);
                 builder.append("  ");
+                i++;
+                if (i>10) {
+                    builder.append("...");
+                    break;
+                }
             }
         }
         return builder.toString();
@@ -301,6 +308,7 @@ public class NewEditFilterRule extends NewEditActivity {
     public void onManagePatterns(View view) {
         Intent intent = new Intent(this, EditFilterPatterns.class);
         intent.putExtra(KEY_PTRULE,ptRule);
+        intent.putExtra(KEY_ORIG,ptRule);
         startActivityForResult(intent,EDIT_PATTERNS);
     }
 }
