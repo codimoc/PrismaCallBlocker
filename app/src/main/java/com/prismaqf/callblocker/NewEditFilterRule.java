@@ -301,7 +301,6 @@ public class NewEditFilterRule extends NewEditActivity {
     public void onManagePatterns(View view) {
         Intent intent = new Intent(this, EditFilterPatterns.class);
         intent.putExtra(KEY_PTRULE,ptRule);
-        //todo: implement the return logic
         startActivityForResult(intent,EDIT_PATTERNS);
     }
 }

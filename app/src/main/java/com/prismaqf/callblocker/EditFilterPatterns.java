@@ -24,6 +24,7 @@ public class EditFilterPatterns extends ActionBarActivity {
     private final String FRAGMENT = "EditFilterPatternsFragment";
     private EditPatternsFragment myFragment;
     private final int RESULT_PICK = 1001;
+    protected MenuItem mi_update, mi_delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,9 @@ public class EditFilterPatterns extends ActionBarActivity {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_edit_patterns, menu);
+        mi_update = menu.findItem(R.id.action_update_patterns);
+        mi_delete = menu.findItem(R.id.action_delete_pattern);
+        //todo: add validation of items based on the state of the rule
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -111,6 +115,7 @@ public class EditFilterPatterns extends ActionBarActivity {
 
     private void add() {
         //todo: restrict input to what allowed
+        //todo: what to do with screen rotation?
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Type a pattern (* and digits)");
         final EditText input = new EditText(this);

@@ -13,6 +13,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 import android.support.test.runner.lifecycle.Stage;
 import android.view.WindowManager;
+import android.widget.EditText;
 
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.DbHelperTest;
@@ -32,16 +33,20 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
 
 @RunWith(AndroidJUnit4.class)
 public class ManageFilterPatternsTest extends DebugHelper{
@@ -204,6 +209,31 @@ public class ManageFilterPatternsTest extends DebugHelper{
         onData(matcher).atPosition(0).check(matches(anything()));
         assertEquals("Number of counts", 1, matcher.getCount());
         onView(withText("456")).check(doesNotExist());
+    }
+
+
+    @Test
+    public void TestAddPattern() {
+        onView(withId(R.id.action_help_patterns)).check(matches(isDisplayed()));
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        //first time
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Add a pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("123*456"));
+        onView(withText("OK")).perform(click());
+        onView(withText("123*456")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void TestAddPatternWithExtraChars() {
+        onView(withId(R.id.action_help_patterns)).check(matches(isDisplayed()));
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        //first time
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Add a pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("1-23*4+5)6"));
+        onView(withText("OK")).perform(click());
+        onView(withText("123*456")).check(matches(isDisplayed()));
     }
 
 }
