@@ -12,7 +12,10 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.ScrollView;
 
 import com.prismaqf.callblocker.rules.FilterRule;
 import com.prismaqf.callblocker.utils.PatternAdapter;
@@ -164,7 +167,25 @@ public class EditFilterPatterns extends ActionBarActivity {
     }
 
     private void help() {
-        //todo: implement this
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(R.string.tx_manage_patterns_help);
+
+        WebView wv = new WebView(this);
+        wv.loadUrl("file:///android_asset/html/patterns_edit.html");
+        ScrollView scroll = new ScrollView(this);
+        scroll.setVerticalScrollBarEnabled(true);
+        scroll.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        scroll.addView(wv);
+
+        alert.setView(scroll);
+        alert.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
     }
 
     @Override

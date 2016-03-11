@@ -87,5 +87,6 @@
     <string name="tx_pattern">Pattern:</string>
     <string name="mn_update_patterns">Update patterns</string>
     <string name="mn_pick_log">Pick from log</string>
+    <string name="tx_manage_patterns_help">Manage filter patterns</string>
 
 </resources>
