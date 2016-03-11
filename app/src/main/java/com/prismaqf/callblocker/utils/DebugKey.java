@@ -3,13 +3,15 @@ package com.prismaqf.callblocker.utils;
 /**
  * Created by ConteDiMonteCristo
  */
-public class DebugHelper {
+public class DebugKey {
 
     /**
      * This is the key that can only be constructed here and
      * hence accessible only to derived classes
      */
-    protected static DbKey myKey = new DbKey();
+    private DbKey myKey = new DbKey();
+
+    protected DbKey getKey() {return myKey;}
 
     /**
      * This class acts as "friend" proxy to access

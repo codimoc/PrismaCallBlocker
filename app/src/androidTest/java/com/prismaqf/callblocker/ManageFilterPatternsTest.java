@@ -9,15 +9,16 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.EditText;
 
+import com.prismaqf.callblocker.sql.DbContract;
 import com.prismaqf.callblocker.sql.DbHelper;
-import com.prismaqf.callblocker.sql.DbHelperTest;
 import com.prismaqf.callblocker.sql.LoggedCallProvider;
 import com.prismaqf.callblocker.utils.CountingMatcher;
-import com.prismaqf.callblocker.utils.DebugHelper;
+import com.prismaqf.callblocker.utils.DebugDBFileName;
 import com.prismaqf.callblocker.utils.InstrumentTestHelper;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,16 +41,14 @@ import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
 
 @RunWith(AndroidJUnit4.class)
-public class ManageFilterPatternsTest extends DebugHelper{
-
-    static {
-        DbHelper.SetDebugDb(myKey, DbHelperTest.DB_NAME);
-    }
+public class ManageFilterPatternsTest{
 
     private long n1,n2;
+
+    @ClassRule
+    public static final DebugDBFileName myDebugDB = new DebugDBFileName();
 
     @Rule
     public final ActivityTestRule<NewEditFilterRule> myActivityRule = new ActivityTestRule(NewEditFilterRule.class);
@@ -58,6 +57,7 @@ public class ManageFilterPatternsTest extends DebugHelper{
     public void before() {
 
         SQLiteDatabase db = new DbHelper(myActivityRule.getActivity()).getWritableDatabase();
+        db.delete(DbContract.LoggedCalls.TABLE_NAME,null,null);
         LoggedCallProvider.LoggedCall lc1 = new LoggedCallProvider.LoggedCall(1,-1,"123","dummy1");
         LoggedCallProvider.LoggedCall lc2 = new LoggedCallProvider.LoggedCall(2,-1,"456","dummy2");
         n1 = LoggedCallProvider.InsertRow(db,lc1);

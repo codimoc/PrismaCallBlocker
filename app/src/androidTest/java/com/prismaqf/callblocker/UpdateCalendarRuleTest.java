@@ -11,12 +11,12 @@ import android.support.test.runner.AndroidJUnit4;
 import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
-import com.prismaqf.callblocker.sql.DbHelperTest;
-import com.prismaqf.callblocker.utils.DebugHelper;
+import com.prismaqf.callblocker.utils.DebugDBFileName;
 import com.prismaqf.callblocker.utils.InstrumentTestHelper;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,14 +31,13 @@ import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-public class UpdateCalendarRuleTest extends DebugHelper{
-
-    static {
-        DbHelper.SetDebugDb(myKey, DbHelperTest.DB_NAME);
-    }
+public class UpdateCalendarRuleTest {
 
     private long myRuleId;
     private static final String TEST_RULE = "My rule for testing";
+
+    @ClassRule
+    public static final DebugDBFileName myDebugDB = new DebugDBFileName();
 
     //Make the rule but don't start the activity
     @Rule

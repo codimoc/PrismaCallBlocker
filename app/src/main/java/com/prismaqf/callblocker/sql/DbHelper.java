@@ -9,8 +9,7 @@ import android.util.Log;
 
 import com.prismaqf.callblocker.R;
 import com.prismaqf.callblocker.rules.CalendarRule;
-import com.prismaqf.callblocker.rules.FilterRule;
-import com.prismaqf.callblocker.utils.DebugHelper;
+import com.prismaqf.callblocker.utils.DebugKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +41,7 @@ public class DbHelper extends SQLiteOpenHelper{
         super(context, dbname, null, DATABASE_VERSION);
     }
 
-    public synchronized static void SetDebugDb(DebugHelper.DbKey key, String dbname) {
-        //check the key is valid
-        assert(key != null);
+    public synchronized static void SetDebugDb(DebugKey.DbKey key, String dbname) {
         debugDb = dbname;
     }
 

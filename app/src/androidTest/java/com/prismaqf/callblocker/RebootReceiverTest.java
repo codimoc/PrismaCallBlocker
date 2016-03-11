@@ -6,12 +6,11 @@ import android.content.SharedPreferences;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.prismaqf.callblocker.sql.DbHelper;
-import com.prismaqf.callblocker.sql.DbHelperTest;
-import com.prismaqf.callblocker.utils.DebugHelper;
+import com.prismaqf.callblocker.utils.DebugDBFileName;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,13 +22,13 @@ import static junit.framework.Assert.assertTrue;
  * @author ConteDiMonteCristo
  */
 @RunWith(AndroidJUnit4.class)
-public class RebootReceiverTest extends DebugHelper {
-
-    static {
-        DbHelper.SetDebugDb(myKey, DbHelperTest.DB_NAME);
-    }
+public class RebootReceiverTest {
 
     private Context myContext;
+
+    @ClassRule
+    public static final DebugDBFileName myDebugDB = new DebugDBFileName();
+
 
     @Before
     public void before() {

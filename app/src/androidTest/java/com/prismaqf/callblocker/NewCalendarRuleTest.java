@@ -10,12 +10,11 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.prismaqf.callblocker.rules.CalendarRule;
-import com.prismaqf.callblocker.sql.DbHelper;
-import com.prismaqf.callblocker.sql.DbHelperTest;
-import com.prismaqf.callblocker.utils.DebugHelper;
+import com.prismaqf.callblocker.utils.DebugDBFileName;
 import com.prismaqf.callblocker.utils.InstrumentTestHelper;
 
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,14 +36,14 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-public class NewCalendarRuleTest extends DebugHelper {
-
-    static {
-        DbHelper.SetDebugDb(myKey, DbHelperTest.DB_NAME);
-    }
+public class NewCalendarRuleTest {
 
     private Intent intent;
     private Context ctx;
+
+    @ClassRule
+    public static final DebugDBFileName myDebugDB = new DebugDBFileName();
+
 
     @Rule
     public final ActivityTestRule<EditCalendarRules> myActivityRule = new ActivityTestRule<>(EditCalendarRules.class);

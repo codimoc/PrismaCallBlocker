@@ -8,12 +8,12 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.prismaqf.callblocker.rules.FilterRule;
 import com.prismaqf.callblocker.sql.DbHelper;
-import com.prismaqf.callblocker.sql.DbHelperTest;
 import com.prismaqf.callblocker.sql.FilterRuleProvider;
-import com.prismaqf.callblocker.utils.DebugHelper;
+import com.prismaqf.callblocker.utils.DebugDBFileName;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,13 +24,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
-public class EditFilterRuleTest extends DebugHelper{
+public class EditFilterRuleTest {
 
-    static {
-        DbHelper.SetDebugDb(myKey, DbHelperTest.DB_NAME);
-    }
 
     private static final String TEST_RULE_NAME = "Test rule";
+
+    @ClassRule
+    public static final DebugDBFileName myDebugDB = new DebugDBFileName();
 
     @Rule
     public final ActivityTestRule<CallBlockerManager> myActivityRule = new ActivityTestRule(CallBlockerManager.class);
