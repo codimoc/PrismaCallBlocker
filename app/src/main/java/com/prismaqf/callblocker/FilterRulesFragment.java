@@ -1,14 +1,22 @@
 package com.prismaqf.callblocker;
 
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import com.prismaqf.callblocker.rules.CalendarRule;
+import com.prismaqf.callblocker.rules.FilterRule;
+import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbContract;
+import com.prismaqf.callblocker.sql.DbHelper;
+import com.prismaqf.callblocker.sql.FilterRuleProvider;
 
 /**
  * Fragment for editing filter rules
@@ -61,6 +69,25 @@ public class FilterRulesFragment extends EditCursorListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        //todo: implement here
+        final long ruleid = id;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SQLiteDatabase db = new DbHelper(getActivity()).getReadableDatabase();
+                try {
+                    FilterRule rule = FilterRuleProvider.FindFilterRule(db, ruleid);
+                    Intent intent = new Intent(getActivity(),NewEditFilterRule.class);
+                    intent.putExtra(NewEditActivity.ACTION_KEY, NewEditActivity.ACTION_UPDATE);
+                    intent.putExtra(NewEditActivity.KEY_ORIG,rule);
+                    intent.putExtra(NewEditActivity.KEY_RULEID,ruleid);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+                finally {
+                    db.close();
+                }
+            }
+        }).start();
     }
 }

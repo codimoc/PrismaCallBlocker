@@ -76,6 +76,7 @@
     <string name="tx_validation_rule_has_changed">Rule has changed.\nSaving or undo changes is allowed</string>
     <string name="mn_help">Help</string>
     <string name="tx_calendar_rule_help_title">Help on editing calendar rules</string>
+    <string name="tx_filter_rule_help_title">Help on editing filter rules</string>
     <string name="tx_description">Description</string>
     <string name="tx_pick_from_log">Pick From Log</string>
     <string name="tx_delete_selected">Delete Selected</string>

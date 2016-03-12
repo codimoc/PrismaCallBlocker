@@ -11,8 +11,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.prismaqf.callblocker.rules.FilterRule;
@@ -130,6 +133,9 @@ public class NewEditFilterRule extends NewEditActivity {
             public void afterTextChanged(Editable s) {
                 if (ptRule != null)
                     ptRule.setDescription(ed_description.getText().toString());
+                    //todo change this, this fails on rotation when the menu items are not initialized
+                    //when the rule is in change mode and the screen is rotated it looses the change mode
+                    validateActions();
             }
         });
 
@@ -222,7 +228,25 @@ public class NewEditFilterRule extends NewEditActivity {
 
     @Override
     protected void help() {
-        //todo: implement this
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(R.string.tx_filter_rule_help_title);
+
+        WebView wv = new WebView(this);
+        wv.loadUrl("file:///android_asset/html/filter_rule_edit.html");
+        ScrollView scroll = new ScrollView(this);
+        scroll.setVerticalScrollBarEnabled(true);
+        scroll.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        scroll.addView(wv);
+
+        alert.setView(scroll);
+        alert.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
     }
 
     @Override
@@ -262,6 +286,7 @@ public class NewEditFilterRule extends NewEditActivity {
 
     @Override
     protected void validateActions() {
+        if (mi_save==null || mi_delete ==null || mi_change == null || mi_undo == null) return;
         mi_save.setVisible(!myNewRule.equals(myOrigRule) && isNameValid);
         mi_delete.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptRule == myOrigRule);
         mi_change.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptRule == myOrigRule);
@@ -301,7 +326,7 @@ public class NewEditFilterRule extends NewEditActivity {
             ptRule.clearPatterns();
             for(String pattern: updatedRule.getPatternKeys())
                 ptRule.addPattern(pattern);
-            tv_patterns.setText(makeRuleDescription());
+            refreshWidgets(true);
         }
     }
 
