@@ -37,6 +37,11 @@ public abstract class NewEditActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        refreshWidgets(false);
+        //add text validation
+        getNameEditField().addTextChangedListener(getRuleNameValidator());
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_edit_rules, menu);
         mi_save = menu.findItem(R.id.action_save);
@@ -52,9 +57,6 @@ public abstract class NewEditActivity extends ActionBarActivity {
             mi_save.setVisible(false);
         }
 
-        //add text validation
-        getNameEditField().addTextChangedListener(getRuleNameValidator());
-        refreshWidgets(true);
         return true;
     }
 
