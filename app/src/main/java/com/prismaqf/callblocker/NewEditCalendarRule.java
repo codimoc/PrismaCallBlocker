@@ -104,7 +104,7 @@ public class NewEditCalendarRule extends NewEditActivity {
             try {
                 if (action.equals(NewEditActivity.ACTION_CREATE))
                     CalendarRuleProvider.InsertRow(db, rule);
-                else if (action.equals(NewEditActivity.ACTION_UPDATE))
+                else if (action.equals(NewEditActivity.ACTION_EDIT))
                     CalendarRuleProvider.UpdateCalendarRule(db, ruleid, rule);
                 else //ACTION_DELETE
                     CalendarRuleProvider.DeleteCalendarRule(db, ruleid);
@@ -159,8 +159,9 @@ public class NewEditCalendarRule extends NewEditActivity {
         Intent intent = getIntent();
         myRuleNames = intent.getStringArrayListExtra(NewEditActivity.KEY_RULENAMES);
 
-
-        if (intent.hasExtra(NewEditActivity.ACTION_KEY) && intent.getStringExtra(NewEditActivity.ACTION_KEY).equals(NewEditActivity.ACTION_UPDATE)) {
+        //ACTION_UPDATE
+        if (intent.hasExtra(NewEditActivity.ACTION_KEY) &&
+            intent.getStringExtra(NewEditActivity.ACTION_KEY).equals(NewEditActivity.ACTION_UPDATE)) {
             myOrigRule = intent.getParcelableExtra(NewEditActivity.KEY_ORIG);
             try {
                 myNewRule  = (CalendarRule)myOrigRule.clone();
@@ -174,7 +175,19 @@ public class NewEditCalendarRule extends NewEditActivity {
 
             enableWidgets(false,false);
 
-        } else {
+        }
+        //ACTION_EDIT
+        else if (intent.hasExtra(NewEditActivity.ACTION_KEY) && intent.getStringExtra(NewEditActivity.ACTION_KEY).equals(NewEditActivity.ACTION_EDIT)) {
+            myOrigRule = intent.getParcelableExtra(NewEditActivity.KEY_ORIG);
+            myNewRule = intent.getParcelableExtra(NewEditActivity.KEY_NEW);
+            myRuleId = intent.getLongExtra(NewEditActivity.KEY_RULEID,0);
+            ptRule = myNewRule;
+            myAction = NewEditActivity.ACTION_EDIT;
+
+            enableWidgets(false,true);
+        }
+        //ACTION_CREATE
+        else {
             myNewRule = new CalendarRule(); //always active by default (all days of week and full day)
             myOrigRule = null;
             ptRule = myNewRule;
@@ -349,14 +362,22 @@ public class NewEditCalendarRule extends NewEditActivity {
 
     @Override
     protected void validateActions() {
-        mi_save.setVisible(!myNewRule.equals(myOrigRule) && isNameValid);
+        if (mi_save==null || mi_delete ==null || mi_change == null || mi_undo == null) return;
+        //Save only valie in EDIT or CREATE mode, when the data has change and the name is valid
+        mi_save.setVisible((myAction.equals(NewEditActivity.ACTION_EDIT) ||
+                           myAction.equals(NewEditActivity.ACTION_CREATE)) &&
+                           !myNewRule.equals(myOrigRule) && isNameValid);
+
+        //Delete only valid in UPDATE mode
         mi_delete.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptRule == myOrigRule);
+        //Change only valid in UPDATE mode
         mi_change.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptRule == myOrigRule);
-        mi_undo.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) &&
+        //Undo only valid in EDIT mode where there have been changes
+        mi_undo.setVisible(myAction.equals(NewEditActivity.ACTION_EDIT) &&
                 ptRule == myNewRule &&
                 !myNewRule.equals(myOrigRule) &&
                 isNameValid);
-        if (myAction.equals(NewEditActivity.ACTION_UPDATE)) {
+        if (myAction.equals(NewEditActivity.ACTION_EDIT)) {
             if (myNewRule.equals(myOrigRule))
                 tx_validation.setText(R.string.tx_validation_rule_no_changes);
             else
@@ -391,6 +412,7 @@ public class NewEditCalendarRule extends NewEditActivity {
 
     @Override
     protected void change() {
+        myAction = NewEditActivity.ACTION_EDIT;
         ptRule = myNewRule;
         enableWidgets(false,true);
         validateActions();
@@ -398,6 +420,7 @@ public class NewEditCalendarRule extends NewEditActivity {
 
     @Override
     protected void undo() {
+        myAction = NewEditActivity.ACTION_UPDATE;
         ptRule = myOrigRule;
         try {
             myNewRule  = (CalendarRule)myOrigRule.clone();

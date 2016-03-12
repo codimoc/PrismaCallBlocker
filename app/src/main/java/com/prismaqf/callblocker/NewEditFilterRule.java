@@ -51,7 +51,7 @@ public class NewEditFilterRule extends NewEditActivity {
                     case NewEditActivity.ACTION_CREATE:
                         FilterRuleProvider.InsertRow(db, rule);
                         break;
-                    case NewEditActivity.ACTION_UPDATE:
+                    case NewEditActivity.ACTION_EDIT:
                         FilterRuleProvider.UpdateFilterRule(db, ruleid, rule);
                         break;
                     default:
@@ -96,7 +96,7 @@ public class NewEditFilterRule extends NewEditActivity {
 
         Intent intent = getIntent();
         myRuleNames = intent.getStringArrayListExtra(KEY_RULENAMES);
-
+        //ACTION UPDATE
         if (intent.hasExtra(NewEditActivity.ACTION_KEY) &&
             intent.getStringExtra(NewEditActivity.ACTION_KEY).equals(NewEditActivity.ACTION_UPDATE)) {
             myOrigRule = intent.getParcelableExtra(NewEditActivity.KEY_ORIG);
@@ -112,7 +112,20 @@ public class NewEditFilterRule extends NewEditActivity {
 
             enableWidgets(false,false);
 
-        } else {
+        }
+        //ACTION_EDIT
+        else if (intent.hasExtra(NewEditActivity.ACTION_KEY) &&
+                 intent.getStringExtra(NewEditActivity.ACTION_KEY).equals(NewEditActivity.ACTION_EDIT)) {
+            myOrigRule = intent.getParcelableExtra(NewEditActivity.KEY_ORIG);
+            myNewRule = intent.getParcelableExtra(NewEditActivity.KEY_NEW);
+            myRuleId = intent.getLongExtra(NewEditActivity.KEY_RULEID,0);
+            ptRule = myNewRule;
+            myAction = NewEditActivity.ACTION_EDIT;
+
+            enableWidgets(false,true);
+        }
+        //ACTION_CREATE
+        else {
             myNewRule = new FilterRule("dummy","change me");
             myOrigRule = null;
             ptRule = myNewRule;
@@ -194,6 +207,7 @@ public class NewEditFilterRule extends NewEditActivity {
 
     @Override
     protected void change() {
+        myAction = NewEditActivity.ACTION_EDIT;
         ptRule = myNewRule;
         enableWidgets(false,true);
         validateActions();
@@ -201,6 +215,7 @@ public class NewEditFilterRule extends NewEditActivity {
 
     @Override
     protected void undo() {
+        myAction = NewEditActivity.ACTION_UPDATE;
         ptRule = myOrigRule;
         try {
             myNewRule  = (FilterRule)myOrigRule.clone();
@@ -287,14 +302,21 @@ public class NewEditFilterRule extends NewEditActivity {
     @Override
     protected void validateActions() {
         if (mi_save==null || mi_delete ==null || mi_change == null || mi_undo == null) return;
-        mi_save.setVisible(!myNewRule.equals(myOrigRule) && isNameValid);
+        //Save only valie in EDIT or CREATE mode, when the data has change and the name is valid
+        mi_save.setVisible((myAction.equals(NewEditActivity.ACTION_EDIT) ||
+                myAction.equals(NewEditActivity.ACTION_CREATE)) &&
+                !myNewRule.equals(myOrigRule) && isNameValid);
+        //Delete only valid in UPDATE mode
         mi_delete.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptRule == myOrigRule);
+        //Change only valid in UPDATE mode
         mi_change.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptRule == myOrigRule);
-        mi_undo.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) &&
+        mi_change.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptRule == myOrigRule);
+        //Undo only valid in EDIT mode where there have been changes
+        mi_undo.setVisible(myAction.equals(NewEditActivity.ACTION_EDIT) &&
                 ptRule == myNewRule &&
                 !myNewRule.equals(myOrigRule) &&
                 isNameValid);
-        if (myAction.equals(NewEditActivity.ACTION_UPDATE)) {
+        if (myAction.equals(NewEditActivity.ACTION_EDIT)) {
             if (myNewRule.equals(myOrigRule))
                 tv_validation.setText(R.string.tx_validation_rule_no_changes);
             else

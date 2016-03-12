@@ -21,6 +21,7 @@ public abstract class NewEditActivity extends ActionBarActivity {
     protected static final String KEY_RULEID = "com.prismaqft.callblocker:ruleid";
     protected static final String ACTION_CREATE  = "com.prismaqf.callblocker:create";
     protected static final String ACTION_UPDATE  = "com.prismaqf.callblocker:update";
+    protected static final String ACTION_EDIT  = "com.prismaqf.callblocker:edit";
     protected static final String ACTION_DELETE  = "com.prismaqf.callblocker:delete";
     protected static final String ACTION_PICK  = "com.prismaqf.callblocker:pick";
     public static final String KEY_ACTION = "com.prismaqf.callblocker:action";
@@ -37,7 +38,6 @@ public abstract class NewEditActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        refreshWidgets(false);
         //add text validation
         getNameEditField().addTextChangedListener(getRuleNameValidator());
 
@@ -48,14 +48,23 @@ public abstract class NewEditActivity extends ActionBarActivity {
         mi_delete = menu.findItem(R.id.action_delete);
         mi_change = menu.findItem(R.id.action_change);
         mi_undo = menu.findItem(R.id.action_undo);
-        mi_undo.setVisible(false);
         if (getAction().equals(NewEditActivity.ACTION_CREATE)) {
             mi_delete.setVisible(false);
             mi_change.setVisible(false);
+            mi_undo.setVisible(false);
+            enableWidgets(true,true);
         }
-        else {
+        else if (getAction().equals(NewEditActivity.ACTION_EDIT)) {
+            mi_change.setVisible(false);
+            mi_delete.setVisible(false);
+            enableWidgets(false, true);
+        }
+        else if (getAction().equals(NewEditActivity.ACTION_UPDATE)) {
             mi_save.setVisible(false);
+            mi_undo.setVisible(false);
+            enableWidgets(false,false);
         }
+        refreshWidgets(true);
 
         return true;
     }
@@ -91,9 +100,10 @@ public abstract class NewEditActivity extends ActionBarActivity {
         if (validate) validateActions();
     }
 
+    protected abstract void validateActions();
+
     protected abstract RuleNameValidator getRuleNameValidator();
     protected abstract EditText getNameEditField();
     protected abstract String getAction();
-    protected abstract void validateActions();
     protected abstract void enableWidgets(boolean nameFlag, boolean widgetFlag);
 }
