@@ -330,6 +330,7 @@ public class NewEditCalendarRule extends NewEditActivity {
         return new RuleNameValidator(ed_name, tx_validation, myRuleNames) {
             @Override
             public void validate(TextView source, TextView target, ArrayList<String> names, String text) {
+                ptRule.setName(text);
                 if (source.getText().toString().equals("")) {
                     target.setText(R.string.tx_validation_rule_name_empty);
                     mi_save.setVisible(false);
@@ -344,7 +345,6 @@ public class NewEditCalendarRule extends NewEditActivity {
                 }
                 mi_save.setVisible(true);
                 target.setText(R.string.tx_validation_rule_valid);
-                ptRule.setName(text);
                 isNameValid = true;
             }
         };
@@ -434,7 +434,7 @@ public class NewEditCalendarRule extends NewEditActivity {
     @Override
     protected void delete() {
         new AlertDialog.Builder(this)
-                .setMessage(R.string.tx_calendar_rule_delete_confirm)
+                .setMessage(R.string.tx_rule_delete_confirm)
                 .setCancelable(false)
                 .setPositiveButton(R.string.bt_yes_delete, new DialogInterface.OnClickListener() {
                     @Override

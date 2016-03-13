@@ -154,4 +154,14 @@ public class NewFilterRuleTest {
         onView(ViewMatchers.withId(R.id.edit_filter_rule_description)).check(matches(withText("Description")));
         onView(withId(R.id.tx_rule_description)).check(matches(withText(containsString("123*456"))));
     }
+
+    @Test
+    public void TestRotationWithEmptyText() throws Throwable {
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
+        ctx.startActivity(intent);
+        Activity activity = InstrumentTestHelper.getCurrentActivity();
+        onView(ViewMatchers.withId(R.id.edit_filter_rule_name)).perform(new ReplaceTextAction(""));
+        InstrumentTestHelper.rotateScreen(activity);
+        onView(ViewMatchers.withId(R.id.edit_filter_rule_name)).check(matches(withText("")));
+    }
 }

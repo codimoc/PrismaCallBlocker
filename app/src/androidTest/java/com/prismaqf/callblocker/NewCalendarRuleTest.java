@@ -173,16 +173,15 @@ public class NewCalendarRuleTest {
         onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).check(matches(withText("dummy")));
     }
 
-//      todo: when the text is not valid rotation does not preserve. Need maybe some investigation
-//    @Test
-//    public void TestRotationWithEmptyText() throws Throwable {
-//        intent.putStringArrayListExtra(ctx.getString(R.string.ky_calendar_rule_names), new ArrayList<String>());
-//        ctx.startActivity(intent);
-//        Activity activity = getCurrentActivity();
-//        onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(new ReplaceTextAction(""));;
-//        rotateScreen(activity);
-//        onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).check(matches(withText("")));;
-//    }
+    @Test
+    public void TestRotationWithEmptyText() throws Throwable {
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
+        ctx.startActivity(intent);
+        Activity activity = InstrumentTestHelper.getCurrentActivity();
+        onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(new ReplaceTextAction(""));
+        InstrumentTestHelper.rotateScreen(activity);
+        onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).check(matches(withText("")));
+    }
 
     @Test
     public void TestSingleDays() {
