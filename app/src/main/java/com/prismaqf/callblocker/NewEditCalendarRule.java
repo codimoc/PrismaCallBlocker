@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -72,15 +73,30 @@ public class NewEditCalendarRule extends NewEditActivity {
         }
 
 
+        @SuppressWarnings("deprecation")
         @Override
         public void onTimeSet(TimePicker timePicker, int i, int i1) {
             if (rule != null && startEnd != null)
                 if (startEnd.toLowerCase().equals("start")) {
-                    rule.setStartHour(timePicker.getCurrentHour());
-                    rule.setStartMin(timePicker.getCurrentMinute());
+                    if (Build.VERSION.SDK_INT >= 23 ) {
+                        rule.setStartHour(timePicker.getHour());
+                        rule.setStartMin(timePicker.getMinute());
+                    }
+                    else {
+                        rule.setStartHour(timePicker.getCurrentHour());
+                        rule.setStartMin(timePicker.getCurrentMinute());
+                    }
                 } else {
-                    rule.setEndHour(timePicker.getCurrentHour());
-                    rule.setEndMin(timePicker.getCurrentMinute());
+                    if (Build.VERSION.SDK_INT >= 23 ) {
+                        rule.setEndHour(timePicker.getHour());
+                        rule.setEndMin(timePicker.getMinute());
+                    }
+                    else {
+                        rule.setEndHour(timePicker.getCurrentHour());
+                        rule.setEndMin(timePicker.getCurrentMinute());
+                    }
+
+
                 }
             else Log.e(TAG, "Can't set time from TimePicker");
 
@@ -102,12 +118,18 @@ public class NewEditCalendarRule extends NewEditActivity {
             SQLiteDatabase db = new DbHelper(NewEditCalendarRule.this).getWritableDatabase();
             CalendarRule rule = rules[0];
             try {
-                if (action.equals(NewEditActivity.ACTION_CREATE))
-                    CalendarRuleProvider.InsertRow(db, rule);
-                else if (action.equals(NewEditActivity.ACTION_EDIT))
-                    CalendarRuleProvider.UpdateCalendarRule(db, ruleid, rule);
-                else //ACTION_DELETE
-                    CalendarRuleProvider.DeleteCalendarRule(db, ruleid);
+                switch (action) {
+                    case NewEditActivity.ACTION_CREATE:
+                        CalendarRuleProvider.InsertRow(db, rule);
+                        break;
+                    case NewEditActivity.ACTION_EDIT:
+                        CalendarRuleProvider.UpdateCalendarRule(db, ruleid, rule);
+                        break;
+                    default:
+                        //ACTION_DELETE
+                        CalendarRuleProvider.DeleteCalendarRule(db, ruleid);
+                        break;
+                }
             }
             finally {
                 db.close();    

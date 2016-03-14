@@ -11,9 +11,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.rules.FilterRule;
-import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbContract;
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.FilterRuleProvider;

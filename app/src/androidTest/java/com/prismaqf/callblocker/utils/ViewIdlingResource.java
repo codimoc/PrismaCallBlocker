@@ -9,7 +9,7 @@ import android.view.View;
  * way for synchronizing Espresso when the normal
  * waiting (inside Espresso) does not work
  */
-public class ViewIdlingResource implements IdlingResource {
+class ViewIdlingResource implements IdlingResource {
     private final View view;
     private ResourceCallback callback;
 
@@ -17,7 +17,7 @@ public class ViewIdlingResource implements IdlingResource {
      * Constructor
      * @param view the view to synch against, waiting to become idle
      */
-    public ViewIdlingResource(View view) {
+    private ViewIdlingResource(View view) {
         this.view = view;
     }
 

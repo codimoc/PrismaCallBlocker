@@ -9,7 +9,7 @@ import org.hamcrest.CustomMatcher;
  * Generic boolean condition matcher based on Espresso Matcher
  * @author ConteDiMonteCristo
  */
-public class ConditionMatcher extends CustomMatcher<View> {
+class ConditionMatcher extends CustomMatcher<View> {
 
     private final Predicate condition;
 

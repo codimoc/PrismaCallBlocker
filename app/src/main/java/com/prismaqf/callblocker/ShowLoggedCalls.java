@@ -11,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 import com.prismaqf.callblocker.sql.DbContract;
 import com.prismaqf.callblocker.sql.LoggedCallProvider;

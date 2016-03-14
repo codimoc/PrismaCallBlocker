@@ -11,7 +11,7 @@ public class DebugKey {
      */
     private DbKey myKey = new DbKey();
 
-    protected DbKey getKey() {return myKey;}
+    DbKey getKey() {return myKey;}
 
     /**
      * This class acts as "friend" proxy to access

@@ -12,23 +12,26 @@ import android.widget.EditText;
  */
 public abstract class NewEditActivity extends ActionBarActivity {
 
-    protected static final String ACTION_KEY  = "com.prismaqft.callblocker:key";
-    protected static final String KEY_NEW  = "com.prismaqft.callblocker:keynew";
-    protected static final String KEY_ORIG  = "com.prismaqft.callblocker:keyorig";
-    protected static final String KEY_ISNAMEVALID  = "com.prismaqft.callblocker:namevalid";
-    protected static final String KEY_RULENAMES  = "com.prismaqft.callblocker:rulenames";
-    protected static final String KEY_PTRULE  = "com.prismaqft.callblocker:ptrule";
-    protected static final String KEY_RULEID = "com.prismaqft.callblocker:ruleid";
-    protected static final String ACTION_CREATE  = "com.prismaqf.callblocker:create";
-    protected static final String ACTION_UPDATE  = "com.prismaqf.callblocker:update";
-    protected static final String ACTION_EDIT  = "com.prismaqf.callblocker:edit";
-    protected static final String ACTION_DELETE  = "com.prismaqf.callblocker:delete";
-    protected static final String ACTION_PICK  = "com.prismaqf.callblocker:pick";
+    static final String ACTION_KEY  = "com.prismaqft.callblocker:key";
+    static final String KEY_NEW  = "com.prismaqft.callblocker:keynew";
+    static final String KEY_ORIG  = "com.prismaqft.callblocker:keyorig";
+    static final String KEY_ISNAMEVALID  = "com.prismaqft.callblocker:namevalid";
+    static final String KEY_RULENAMES  = "com.prismaqft.callblocker:rulenames";
+    static final String KEY_PTRULE  = "com.prismaqft.callblocker:ptrule";
+    static final String KEY_RULEID = "com.prismaqft.callblocker:ruleid";
+    static final String ACTION_CREATE  = "com.prismaqf.callblocker:create";
+    static final String ACTION_UPDATE  = "com.prismaqf.callblocker:update";
+    static final String ACTION_EDIT  = "com.prismaqf.callblocker:edit";
+    static final String ACTION_DELETE  = "com.prismaqf.callblocker:delete";
+    static final String ACTION_PICK  = "com.prismaqf.callblocker:pick";
     public static final String KEY_ACTION = "com.prismaqf.callblocker:action";
     public static final String KEY_NUMBER = "com.prismaqf.callblocker:number";
     public static final String KEY_CHECKED = "com.prismaqf.callblocker:checked";
 
-    protected MenuItem mi_save, mi_delete, mi_change, mi_undo;
+    MenuItem mi_save;
+    MenuItem mi_delete;
+    MenuItem mi_change;
+    MenuItem mi_undo;
 
     protected abstract void save();
     protected abstract void change();
@@ -96,7 +99,7 @@ public abstract class NewEditActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void refreshWidgets(boolean validate) {
+    void refreshWidgets(boolean validate) {
         if (validate) validateActions();
     }
 

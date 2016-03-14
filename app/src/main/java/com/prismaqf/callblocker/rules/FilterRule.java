@@ -112,7 +112,7 @@ public class FilterRule implements IFilterRule, Cloneable, Parcelable{
      * @param key the client key
      * @return a regex Pattern
      */
-    static Pattern makeRegex(String key) {
+    private static Pattern makeRegex(String key) {
 
         String[] tokens = SEPARATOR.split(key);
         if (tokens.length==0 || tokens[0].isEmpty()) return Pattern.compile("\\d*"); //always matching any digit
@@ -125,7 +125,7 @@ public class FilterRule implements IFilterRule, Cloneable, Parcelable{
         return Pattern.compile(sbuilder.toString());
     }
 
-    static String filterUnwanted(String key) {
+    private static String filterUnwanted(String key) {
         //first clean up everything that is not a digit or a * sign
         if (NOT_ALLOWED.matcher(key).find())
             key = NOT_ALLOWED.matcher(key).replaceAll("");

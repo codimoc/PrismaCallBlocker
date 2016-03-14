@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.view.View;
 
 import com.prismaqf.callblocker.utils.DebugDBFileName;
 
@@ -37,7 +36,6 @@ public class CallBlockerManagerTest
 
     @Before
     public void before() {
-        View v = mActivityRule.getActivity().findViewById(R.id.textDetectState);
         stopRunningService();
     }
 
@@ -55,7 +53,6 @@ public class CallBlockerManagerTest
         onView(withId(R.id.textDetectState)).check(matches(withText(R.string.tx_no_detect)));
         onView(withId(R.id.buttonDetectToggle)).check(matches(withText(R.string.tx_turn_on)));
         onView(withId(R.id.buttonDetectToggle)).perform(click());
-        View v = mActivityRule.getActivity().findViewById(R.id.textDetectState);
         //now check that the text has changed
         onView(withId(R.id.textDetectState)).check(matches(withText(R.string.tx_detect)));
         onView(withId(R.id.buttonDetectToggle)).check(matches(withText(R.string.tx_turn_off)));
