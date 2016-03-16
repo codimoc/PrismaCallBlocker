@@ -85,13 +85,13 @@ class CallHelper {
                     ctx.sendBroadcast(intent);
                     Toast.makeText(ctx, "Incoming: " + incomingNumber, Toast.LENGTH_LONG).show();
                     LogIncoming action = new LogIncoming(ctx);
-                    //todo: adrop and below is clearly experimental. CHANGE
-                    DropCallByITelephony adrop = new DropCallByITelephony(ctx);
                     //todo: get rule id
                     //todo: only numreceived is updated for the time being
                     LogInfo info = new LogInfo();
                     info.setAll(myRunId, -1, numReceived, numTriggered);
                     /*if (incomingNumber.contains("523792"))
+                        //todo: adrop and below is clearly experimental. CHANGE
+                        DropCallByITelephony adrop = new DropCallByITelephony(ctx);
                         adrop.act(incomingNumber,info);
                     else*/
                         action.act(incomingNumber,info);
