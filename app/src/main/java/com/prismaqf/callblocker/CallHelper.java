@@ -4,13 +4,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.prismaqf.callblocker.actions.DropCallByITelephony;
+import com.prismaqf.callblocker.actions.DropCallByDataConnectivity;
+import com.prismaqf.callblocker.actions.DropCallByEndCall;
+import com.prismaqf.callblocker.actions.DropCallByInvisibleActivity;
+import com.prismaqf.callblocker.actions.IAction;
 import com.prismaqf.callblocker.actions.LogIncoming;
 import com.prismaqf.callblocker.actions.LogInfo;
 import com.prismaqf.callblocker.sql.DbHelper;
@@ -21,7 +27,7 @@ import com.prismaqf.callblocker.sql.ServiceRunProvider;
  * @author Moskvichev Andrey V.
  * @see 'www.codeproject.com/Articles/548416/Detecting-incoming-and-outgoing-phone-calls-on-And'
  */
-class CallHelper {
+public class CallHelper {
 
     private static final String TAG = CallHelper.class.getCanonicalName();
 
@@ -89,10 +95,10 @@ class CallHelper {
                     //todo: only numreceived is updated for the time being
                     LogInfo info = new LogInfo();
                     info.setAll(myRunId, -1, numReceived, numTriggered);
-                    /*if (incomingNumber.contains("523792"))
+                    /*if (incomingNumber.contains("523792")) {
                         //todo: adrop and below is clearly experimental. CHANGE
-                        DropCallByITelephony adrop = new DropCallByITelephony(ctx);
-                        adrop.act(incomingNumber,info);
+                        IAction adrop = new DropCallByInvisibleActivity(ctx);
+                        adrop.act(incomingNumber,info);}
                     else*/
                         action.act(incomingNumber,info);
                     break;
@@ -180,6 +186,22 @@ class CallHelper {
         finally {
             db.close();
         }
+    }
+
+    public static String resolveContactDescription(Context ctx, String incomingNumber) {
+        String description = "Not found";
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(incomingNumber));
+        String[] projection = new String[]{ ContactsContract.PhoneLookup.DISPLAY_NAME};
+        Cursor c = ctx.getContentResolver().query(uri, projection, null, null, null);
+        if (c!= null && c.getCount()>0) {
+            c.moveToFirst();
+            description = c.getString(0);
+        }
+        if (c != null) {
+            c.close();
+        }
+
+        return description;
     }
 
 

@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <!--uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" /-->
 
     <application
         android:allowBackup="true"
@@ -89,6 +91,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".NewEditFilterRule" />
         </activity>
+
+        <activity android:name=".utils.CallAcceptDrop"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/invisible">
+        </activity>
+
+
 
         <service
             android:name=".CallDetectService"

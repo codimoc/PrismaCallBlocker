@@ -19,13 +19,13 @@ public class ActionsTest {
     private final long TEST_RUNID = 1001;
     private final int TEST_RULEID=12;
 
-    private Context myCtx;
+    private static Context myCtx;
 
     @ClassRule
     public static final DebugDBFileName myDebugDB = new DebugDBFileName();
 
     @BeforeClass
-    public void classBefore() {
+    public static void classBefore() {
         myCtx = InstrumentationRegistry.getTargetContext();
     }
 

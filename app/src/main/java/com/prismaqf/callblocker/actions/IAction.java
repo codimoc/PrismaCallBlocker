@@ -13,4 +13,10 @@ public interface IAction {
      * @param info logging information
      */
     void act (String number, LogInfo info);
+
+    /**
+     *
+     * @return a short description
+     */
+    String shortDescription();
 }
