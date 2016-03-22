@@ -14,8 +14,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.prismaqf.callblocker.actions.DropCallByDataConnectivity;
+import com.prismaqf.callblocker.actions.DropCallByDownButton;
 import com.prismaqf.callblocker.actions.DropCallByEndCall;
 import com.prismaqf.callblocker.actions.DropCallByInvisibleActivity;
+import com.prismaqf.callblocker.actions.DropCallByRoot;
+import com.prismaqf.callblocker.actions.DropCallByUpButton;
 import com.prismaqf.callblocker.actions.IAction;
 import com.prismaqf.callblocker.actions.LogIncoming;
 import com.prismaqf.callblocker.actions.LogInfo;
@@ -97,7 +100,7 @@ public class CallHelper {
                     info.setAll(myRunId, -1, numReceived, numTriggered);
                     /*if (incomingNumber.contains("523792")) {
                         //todo: adrop and below is clearly experimental. CHANGE
-                        IAction adrop = new DropCallByInvisibleActivity(ctx);
+                        IAction adrop = new DropCallByRoot(ctx);
                         adrop.act(incomingNumber,info);}
                     else*/
                         action.act(incomingNumber,info);

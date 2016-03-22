@@ -2,6 +2,7 @@ package com.prismaqf.callblocker.actions;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.KeyEvent;
 
 /**
@@ -22,6 +23,7 @@ public class DropCallByDownButton implements IAction{
 
     @Override
     public void act(String number, LogInfo info) {
+        Log.i(TAG, "Dropping a call by down button");
         Intent buttonDown = new Intent(Intent.ACTION_MEDIA_BUTTON);
         buttonDown.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HEADSETHOOK));
         ctx.sendOrderedBroadcast(buttonDown, "android.permission.CALL_PRIVILEGED");
