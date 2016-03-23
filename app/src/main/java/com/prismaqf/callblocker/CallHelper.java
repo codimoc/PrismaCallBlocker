@@ -13,13 +13,6 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.prismaqf.callblocker.actions.DropCallByDataConnectivity;
-import com.prismaqf.callblocker.actions.DropCallByDownButton;
-import com.prismaqf.callblocker.actions.DropCallByEndCall;
-import com.prismaqf.callblocker.actions.DropCallByInvisibleActivity;
-import com.prismaqf.callblocker.actions.DropCallByRoot;
-import com.prismaqf.callblocker.actions.DropCallByUpButton;
-import com.prismaqf.callblocker.actions.IAction;
 import com.prismaqf.callblocker.actions.LogIncoming;
 import com.prismaqf.callblocker.actions.LogInfo;
 import com.prismaqf.callblocker.sql.DbHelper;
