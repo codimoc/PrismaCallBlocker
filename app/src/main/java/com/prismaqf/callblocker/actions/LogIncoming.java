@@ -13,6 +13,7 @@ import com.prismaqf.callblocker.sql.ServiceRunProvider;
  * Class to log an incoming call
  * @author ConteDiMonteCristo
  */
+@AvailableAction(description = "Logs events to DB")
 public class LogIncoming implements IAction{
 
     private final static String TAG = LogIncoming.class.getCanonicalName();
@@ -51,8 +52,4 @@ public class LogIncoming implements IAction{
         return DESCRIPTION;
     }
 
-    @Override
-    public String shortDescription() {
-        return DESCRIPTION;
-    }
 }

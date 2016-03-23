@@ -9,10 +9,10 @@ import android.view.KeyEvent;
  * @author ConteDiMonteCristo
  * @see 'http://www.codeproject.com/Tips/578817/Reject-and-Accept-an-Incoming-Call'
  */
+@AvailableAction(description = "Drop by up down")
 public class DropCallByUpButton implements IAction{
     private final static String TAG = DropCallByUpButton.class.getCanonicalName();
     private final static String DESCRIPTION = "Drop call by up button + headset hook";
-    private final static String SHORT_DESCRIPTION = "Drop by up down";
     private final Context ctx;
     private final IAction logger;
 
@@ -33,10 +33,5 @@ public class DropCallByUpButton implements IAction{
     @Override
     public String toString() {
         return DESCRIPTION;
-    }
-
-    @Override
-    public String shortDescription() {
-        return SHORT_DESCRIPTION;
     }
 }

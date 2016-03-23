@@ -15,7 +15,6 @@ public class DropCallByDataConnectivity implements IAction {
 
     private final static String TAG = DropCallByDataConnectivity.class.getCanonicalName();
     private final static String DESCRIPTION = "Drop call by switching off data connectivity (requires special permission)";
-    private final static String SHORT_DESCRIPTION = "Drop by data connectivity (special permission)";
 
     private final IAction logger;
     private final Context ctx;
@@ -34,11 +33,6 @@ public class DropCallByDataConnectivity implements IAction {
             Log.e(TAG,e.getMessage());
         }
         logger.act(number, info);
-    }
-
-    @Override
-    public String shortDescription() {
-        return SHORT_DESCRIPTION;
     }
 
     @Override

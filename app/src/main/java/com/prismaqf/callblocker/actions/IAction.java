@@ -14,9 +14,4 @@ public interface IAction {
      */
     void act (String number, LogInfo info);
 
-    /**
-     *
-     * @return a short description
-     */
-    String shortDescription();
 }

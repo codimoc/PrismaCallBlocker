@@ -15,7 +15,6 @@ public class DropCallByInvisibleActivity implements IAction {
 
     private final static String TAG = DropCallByInvisibleActivity.class.getCanonicalName();
     private final static String DESCRIPTION = "Reject by simulating headset hook (requires special permission)";
-    private final static String SHORT_DESCRIPTION = "Drop by Invisible activity (special permission)";
     private final Context ctx;
     private final IAction logger;
 
@@ -40,8 +39,4 @@ public class DropCallByInvisibleActivity implements IAction {
         return DESCRIPTION;
     }
 
-    @Override
-    public String shortDescription() {
-        return SHORT_DESCRIPTION;
-    }
 }

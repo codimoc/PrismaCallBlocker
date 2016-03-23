@@ -9,13 +9,13 @@ import java.io.IOException;
  * Drop call for rooted phones
  * @author ConteDiMonteCristo
  */
+@AvailableAction(description = "Drop for rooted phone (require grant)")
 public class DropCallByRoot implements IAction {
 
     private final IAction logger;
 
     private final static String TAG = DropCallByRoot.class.getCanonicalName();
     private final static String DESCRIPTION = "Reject call for rooted phones (requires granting su privilege)";
-    private final static String SHORT_DESCRIPTION = "Drop for rooted phone (require grant)";
 
     public DropCallByRoot(Context ctx) {
         logger = new LogIncoming(ctx);
@@ -35,11 +35,6 @@ public class DropCallByRoot implements IAction {
     @Override
     public String toString() {
         return DESCRIPTION;
-    }
-
-    @Override
-    public String shortDescription() {
-        return SHORT_DESCRIPTION;
     }
 
 }

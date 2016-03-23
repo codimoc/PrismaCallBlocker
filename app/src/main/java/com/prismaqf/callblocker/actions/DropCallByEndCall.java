@@ -13,11 +13,11 @@ import java.lang.reflect.Method;
  * @author ConteDiMonteCristo
  * @see 'http://androidsourcecode.blogspot.co.uk/2010/10/blocking-incoming-call-android.html'
  */
+@AvailableAction(description = "Drop by Itelephone endCall (preferrred)")
 public class DropCallByEndCall implements IAction{
 
     private final static String TAG = DropCallByEndCall.class.getCanonicalName();
     private final static String DESCRIPTION = "Use ITelephony to end call (preferred action)";
-    private final static String SHORT_DESCRIPTION = "Drop by Itelephone endCall (preferrred)";
 
     private final Context ctx;
     private final IAction logger;
@@ -53,8 +53,4 @@ public class DropCallByEndCall implements IAction{
         return DESCRIPTION;
     }
 
-    @Override
-    public String shortDescription() {
-        return SHORT_DESCRIPTION;
-    }
 }

@@ -7,9 +7,10 @@ import android.widget.Toast;
  * Just warn the user of an incoming call that has triggered an event
  * @author ConteDiMonteCristo
  */
+@AvailableAction(description = "Warn users of a triggered event")
 public class WarnTrigger implements IAction {
     private final static String TAG = DropCallByDataConnectivity.class.getCanonicalName();
-    private final static String DESCRIPTION = "Warn user of triggered event";
+    private final static String DESCRIPTION = "Warn users of a triggered event";
 
     private final IAction logger;
     private final Context ctx;
@@ -27,11 +28,6 @@ public class WarnTrigger implements IAction {
 
     @Override
     public String toString() {
-        return DESCRIPTION;
-    }
-
-    @Override
-    public String shortDescription() {
         return DESCRIPTION;
     }
 
