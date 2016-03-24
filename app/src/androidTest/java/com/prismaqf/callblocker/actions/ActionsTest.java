@@ -12,8 +12,12 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
@@ -40,6 +44,30 @@ public class ActionsTest {
                                                                               IAction.class,
                                                                               AvailableAction.class);
         assertTrue("The set is not empty",actions.size()>0);
+    }
+
+    @Test
+    public void constructActionGivenDescription() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        Set<Class<?>> actions = DexClassScanner.findSubClassesWithAnnotation(myCtx,
+                "com.prismaqf.callblocker.actions",
+                IAction.class,
+                AvailableAction.class);
+        Class actionClass=null;
+        for (Class c : actions) {
+            AvailableAction a = (AvailableAction) c.getAnnotation(AvailableAction.class);
+            if (a != null) {
+                String desc = a.description();
+                if (desc.contains("button down")) {
+                    actionClass = c;
+                    break;
+                }
+            }
+        }
+        assertNotNull("Found action with proper description", actionClass);
+        //now try to construct it
+        Constructor<?> cons = actionClass.getConstructor(Context.class);
+        IAction action = (IAction) cons.newInstance(myCtx);
+        assertNotNull("I can construct the IAction object", action);
     }
 
 
