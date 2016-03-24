@@ -86,7 +86,7 @@ public class CallHelper {
                     intent.putExtra(ctx.getString(R.string.ky_triggered), numTriggered);
                     ctx.sendBroadcast(intent);
                     Toast.makeText(ctx, "Incoming: " + incomingNumber, Toast.LENGTH_LONG).show();
-                    LogIncoming action = new LogIncoming(ctx);
+                    LogIncoming action = new LogIncoming();
                     //todo: get rule id
                     //todo: only numreceived is updated for the time being
                     LogInfo info = new LogInfo();
@@ -96,7 +96,7 @@ public class CallHelper {
                         IAction adrop = new DropCallByRoot(ctx);
                         adrop.act(incomingNumber,info);}
                     else*/
-                        action.act(incomingNumber,info);
+                        action.act(ctx, incomingNumber,info);
                     break;
             }
         }

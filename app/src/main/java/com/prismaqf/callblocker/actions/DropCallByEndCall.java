@@ -19,23 +19,17 @@ public class DropCallByEndCall implements IAction{
     private final static String TAG = DropCallByEndCall.class.getCanonicalName();
     private final static String DESCRIPTION = "Use ITelephony to end call (preferred action)";
 
-    private final Context ctx;
-    private final IAction logger;
-
-    public DropCallByEndCall(Context ctx) {
-        logger = new LogIncoming(ctx);
-        this.ctx = ctx;
-    }
+    private final IAction logger = new LogIncoming();
 
 
     @Override
-    public void act(final String number, final LogInfo info) {
+    public void act(final Context ctx, final String number, final LogInfo info) {
 
         Log.i(TAG, "Dropping a call using Telephony service");
         TelephonyManager telephony = (TelephonyManager)
                 ctx.getSystemService(Context.TELEPHONY_SERVICE);
         try {
-            Class c = Class.forName(telephony.getClass().getName());
+            Class<?> c = Class.forName(telephony.getClass().getName());
             Method m = c.getDeclaredMethod("getITelephony");
             m.setAccessible(true);
             ITelephony telephonyService = (ITelephony) m.invoke(telephony);
@@ -45,7 +39,7 @@ public class DropCallByEndCall implements IAction{
             Log.e(TAG, e.getMessage());
         }
 
-        logger.act(number,info);
+        logger.act(ctx, number,info);
     }
 
     @Override

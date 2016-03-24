@@ -15,23 +15,17 @@ public class DropCallByInvisibleActivity implements IAction {
 
     private final static String TAG = DropCallByInvisibleActivity.class.getCanonicalName();
     private final static String DESCRIPTION = "Reject by simulating headset hook (requires special permission)";
-    private final Context ctx;
-    private final IAction logger;
-
-    public DropCallByInvisibleActivity(Context ctx) {
-        logger = new LogIncoming(ctx);
-        this.ctx = ctx;
-    }
+    private final IAction logger = new LogIncoming();
 
     @Override
-    public void act(final String number, final LogInfo info) {
+    public void act(final Context ctx, final String number, final LogInfo info) {
         Log.i(TAG, "Dropping a call using an invisible activity");
         Intent intent = new Intent(ctx, CallAcceptDrop.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                         Intent.FLAG_ACTIVITY_CLEAR_TASK  |
                         Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         ctx.startActivity(intent);
-        logger.act(number,info);
+        logger.act(ctx, number,info);
     }
 
     @Override

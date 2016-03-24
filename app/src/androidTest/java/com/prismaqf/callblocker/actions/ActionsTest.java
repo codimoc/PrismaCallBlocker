@@ -47,7 +47,7 @@ public class ActionsTest {
     }
 
     @Test
-    public void constructActionGivenDescription() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public void constructActionGivenDescription() throws ReflectiveOperationException {
         Set<Class<?>> actions = DexClassScanner.findSubClassesWithAnnotation(myCtx,
                 "com.prismaqf.callblocker.actions",
                 IAction.class,
@@ -64,9 +64,7 @@ public class ActionsTest {
             }
         }
         assertNotNull("Found action with proper description", actionClass);
-        //now try to construct it
-        Constructor<?> cons = actionClass.getConstructor(Context.class);
-        IAction action = (IAction) cons.newInstance(myCtx);
+        IAction action = (IAction) actionClass.newInstance();
         assertNotNull("I can construct the IAction object", action);
     }
 

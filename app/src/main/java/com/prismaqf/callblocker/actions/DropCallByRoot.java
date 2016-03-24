@@ -12,24 +12,20 @@ import java.io.IOException;
 @AvailableAction(description = "Drop for rooted phone (require grant)")
 public class DropCallByRoot implements IAction {
 
-    private final IAction logger;
+    private final IAction logger = new LogIncoming();
 
     private final static String TAG = DropCallByRoot.class.getCanonicalName();
     private final static String DESCRIPTION = "Reject call for rooted phones (requires granting su privilege)";
 
-    public DropCallByRoot(Context ctx) {
-        logger = new LogIncoming(ctx);
-    }
-
     @Override
-    public void act(final String number, final LogInfo info) {
+    public void act(final Context ctx, final String number, final LogInfo info) {
         Log.i(TAG, "Dropping a call using root");
         try {
             Runtime.getRuntime().exec(new String[]{"su","-c","input keyevent 6"});
         } catch (IOException e) {
             Log.e(TAG,e.getMessage());
         }
-        logger.act(number, info);
+        logger.act(ctx, number, info);
     }
 
     @Override

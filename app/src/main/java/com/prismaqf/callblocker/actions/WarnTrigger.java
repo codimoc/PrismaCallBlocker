@@ -12,18 +12,12 @@ public class WarnTrigger implements IAction {
     private final static String TAG = DropCallByDataConnectivity.class.getCanonicalName();
     private final static String DESCRIPTION = "Warn users of a triggered event";
 
-    private final IAction logger;
-    private final Context ctx;
-
-    public WarnTrigger(Context ctx) {
-        logger = new LogIncoming(ctx);
-        this.ctx = ctx;
-    }
+    private final IAction logger = new LogIncoming();
 
     @Override
-    public void act(String number, LogInfo info) {
+    public void act(Context ctx, String number, LogInfo info) {
         Toast.makeText(ctx, String.format("Suspected number %s has triggered an event. Reject call?",number), Toast.LENGTH_LONG).show();
-        logger.act(number,info);
+        logger.act(ctx, number,info);
     }
 
     @Override

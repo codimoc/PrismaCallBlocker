@@ -19,15 +19,9 @@ public class LogIncoming implements IAction{
     private final static String TAG = LogIncoming.class.getCanonicalName();
     private final static String DESCRIPTION = "Logs events to DB";
 
-    private final Context ctx;
-
-    public LogIncoming(Context ctx) {
-        this.ctx = ctx;
-    }
-
 
     @Override
-    public void act(final String number, final LogInfo info) {
+    public void act(final Context ctx, final String number, final LogInfo info) {
         //start a thread to write to DC
         new Thread(new Runnable() {
             @Override
