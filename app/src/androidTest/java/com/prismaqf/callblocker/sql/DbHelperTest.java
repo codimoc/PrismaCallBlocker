@@ -44,7 +44,7 @@ public class DbHelperTest {
 
     @Test
     public void dbSmokeTest() {
-        assertEquals("DB version", 10, myDb.getVersion());
+        assertEquals("DB version", 11, myDb.getVersion());
     }
 
     @Test

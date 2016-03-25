@@ -14,6 +14,7 @@ public class DbContract {
     private static final String OPEN_BRAC = " (";
     private static final String CLOSE_BRAC = ") ";
     private static final String IPK = " INTEGER PRIMARY KEY NOT NULL, ";
+    private static final String UNIQUE = " UNIQUE NOT NULL, ";
     private static final String TYPE_TEXT = " TEXT";
     private static final String TYPE_INT = " INTEGER";
     private static final String NOT_NULL = " NOT NULL";
@@ -81,7 +82,7 @@ public class DbContract {
         //sql table creation and deletion
         public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + OPEN_BRAC +
                 _ID + IPK +
-                COLUMN_NAME_RULENAME + TYPE_TEXT + NOT_NULL + COMMA_SEP +
+                COLUMN_NAME_RULENAME + TYPE_TEXT + UNIQUE +
                 COLUMN_NAME_DAYMASK + TYPE_INT + NOT_NULL + COMMA_SEP +
                 COLUMN_NAME_FROM + TYPE_TEXT + NOT_NULL + COMMA_SEP +
                 COLUMN_NAME_TO + TYPE_TEXT + NOT_NULL + COMMA_SEP +
@@ -100,7 +101,7 @@ public class DbContract {
         //sql table creation and deletion
         public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + OPEN_BRAC +
                 _ID + IPK +
-                COLUMN_NAME_RULENAME + TYPE_TEXT + NOT_NULL + COMMA_SEP +
+                COLUMN_NAME_RULENAME + TYPE_TEXT + UNIQUE +
                 COLUMN_NAME_DESCRIPTION + TYPE_TEXT + COMMA_SEP +
                 COLUMN_NAME_TIMESTAMP + TYPE_TEXT + DEF_TIMESTAMP +
                 CLOSE_BRAC;

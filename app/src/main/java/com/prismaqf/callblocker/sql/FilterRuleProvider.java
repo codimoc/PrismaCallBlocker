@@ -169,4 +169,16 @@ public class FilterRuleProvider {
         }
         return null;
     }
+
+    public static synchronized FilterRule FindFilterRule(SQLiteDatabase db, String ruleName) {
+        String where = DbContract.FilterRules.COLUMN_NAME_RULENAME + " = ?";
+        String[] args = {ruleName};
+        String[] cols = {DbContract.FilterRules._ID};
+        Cursor c = db.query(DbContract.FilterRules.TABLE_NAME, cols, where, args, null, null, null, null);
+        if (c.moveToLast()) {
+            long ruleId = c.getLong(c.getColumnIndexOrThrow(DbContract.FilterRules._ID));
+            return FindFilterRule(db,ruleId);
+        }
+        return null;
+    }
 }

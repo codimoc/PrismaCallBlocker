@@ -12,9 +12,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Set;
 
 import static org.junit.Assert.assertNotNull;
@@ -22,10 +20,6 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class ActionsTest {
-
-    private final String TEST_NUMBER="123";
-    private final long TEST_RUNID = 1001;
-    private final int TEST_RULEID=12;
 
     private static Context myCtx;
 
@@ -66,6 +60,16 @@ public class ActionsTest {
         assertNotNull("Found action with proper description", actionClass);
         IAction action = (IAction) actionClass.newInstance();
         assertNotNull("I can construct the IAction object", action);
+    }
+
+    @Test
+    public void testActionRegistry() throws ReflectiveOperationException {
+        Collection<IAction> actions = ActionRegistry.getAvailableActions(myCtx);
+        assertTrue("The collection of actions is not null", actions.size()>0);
+        IAction action1 = (IAction)actions.toArray()[0];
+        IAction action2 = ActionRegistry.getAvailableAction(myCtx,action1.getClass().getCanonicalName());
+        assertTrue("The two objects are identical",action1==action2);
+        assertTrue("The two objects have the same hash",action1.hashCode()==action2.hashCode());
     }
 
 

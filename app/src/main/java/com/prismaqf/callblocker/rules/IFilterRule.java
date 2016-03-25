@@ -5,7 +5,7 @@ package com.prismaqf.callblocker.rules;
  * set in the filter
  * @author ConteDiMonteCristo
  */
-interface IFilterRule {
+public interface IFilterRule {
 
     /**
      * Check a match against a list of numbers and patternd

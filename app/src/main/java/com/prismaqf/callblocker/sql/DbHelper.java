@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.prismaqf.callblocker.R;
 import com.prismaqf.callblocker.rules.CalendarRule;
+import com.prismaqf.callblocker.rules.FilterRule;
 import com.prismaqf.callblocker.utils.DebugKey;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class DbHelper extends SQLiteOpenHelper{
      * implementation they throw an exception becase a single version is
      * assumed. The proper implentation should try to preserve the data
      */
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
     private static final String TAG = DbHelper.class.getCanonicalName();
 
     private static String debugDb = null;
@@ -78,17 +79,9 @@ public class DbHelper extends SQLiteOpenHelper{
             while (c.moveToNext())
                 calendarRules.add(CalendarRuleProvider.deserialize(c));
 
-/*
-        c = FilterRuleProvider.AllFilterRules(db);
-        List<FilterRule> filterRules = new ArrayList<>();
-        while (c.moveToNext()) {
-            long ruleId = c.getLong(c.getColumnIndexOrThrow(DbContract.FilterRules._ID));
-            filterRules.add(FilterRuleProvider.FindFilterRule(db,ruleId));
+            List<FilterRule> filterRules = FilterRuleProvider.AllFilterRules(db);
 
-        }
-*/
             dropAllTables(db);
-
             onCreate(db);
 
             //and now reserialize
@@ -98,8 +91,8 @@ public class DbHelper extends SQLiteOpenHelper{
                 LoggedCallProvider.serialize(db, lc);
             for (CalendarRule cr : calendarRules)
                 CalendarRuleProvider.serialize(db, cr);
-  /*      for (FilterRule fr : filterRules)
-            FilterRuleProvider.InsertRow(db,fr);*/
+            for (FilterRule fr : filterRules)
+                FilterRuleProvider.InsertRow(db,fr);
         }
     }
 

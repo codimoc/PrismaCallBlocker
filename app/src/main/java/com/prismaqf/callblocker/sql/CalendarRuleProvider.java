@@ -44,7 +44,7 @@ public class CalendarRuleProvider {
         vals.put(DbContract.CalendarRules.COLUMN_NAME_DAYMASK, binMask);
         vals.put(DbContract.CalendarRules.COLUMN_NAME_FROM, fromTime);
         vals.put(DbContract.CalendarRules.COLUMN_NAME_TO, toTime);
-        vals.put(DbContract.CalendarRules.COLUMN_NAME_FORMAT, makeRuleFormat(binMask,fromTime,toTime));
+        vals.put(DbContract.CalendarRules.COLUMN_NAME_FORMAT, makeRuleFormat(binMask, fromTime, toTime));
         return db.insert(DbContract.CalendarRules.TABLE_NAME, null, vals);
     }
 
@@ -136,6 +136,17 @@ public class CalendarRuleProvider {
         Cursor c = db.query(DbContract.CalendarRules.TABLE_NAME,null,selection,selectionArgs,null,null,null,null);
         if (c.getCount() >0) {
             c.moveToFirst();
+            return deserialize(c);
+        }
+        return null;
+    }
+
+    public static synchronized CalendarRule FindCalendarRule(SQLiteDatabase db, String ruleName) {
+        String selection = DbContract.CalendarRules.COLUMN_NAME_RULENAME + " = ?";
+        String[] selectionArgs = { ruleName };
+        Cursor c = db.query(DbContract.CalendarRules.TABLE_NAME,null,selection,selectionArgs,null,null,null,null);
+        if (c.getCount() >0) {
+            c.moveToLast(); //get the last occurrency (should be only one entry
             return deserialize(c);
         }
         return null;
