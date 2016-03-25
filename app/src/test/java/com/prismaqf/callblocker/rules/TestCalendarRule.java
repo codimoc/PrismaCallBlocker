@@ -3,6 +3,8 @@ package com.prismaqf.callblocker.rules;
 import android.os.Bundle;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -14,6 +16,7 @@ import static org.junit.Assert.*;
 /**
  * @author ConteDiMonteCristo.
  */
+@RunWith(JUnit4.class)
 public class TestCalendarRule {
 
     @Test

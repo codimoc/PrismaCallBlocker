@@ -1,6 +1,8 @@
 package com.prismaqf.callblocker.rules;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +17,7 @@ import static junit.framework.TestCase.assertNotNull;
 /**
  * @author ConteDiMonteCristo.
  */
+@RunWith(JUnit4.class)
 public class TestFilterRule {
 
     @Test

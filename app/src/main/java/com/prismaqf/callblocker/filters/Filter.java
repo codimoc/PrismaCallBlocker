@@ -56,30 +56,38 @@ public class Filter{
     }
 
 
-    public static Filter makeFilter(Context ctx, String name, String calendarRuleName, String filterRuleName, String actionCanonicalClass )
+    /**
+     * Create a Filter from a handle
+     * @param ctx the Android context
+     * @param handle the handle
+     * @return a Filter object
+     * @throws SQLException data not founf
+     * @throws ReflectiveOperationException could not construct an action
+     */
+    public static Filter makeFilter(Context ctx, FilterHandle handle )
             throws SQLException, ReflectiveOperationException {
         SQLiteDatabase db=null;
         try {
            db  = new DbHelper(ctx).getReadableDatabase();
-            CalendarRule cr = CalendarRuleProvider.FindCalendarRule(db, calendarRuleName);
+            CalendarRule cr = CalendarRuleProvider.FindCalendarRule(db, handle.getCalendarRuleName());
             if (cr==null) {
-                String msg = String.format("Can't find a calendar rule with name %s", calendarRuleName);
+                String msg = String.format("Can't find a calendar rule with name %s", handle.getCalendarRuleName());
                 Log.e(TAG, msg);
                 throw new SQLException(msg);
             }
-            FilterRule fr = FilterRuleProvider.FindFilterRule(db,filterRuleName);
+            FilterRule fr = FilterRuleProvider.FindFilterRule(db,handle.getFilterRuleName());
             if (fr==null) {
-                String msg = String.format("Can't find a filter rule with name %s", filterRuleName);
+                String msg = String.format("Can't find a filter rule with name %s", handle.getFilterRuleName());
                 Log.e(TAG, msg);
                 throw new SQLException(msg);
             }
-            IAction action = ActionRegistry.getAvailableAction(ctx,actionCanonicalClass);
+            IAction action = ActionRegistry.getAvailableAction(ctx,handle.getActionName());
             if (action==null) {
-                String msg = String.format("Can't find an action with class %s", actionCanonicalClass);
+                String msg = String.format("Can't find an action with class %s", handle.getActionName());
                 Log.e(TAG, msg);
                 throw new IllegalArgumentException(msg);
             }
-            return new Filter(name, cr, fr,action);
+            return new Filter(handle.getName(), cr, fr,action);
         }
         finally {
             if (db != null) db.close();
