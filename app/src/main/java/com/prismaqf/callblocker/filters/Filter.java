@@ -22,13 +22,15 @@ import java.sql.SQLException;
  * two rules matches
  * @author ConteDiMonteCristo
  */
-public class Filter {
+public class Filter{
 
     private static final String TAG = Filter.class.getCanonicalName();
 
     private final ICalendarRule calendarRule;
     private final IFilterRule filterRule;
     private final IAction action;
+    private final String name;
+
 
     public ICalendarRule getCalendarRule() {
         return calendarRule;
@@ -42,13 +44,19 @@ public class Filter {
         return action;
     }
 
-    private Filter(ICalendarRule calendarRule, IFilterRule filterRule, IAction action) {
+    public String getName() {
+        return name;
+    }
+
+    private Filter(String name, ICalendarRule calendarRule, IFilterRule filterRule, IAction action) {
+        this.name = name;
         this.calendarRule = calendarRule;
         this.filterRule = filterRule;
         this.action = action;
     }
 
-    public static Filter makeFilter(Context ctx, String calendarRuleName, String filterRuleName, String actionCanonicalClass )
+
+    public static Filter makeFilter(Context ctx, String name, String calendarRuleName, String filterRuleName, String actionCanonicalClass )
             throws SQLException, ReflectiveOperationException {
         SQLiteDatabase db=null;
         try {
@@ -71,10 +79,38 @@ public class Filter {
                 Log.e(TAG, msg);
                 throw new IllegalArgumentException(msg);
             }
-            return new Filter(cr,fr,action);
+            return new Filter(name, cr, fr,action);
         }
         finally {
             if (db != null) db.close();
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Filter %s = [calendar=%s, patterns=%s, action=%s]",name,calendarRule,filterRule,action);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Filter)) return false;
+        Filter other = (Filter)o;
+        if (!name.equals(other.name)) return false;
+        if (!calendarRule.equals(other.calendarRule)) return false;
+        if (!filterRule.equals(other.filterRule)) return false;
+        if (!action.getClass().getCanonicalName().equals(other.action.getClass().getCanonicalName())) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + name.hashCode();
+        result = prime * result + calendarRule.hashCode();
+        result = prime * result + filterRule.hashCode();
+        result = prime * result + action.getClass().getCanonicalName().hashCode();
+        return result;
     }
 }
