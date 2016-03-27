@@ -28,7 +28,7 @@ public class DbHelper extends SQLiteOpenHelper{
      * implementation they throw an exception becase a single version is
      * assumed. The proper implentation should try to preserve the data
      */
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
     private static final String TAG = DbHelper.class.getCanonicalName();
 
     private static String debugDb = null;
@@ -54,6 +54,7 @@ public class DbHelper extends SQLiteOpenHelper{
             db.execSQL(DbContract.CalendarRules.SQL_CREATE_TABLE);
             db.execSQL(DbContract.FilterRules.SQL_CREATE_TABLE);
             db.execSQL(DbContract.FilterPatterns.SQL_CREATE_TABLE);
+            db.execSQL(DbContract.Filters.SQL_CREATE_TABLE);
         }
     }
 
@@ -81,6 +82,8 @@ public class DbHelper extends SQLiteOpenHelper{
 
             List<FilterRule> filterRules = FilterRuleProvider.AllFilterRules(db);
 
+            //todo: filters retrieve
+
             dropAllTables(db);
             onCreate(db);
 
@@ -93,6 +96,8 @@ public class DbHelper extends SQLiteOpenHelper{
                 CalendarRuleProvider.serialize(db, cr);
             for (FilterRule fr : filterRules)
                 FilterRuleProvider.InsertRow(db,fr);
+
+            //todo: filters serialize
         }
     }
 
@@ -108,6 +113,7 @@ public class DbHelper extends SQLiteOpenHelper{
         Log.w(TAG, msg);
 
         synchronized (lock) {
+            db.execSQL(DbContract.Filters.SQL_DROP_TABLE);
             db.execSQL(DbContract.FilterPatterns.SQL_DROP_TABLE);
             db.execSQL(DbContract.FilterRules.SQL_DROP_TABLE);
             db.execSQL(DbContract.CalendarRules.SQL_DROP_TABLE);

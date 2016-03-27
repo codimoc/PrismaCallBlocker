@@ -7,13 +7,18 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 
+import com.prismaqf.callblocker.filters.FilterHandle;
 import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.rules.FilterRule;
 
+import junit.framework.AssertionFailedError;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,11 +45,12 @@ public class DbHelperTest {
         myDb.delete(DbContract.CalendarRules.TABLE_NAME,null,null);
         myDb.delete(DbContract.FilterRules.TABLE_NAME,null,null);
         myDb.delete(DbContract.FilterPatterns.TABLE_NAME,null,null);
+        myDb.delete(DbContract.Filters.TABLE_NAME,null,null);
     }
 
     @Test
     public void dbSmokeTest() {
-        assertEquals("DB version", 11, myDb.getVersion());
+        assertEquals("DB version", 12, myDb.getVersion());
     }
 
     @Test
@@ -281,5 +287,68 @@ public class DbHelperTest {
         FilterRuleProvider.DeleteFilterRule(myDb,ruleid);
         FilterRule fr2 = FilterRuleProvider.FindFilterRule(myDb,ruleid);
         assertNull("Rule deleted and not found",fr2);
+    }
+
+    @Test
+    public void InsertAndTestFilters(){
+        FilterHandle fh = new FilterHandle("first","My calendar", "My patterns", "My action");
+        FilterProvider.InsertRow(myDb, fh);
+        ArrayList<FilterHandle> filters = FilterProvider.AllFilters(myDb);
+        assertEquals("There should be one record", 1, filters.size());
+        assertEquals("The deserialized first filter equals the original", fh, filters.get(0));
+    }
+
+    @Test
+    public void InsertFilterUniqueNameKey() {
+        FilterHandle fh = new FilterHandle("first","My calendar", "My patterns", "My action");
+        FilterProvider.InsertRow(myDb, fh);
+        FilterHandle fh2 = new FilterHandle("first","My calendar2", "My patterns2", "My action2");
+        long rowId = FilterProvider.InsertRow(myDb, fh2);
+        assertTrue("An error occurred", rowId < 0);
+    }
+
+    @Test
+    public void TestAllFilterNames() {
+        FilterHandle fh1 = new FilterHandle("first","My calendar1", "My patterns1", "My action1");
+        FilterHandle fh2 = new FilterHandle("second","My calendar2", "My patterns1", "My action2");
+        FilterProvider.InsertRow(myDb, fh1);
+        FilterProvider.InsertRow(myDb, fh2);
+        ArrayList<String> names = FilterProvider.AllFilterNames(myDb);
+        assertEquals("Two names expected",2,names.size());
+        assertTrue("Contains first", names.contains("first"));
+        assertTrue("Contains second", names.contains("second"));
+    }
+
+    @Test
+    public void TestFindAndUpdateFilter() {
+        FilterHandle fh1 = new FilterHandle("first","My calendar1", "My patterns1", "My action1");
+        long filterid = FilterProvider.InsertRow(myDb, fh1);
+        FilterHandle fh2 = FilterProvider.FindFilter(myDb, filterid);
+        assertEquals("The two filters are equals", fh1, fh2);
+        FilterHandle fh3 = new FilterHandle("first","My calendar1", "My patterns2", "My action1");
+        FilterProvider.UpdateFilter(myDb, filterid, fh3);
+        FilterHandle fh4 = FilterProvider.FindFilter(myDb, filterid);
+        assertEquals("The two filters are equals after update", fh3, fh4);
+        //now seearch by name
+        FilterHandle fh5 = FilterProvider.FindFilter(myDb, "first");
+        assertEquals("The two filters are equals after update", fh3, fh5);
+    }
+
+    @Test
+    public void TestDeleteFilterByName() {
+        FilterHandle fh1 = new FilterHandle("first","My calendar1", "My patterns1", "My action1");
+        long filterid = FilterProvider.InsertRow(myDb, fh1);
+        FilterProvider.DeleteFilter(myDb, "first");
+        FilterHandle fh2 = FilterProvider.FindFilter(myDb, filterid);
+        assertNull("Rule deleted and not found", fh2);
+    }
+
+    @Test
+    public void TestDeleteFilterById() {
+        FilterHandle fh1 = new FilterHandle("first","My calendar1", "My patterns1", "My action1");
+        long filterid = FilterProvider.InsertRow(myDb, fh1);
+        FilterProvider.DeleteFilter(myDb, filterid);
+        FilterHandle fh2 = FilterProvider.FindFilter(myDb, filterid);
+        assertNull("Rule deleted and not found", fh2);
     }
 }

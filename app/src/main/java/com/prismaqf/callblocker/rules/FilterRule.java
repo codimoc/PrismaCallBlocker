@@ -152,7 +152,7 @@ public class FilterRule implements IFilterRule, Cloneable, Parcelable{
 
     @Override
     public String toString() {
-        return String.format("Rule %s, %s, total number of patterns is %d",name,description,patterns.size());
+        return String.format("Rule %s [description = %s, total number of patterns = %d]",name,description,patterns.size());
     }
 
     @Override

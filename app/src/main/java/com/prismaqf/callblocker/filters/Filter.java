@@ -69,6 +69,7 @@ public class Filter{
         SQLiteDatabase db=null;
         try {
            db  = new DbHelper(ctx).getReadableDatabase();
+            //todo: what to do when the names are null? Use default rule and actions
             CalendarRule cr = CalendarRuleProvider.FindCalendarRule(db, handle.getCalendarRuleName());
             if (cr==null) {
                 String msg = String.format("Can't find a calendar rule with name %s", handle.getCalendarRuleName());

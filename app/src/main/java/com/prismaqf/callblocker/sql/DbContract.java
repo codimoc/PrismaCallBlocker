@@ -122,4 +122,23 @@ public class DbContract {
                 CLOSE_BRAC;
         public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
+
+    public static abstract class Filters implements BaseColumns {
+        public static final String TABLE_NAME = "filters";
+        public static final String COLUMN_NAME_FILTERNAME = "name";
+        public static final String COLUMN_NAME_CALENDARRULENAME = "calendarrulename";
+        public static final String COLUMN_NAME_FILTERRULENAME = "filterrulename";
+        public static final String COLUMN_NAME_ACTIONNAME = "actionname";
+        public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
+        //sql table creation and deletion
+        public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + OPEN_BRAC +
+                _ID + IPK +
+                COLUMN_NAME_FILTERNAME + TYPE_TEXT + UNIQUE +
+                COLUMN_NAME_CALENDARRULENAME + TYPE_TEXT + COMMA_SEP +
+                COLUMN_NAME_FILTERRULENAME + TYPE_TEXT + COMMA_SEP +
+                COLUMN_NAME_ACTIONNAME + TYPE_TEXT + COMMA_SEP +
+                COLUMN_NAME_TIMESTAMP + TYPE_TEXT + DEF_TIMESTAMP +
+                CLOSE_BRAC;
+        public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+    }
 }

@@ -251,9 +251,9 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
 
     @Override
     public String toString() {
-        StringBuilder buffer = new StringBuilder("Name=");
+        StringBuilder buffer = new StringBuilder("Name = ");
         buffer.append(name);
-        buffer.append(", Days=");
+        buffer.append(" [Days=");
         if (dayMask.contains(DayOfWeek.MONDAY)) buffer.append('M');
         else buffer.append('-');
         if (dayMask.contains(DayOfWeek.TUESDAY)) buffer.append('T');
@@ -268,7 +268,7 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
         else buffer.append('-');
         if (dayMask.contains(DayOfWeek.SUNDAY)) buffer.append('S');
         else buffer.append('-');
-        buffer.append(String.format(", from %02d:%02d to %02d:%02d",startHour,startMin,endHour,endMin));
+        buffer.append(String.format(", from %02d:%02d to %02d:%02d]",startHour,startMin,endHour,endMin));
         return buffer.toString();
     }
 
