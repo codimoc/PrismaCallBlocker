@@ -6,10 +6,13 @@ import android.util.Log;
 
 import com.prismaqf.callblocker.actions.ActionRegistry;
 import com.prismaqf.callblocker.actions.IAction;
+import com.prismaqf.callblocker.actions.Nothing;
+import com.prismaqf.callblocker.rules.Always;
 import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.rules.FilterRule;
 import com.prismaqf.callblocker.rules.ICalendarRule;
 import com.prismaqf.callblocker.rules.IFilterRule;
+import com.prismaqf.callblocker.rules.NoMatches;
 import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.FilterRuleProvider;
@@ -67,28 +70,39 @@ public class Filter{
     public static Filter makeFilter(Context ctx, FilterHandle handle )
             throws SQLException, ReflectiveOperationException {
         SQLiteDatabase db=null;
+        ICalendarRule cr;
+        IFilterRule fr;
+        IAction action;
         try {
            db  = new DbHelper(ctx).getReadableDatabase();
-            //todo: what to do when the names are null? Use default rule and actions
-            CalendarRule cr = CalendarRuleProvider.FindCalendarRule(db, handle.getCalendarRuleName());
+            if (handle.getCalendarRuleName()==null || handle.getCalendarRuleName().isEmpty())
+                cr = new Always();
+            else
+                cr = CalendarRuleProvider.FindCalendarRule(db, handle.getCalendarRuleName());
             if (cr==null) {
                 String msg = String.format("Can't find a calendar rule with name %s", handle.getCalendarRuleName());
                 Log.e(TAG, msg);
                 throw new SQLException(msg);
             }
-            FilterRule fr = FilterRuleProvider.FindFilterRule(db,handle.getFilterRuleName());
+            if (handle.getFilterRuleName()==null || handle.getFilterRuleName().isEmpty())
+                fr = new NoMatches();
+            else
+                fr = FilterRuleProvider.FindFilterRule(db,handle.getFilterRuleName());
             if (fr==null) {
                 String msg = String.format("Can't find a filter rule with name %s", handle.getFilterRuleName());
                 Log.e(TAG, msg);
                 throw new SQLException(msg);
             }
-            IAction action = ActionRegistry.getAvailableAction(ctx,handle.getActionName());
+            if (handle.getActionName()==null || handle.getActionName().isEmpty())
+                action = new Nothing();
+            else
+                action = ActionRegistry.getAvailableAction(ctx,handle.getActionName());
             if (action==null) {
                 String msg = String.format("Can't find an action with class %s", handle.getActionName());
                 Log.e(TAG, msg);
                 throw new IllegalArgumentException(msg);
             }
-            return new Filter(handle.getName(), cr, fr,action);
+            return new Filter(handle.getName(), cr, fr, action);
         }
         finally {
             if (db != null) db.close();

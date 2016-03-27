@@ -7,14 +7,19 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.prismaqf.callblocker.actions.DropCallByDownButton;
+import com.prismaqf.callblocker.actions.Nothing;
 import com.prismaqf.callblocker.filters.Filter;
 import com.prismaqf.callblocker.filters.FilterHandle;
+import com.prismaqf.callblocker.rules.Always;
 import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.rules.FilterRule;
+import com.prismaqf.callblocker.rules.NoMatches;
 import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.FilterRuleProvider;
 import com.prismaqf.callblocker.utils.DebugDBFileName;
+
+import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
@@ -63,6 +68,16 @@ public class FilterCreationTest {
         FilterHandle fh = new FilterHandle("myFilter",CAL_RULE,FIL_RULE,actionName);
         Filter f = Filter.makeFilter(myContext,fh);
         assertNotNull("The filter has been created", f);
+    }
+
+    @Test
+    public void CreationTestWithDefaults() throws SQLException, ReflectiveOperationException {
+        Context myContext = InstrumentationRegistry.getTargetContext();
+        FilterHandle fh = new FilterHandle("myFilter",null,null,null);
+        Filter f = Filter.makeFilter(myContext,fh);
+        Assert.assertEquals("Default calendar", Always.class,f.getCalendarRule().getClass());
+        Assert.assertEquals("Default filter rule", NoMatches.class,f.getFilterRule().getClass());
+        Assert.assertEquals("Default action", Nothing.class,f.getAction().getClass());
     }
 
     @Test

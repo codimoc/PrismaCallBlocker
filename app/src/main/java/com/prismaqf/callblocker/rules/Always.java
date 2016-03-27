@@ -4,6 +4,9 @@ import java.util.Date;
 
 /**
  * Simple class to make a rule always active
+ * This is the default behaviour if the calendar rule
+ * is not specified
+ * @author ConteDiMonteCristo
  */
 public class Always implements ICalendarRule {
 
