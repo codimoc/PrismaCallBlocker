@@ -17,6 +17,7 @@
     <string name="tx_calls_received">Calls received:</string>
     <string name="tx_trigger_events">Trigger events:</string>
     <string name="db_file_name">pcb.db</string>
+    <string name="ac_show_filters">Show active filters</string>
     <string name="ac_show_runs">Show latest service runs</string>
     <string name="ac_show_calls">Show latest call received</string>
     <string name="ac_show_calendar_rules">Show calendar rules</string>
@@ -27,6 +28,7 @@
     <string name="mn_new_item">Add a new item</string>
     <string name="mn_new_calendar_rule">Add a calendar rule</string>
     <string name="mn_new_filter_rule">Add a filter rule</string>
+    <string name="mn_new_filter">Add a filter</string>
     <string name="tx_rule_name">Rule name</string>
     <string name="tx_Monday">Monday</string>
     <string name="tx_Tuesday">Tuesday</string>
@@ -52,6 +54,8 @@
     <string name="tx_call_triggered_default">0</string>
     <string name="tx_filter_rule_name">Name:</string>
     <string name="tx_filter_rule_description">Description:</string>
+    <string name="tx_filter_name">Filter name:</string>
+    <string name="tx_action_name">Action name:</string>
     <string name="tx_data_bound_no_data">No data</string>
     <string name="tx_logged_call_timestamp">Timestamp:</string>
     <string name="tx_logged_call_number">Calling number:</string>

@@ -172,6 +172,9 @@ public class CallBlockerManager extends ActionBarActivity {
             case R.id.action_show_filter_rules:
                 showFilterRules();
                 return true;
+            case R.id.action_show_filters:
+                showFilters();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -263,6 +266,10 @@ public class CallBlockerManager extends ActionBarActivity {
     private void showSettings() {
         Intent intent = new Intent(this,SettingActivity.class);
         startActivity(intent);
+    }
+
+    private void showFilters() {
+
     }
 
 }
