@@ -62,6 +62,13 @@
                 android:value=".CallBlockerManager" />
         </activity>
 
+        <activity android:name=".EditFilters"
+            android:label="@string/ac_show_filters">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CallBlockerManager" />
+        </activity>
+
         <activity android:name=".SettingActivity"
                   android:label="@string/ac_setting">
             <meta-data
@@ -90,6 +97,13 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".NewEditFilterRule" />
+        </activity>
+
+        <activity android:name=".NewEditFilter"
+            android:label="@string/ac_edit_filter">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".EditFilters" />
         </activity>
 
         <activity android:name=".utils.CallAcceptDrop"

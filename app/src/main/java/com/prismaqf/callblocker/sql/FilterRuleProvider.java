@@ -72,9 +72,10 @@ public class FilterRuleProvider {
                 String regex = c2.getString(c2.getColumnIndexOrThrow(DbContract.FilterPatterns.COLUMN_NAME_PATTERN));
                 fr.addPattern(regex);
             }
+            c2.close();
             rules.add(fr);
         }
-
+        c1.close();
         return rules;
     }
 
@@ -91,6 +92,7 @@ public class FilterRuleProvider {
             String name = c.getString(c.getColumnIndexOrThrow(DbContract.FilterRules.COLUMN_NAME_RULENAME));
             names.add(name);
         }
+        c.close();
         return names;
     }
 
@@ -148,6 +150,7 @@ public class FilterRuleProvider {
             long ruleId = c.getLong(c.getColumnIndexOrThrow(DbContract.FilterRules._ID));
             DeleteFilterRule(db, ruleId);
         }
+        c.close();
     }
 
     public static synchronized FilterRule FindFilterRule(SQLiteDatabase db, long ruleid) {
@@ -165,8 +168,11 @@ public class FilterRuleProvider {
                 String regex = c2.getString(c2.getColumnIndexOrThrow(DbContract.FilterPatterns.COLUMN_NAME_PATTERN));
                 fr.addPattern(regex);
             }
+            c1.close();
+            c2.close();
             return fr;
         }
+        c1.close();
         return null;
     }
 
@@ -177,8 +183,10 @@ public class FilterRuleProvider {
         Cursor c = db.query(DbContract.FilterRules.TABLE_NAME, cols, where, args, null, null, null, null);
         if (c.moveToLast()) {
             long ruleId = c.getLong(c.getColumnIndexOrThrow(DbContract.FilterRules._ID));
+            c.close();
             return FindFilterRule(db,ruleId);
         }
+        c.close();
         return null;
     }
 }

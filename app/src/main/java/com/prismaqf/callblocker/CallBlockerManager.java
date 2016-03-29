@@ -11,7 +11,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +23,7 @@ import android.widget.ToggleButton;
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.ServiceRunProvider;
 
-public class CallBlockerManager extends ActionBarActivity {
+public class CallBlockerManager extends AppCompatActivity {
 
     private static final String TAG = CallBlockerManager.class.getCanonicalName();
 
@@ -269,7 +269,8 @@ public class CallBlockerManager extends ActionBarActivity {
     }
 
     private void showFilters() {
-
+        Intent intent = new Intent(this,EditFilters.class);
+        startActivity(intent);
     }
 
 }

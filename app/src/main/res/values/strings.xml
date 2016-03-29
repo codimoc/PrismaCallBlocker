@@ -48,6 +48,7 @@
     <string name="ac_edit_calendar_rule">Edit a calendar rule</string>
     <string name="ac_edit_filter_rule">Edit a filter rule</string>
     <string name="ac_edit_filter_patterns">Edit filter patterns</string>
+    <string name="ac_edit_filter">Edit a filter</string>
     <string name="tx_calendar_rule_name">Name:</string>
     <string name="tx_calendar_rule_format">Format:</string>
     <string name="tx_call_received_default">0</string>

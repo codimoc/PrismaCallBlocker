@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +23,7 @@ import com.prismaqf.callblocker.utils.PatternAdapter;
 /**
  * @author ConteDiMonteCristo
  */
-public class EditFilterPatterns extends ActionBarActivity {
+public class EditFilterPatterns extends AppCompatActivity {
 
     private final String FRAGMENT = "EditFilterPatternsFragment";
     private EditPatternsFragment myFragment;

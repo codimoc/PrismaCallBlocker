@@ -1,7 +1,7 @@
 package com.prismaqf.callblocker;
 
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -10,7 +10,7 @@ import android.widget.EditText;
  * Abstract base class for rule editing
  * @author ConteDiMonteCristo
  */
-public abstract class NewEditActivity extends ActionBarActivity {
+public abstract class NewEditActivity extends AppCompatActivity {
 
     static final String ACTION_KEY  = "com.prismaqft.callblocker:key";
     static final String KEY_NEW  = "com.prismaqft.callblocker:keynew";

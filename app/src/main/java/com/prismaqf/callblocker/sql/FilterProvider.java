@@ -52,6 +52,7 @@ public class FilterProvider {
             String action = c.getString(c.getColumnIndexOrThrow(DbContract.Filters.COLUMN_NAME_ACTIONNAME));
             filters.add(new FilterHandle(name,calendar,patterns,action));
         }
+        c.close();
         return filters;
     }
 
@@ -67,6 +68,7 @@ public class FilterProvider {
             String name = c.getString(c.getColumnIndexOrThrow(DbContract.Filters.COLUMN_NAME_FILTERNAME));
             names.add(name);
         }
+        c.close();
         return names;
     }
 
@@ -118,6 +120,7 @@ public class FilterProvider {
             long filterId = c.getLong(c.getColumnIndexOrThrow(DbContract.Filters._ID));
             DeleteFilter(db, filterId);
         }
+        c.close();
     }
 
     /**
@@ -135,8 +138,10 @@ public class FilterProvider {
             String calendar = c.getString(c.getColumnIndexOrThrow(DbContract.Filters.COLUMN_NAME_CALENDARRULENAME));
             String patterns = c.getString(c.getColumnIndexOrThrow(DbContract.Filters.COLUMN_NAME_FILTERRULENAME));
             String action = c.getString(c.getColumnIndexOrThrow(DbContract.Filters.COLUMN_NAME_ACTIONNAME));
+            c.close();
             return new FilterHandle(name,calendar,patterns,action);
         }
+        c.close();
         return null;
     }
 
@@ -153,8 +158,10 @@ public class FilterProvider {
         Cursor c = db.query(DbContract.Filters.TABLE_NAME, cols, where, args, null, null, null, null);
         if (c.moveToLast()) {
             long filterId = c.getLong(c.getColumnIndexOrThrow(DbContract.Filters._ID));
+            c.close();
             return FindFilter(db,filterId);
         }
+        c.close();
         return null;
     }
 }

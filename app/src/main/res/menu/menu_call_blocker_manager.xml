@@ -9,7 +9,7 @@
         app:showAsAction="never" />
     <item android:id="@+id/action_show_filters"
         android:orderInCategory="5"
-        android:title="@string/ac_show_runs" />
+        android:title="@string/ac_show_filters" />
     <item android:id="@+id/action_show_runs"
           android:orderInCategory="10"
           android:title="@string/ac_show_runs" />

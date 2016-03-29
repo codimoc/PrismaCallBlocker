@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Activity for editing (creating, updating and deleting) a filter
  * @author ConteDiMonteCristo
  */
-public class EditFilters extends ActionBarActivity {
+public class EditFilters extends AppCompatActivity {
     private class DbOperation extends AsyncTask<SQLiteDatabase, Void ,ArrayList<String>> {
 
 

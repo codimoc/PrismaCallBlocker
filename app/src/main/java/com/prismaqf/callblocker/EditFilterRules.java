@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Base activity for editable list with action bar
  * @author ConteDiMonteCristo
  */
-public class EditFilterRules extends ActionBarActivity {
+public class EditFilterRules extends AppCompatActivity {
 
     private class DbOperation extends AsyncTask<SQLiteDatabase, Void ,ArrayList<String>> {
 
