@@ -12,7 +12,7 @@ import android.os.Parcelable;
  */
 public class FilterHandle implements Cloneable, Parcelable {
 
-    private final String name;
+    private String name;
     private final String calendarRuleName;
     private final String filterRuleName;
     private final String actionName;
@@ -45,6 +45,10 @@ public class FilterHandle implements Cloneable, Parcelable {
         this.calendarRuleName = calendarRuleName;
         this.filterRuleName = filterRuleName;
         this.actionName = actionName;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

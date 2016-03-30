@@ -38,7 +38,7 @@ public class EditFilters extends AppCompatActivity {
         protected void onPostExecute (ArrayList<String> names) {
             Intent intent = new Intent(EditFilters.this, NewEditFilter.class);
             intent.putExtra(NewEditActivity.ACTION_KEY, NewEditActivity.ACTION_CREATE);
-            intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, names);
+            intent.putStringArrayListExtra(NewEditActivity.KEY_FILTERNAMES, names);
             startActivity(intent);
         }
 
