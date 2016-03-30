@@ -56,7 +56,7 @@
     <string name="tx_filter_rule_name">Name:</string>
     <string name="tx_filter_rule_description">Description:</string>
     <string name="tx_filter_name">Filter name:</string>
-    <string name="tx_action_name">Action name:</string>
+    <string name="tx_action_name">Name:</string>
     <string name="tx_data_bound_no_data">No data</string>
     <string name="tx_logged_call_timestamp">Timestamp:</string>
     <string name="tx_logged_call_number">Calling number:</string>
@@ -94,5 +94,9 @@
     <string name="mn_update_patterns">Update patterns</string>
     <string name="mn_pick_log">Pick from log</string>
     <string name="tx_manage_patterns_help">Manage filter patterns</string>
+    <string name="tx_calendar_rule_title">Calendar Rule</string>
+    <string name="tx_filter_rule_title">Filter Rule</string>
+    <string name="tx_action_name_title">Action</string>
+    <string name="tx_action_description">Description:</string>
 
 </resources>
