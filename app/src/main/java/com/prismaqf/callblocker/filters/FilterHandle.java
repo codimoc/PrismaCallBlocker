@@ -29,15 +29,15 @@ public class FilterHandle implements Cloneable, Parcelable {
     }
 
     public String getCalendarRuleName() {
-        return calendarRuleName;
+        return calendarRuleName==null ? "" : calendarRuleName;
     }
 
     public String getFilterRuleName() {
-        return filterRuleName;
+        return filterRuleName==null ? "" : filterRuleName;
     }
 
     public String getActionName() {
-        return actionName;
+        return actionName==null ? "" : actionName;
     }
 
     public FilterHandle(String name, String calendarRuleName, String filterRuleName, String actionName) {
@@ -64,8 +64,7 @@ public class FilterHandle implements Cloneable, Parcelable {
         if (!name.equals(other.name)) return false;
         if (!calendarRuleName.equals(other.calendarRuleName)) return false;
         if (!filterRuleName.equals(other.filterRuleName)) return false;
-        if (!actionName.equals(other.actionName)) return false;
-        return true;
+        return actionName.equals(other.actionName);
     }
 
     @Override

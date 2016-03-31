@@ -3,7 +3,7 @@
       xmlns:com.prismaqf.callblocker="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_add_pattern"
         android:title="@string/mn_add_pattern"
-        android:orderInCategory="10"
+        android:orderInCategory="5"
         com.prismaqf.callblocker:showAsAction="never"/>
     <item android:id="@+id/action_pick_pattern"
         android:title="@string/mn_pick_log"

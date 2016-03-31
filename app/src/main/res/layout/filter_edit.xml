@@ -63,16 +63,6 @@
             android:layout_marginStart="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/tx_calendar_rule_format"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id ="@+id/text_calendar_format"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp"/>
 
     </LinearLayout>
 
@@ -101,16 +91,6 @@
             android:layout_marginStart="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/tx_filter_rule_description"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id ="@+id/text_filter_rule_description"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp"/>
 
     </LinearLayout>
 
@@ -135,16 +115,6 @@
             android:text="@string/tx_action_name"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id ="@+id/text_action_name"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/tx_action_description"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id ="@+id/text_action_description"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             android:layout_marginRight="5dp"

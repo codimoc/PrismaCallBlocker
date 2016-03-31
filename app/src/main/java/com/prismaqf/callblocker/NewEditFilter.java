@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -63,8 +65,8 @@ public class NewEditFilter extends NewEditActivity{
 
     private static final String TAG = NewEditFilter.class.getCanonicalName();
     private EditText ed_name;
-    private TextView tv_calendar_name, tv_calendar_desc, tv_paterns_name, tv_patterns_desc,
-                     tv_action_name, tv_action_desc, tv_validation;
+    private TextView tv_calendar_name, tv_paterns_name, tv_action_name, tv_validation;
+    private MenuItem mi_pickCalendar, mi_pickPatterns, mi_pickAction;
     private ArrayList<String> filterNames;
     private String myAction;
     private FilterHandle myNewFilter, myOrigFilter, ptFilter;  //ptFilter is an alias to the active filter
@@ -80,11 +82,8 @@ public class NewEditFilter extends NewEditActivity{
         ed_name = (EditText) findViewById(R.id.edit_filter_name);
         ed_name.clearFocus();
         tv_calendar_name = (TextView) findViewById(R.id.text_calendar_name);
-        tv_calendar_desc = (TextView) findViewById(R.id.text_calendar_format);
         tv_paterns_name = (TextView) findViewById(R.id.text_filter_rule_name);
-        tv_patterns_desc = (TextView) findViewById(R.id.text_filter_rule_description);
         tv_action_name = (TextView) findViewById(R.id.text_action_name);
-        tv_action_desc = (TextView) findViewById(R.id.text_action_description);
         tv_validation = (TextView) findViewById(R.id.tx_filter_rule_validation);
 
         Intent intent = getIntent();
@@ -127,8 +126,41 @@ public class NewEditFilter extends NewEditActivity{
             enableWidgets(true,true);
         }
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar()!=null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean flag = super.onCreateOptionsMenu(menu);
+        mi_pickCalendar = menu.findItem(R.id.action_pick_calendar);
+        mi_pickPatterns = menu.findItem(R.id.action_pick_patterns);
+        mi_pickAction = menu.findItem(R.id.action_pick_action);
+        mi_pickCalendar.setVisible(true);
+        mi_pickPatterns.setVisible(true);
+        mi_pickAction.setVisible(true);
+
+        return flag;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_pick_calendar:
+                pickCalendar();
+                return true;
+            case R.id.action_pick_patterns:
+                pickPatterns();
+                return true;
+            case R.id.action_pick_action:
+                pickAction();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -205,7 +237,32 @@ public class NewEditFilter extends NewEditActivity{
 
     @Override
     protected void validateActions() {
-        //todo: implement this
+        if (mi_save==null || mi_delete ==null || mi_change == null || mi_undo == null) return;
+        //Save only valie in EDIT or CREATE mode, when the data has change and the name is valid
+        mi_save.setVisible((myAction.equals(NewEditActivity.ACTION_EDIT) ||
+                myAction.equals(NewEditActivity.ACTION_CREATE)) &&
+                !myNewFilter.equals(myOrigFilter) && isNameValid);
+        //Delete only valid in UPDATE mode
+        mi_delete.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptFilter == myOrigFilter);
+        //Change only valid in UPDATE mode
+        mi_change.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptFilter == myOrigFilter);
+        mi_change.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptFilter == myOrigFilter);
+        //Undo only valid in EDIT mode where there have been changes
+        mi_undo.setVisible(myAction.equals(NewEditActivity.ACTION_EDIT) &&
+                ptFilter == myNewFilter &&
+                !myNewFilter.equals(myOrigFilter) &&
+                isNameValid);
+        if (myAction.equals(NewEditActivity.ACTION_EDIT)) {
+            if (myNewFilter.equals(myOrigFilter))
+                tv_validation.setText(R.string.tx_validation_rule_no_changes);
+            else
+                tv_validation.setText(R.string.tx_validation_rule_has_changed);
+        }
+        boolean canChangeFilter = ((myAction.equals(NewEditActivity.ACTION_EDIT) || myAction.equals(NewEditActivity.ACTION_CREATE)) &&
+                                   ptFilter == myNewFilter);
+        mi_pickCalendar.setVisible(canChangeFilter);
+        mi_pickPatterns.setVisible(canChangeFilter);
+        mi_pickAction.setVisible(canChangeFilter);
     }
 
     @Override
@@ -246,12 +303,32 @@ public class NewEditFilter extends NewEditActivity{
     @Override
     protected void enableWidgets(boolean nameFlag, boolean widgetFlag) {
         ed_name.setEnabled(nameFlag);
+        tv_calendar_name.setEnabled(widgetFlag);
+        tv_paterns_name.setEnabled(widgetFlag);
+        tv_action_name.setEnabled(widgetFlag);
         tv_validation.setEnabled(widgetFlag);
     }
 
     @Override
     protected void refreshWidgets(boolean validate) {
         ed_name.setText(ptFilter.getName());
+        tv_calendar_name.setText(String.format("%s %s", getString(R.string.tx_calendar_rule_name), ptFilter.getCalendarRuleName()));
+        tv_paterns_name.setText(String.format("%s %s", getString(R.string.tx_filter_rule_name), ptFilter.getFilterRuleName()));
+        tv_action_name.setText(String.format("%s %s", getString(R.string.tx_action_name), ptFilter.getActionName()));
         super.refreshWidgets(validate);
     }
+
+    private void pickCalendar() {
+        //todo: implement this
+    }
+
+    private void pickPatterns() {
+        //todo: implement this
+    }
+
+    private void pickAction() {
+        //todo: implement this
+    }
+
+
 }

@@ -150,7 +150,8 @@ public class NewEditFilterRule extends NewEditActivity {
             }
         });
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar()!=null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private String makeRuleDescription() {

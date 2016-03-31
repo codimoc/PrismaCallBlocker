@@ -218,8 +218,8 @@ public class NewEditCalendarRule extends NewEditActivity {
             enableWidgets(true,true);
         }
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        if (getSupportActionBar()!=null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
