@@ -1,10 +1,12 @@
 package com.prismaqf.callblocker;
 
+import android.app.Activity;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,8 +24,63 @@ import com.prismaqf.callblocker.sql.DbHelper;
  */
 public class CalendarRulesFragment extends EditCursorListFragment {
 
+    private class DbOperation extends AsyncTask<Long, Void, CalendarRule> {
+
+        private final String action;
+        private long myRuleId;
+
+        DbOperation(String action) {
+            this.action = action;
+        }
+        @Override
+        protected CalendarRule doInBackground(Long... ids) {
+            SQLiteDatabase db = new DbHelper(getActivity()).getReadableDatabase();
+            final long ruleid = ids[0];
+            myRuleId = ruleid;
+            try {
+                return CalendarRuleProvider.FindCalendarRule(db, ruleid);
+
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
+            finally {
+                db.close();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute (CalendarRule rule) {
+            if (action.equals(NewEditActivity.ACTION_PICK)) {
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra(NewEditActivity.KEY_RULENAME, rule.getName());
+                getActivity().setResult(Activity.RESULT_OK, returnIntent);
+                getActivity().finish();
+            } else {
+                Intent intent = new Intent(getActivity(),NewEditCalendarRule.class);
+                intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_UPDATE);
+                intent.putExtra(NewEditActivity.KEY_ORIG,rule);
+                intent.putExtra(NewEditActivity.KEY_RULEID,myRuleId);
+                startActivity(intent);
+            }
+
+        }
+    }
+
     private final String TAG = CalendarRulesFragment.class.getCanonicalName();
     private static final int URL_LOADER = 2; // Identifies a particular Loader being used in this component
+    private String myAction;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Bundle args = getArguments();
+        if (args != null)
+            myAction = args.getString(NewEditActivity.KEY_ACTION,"none");
+        else
+            myAction = "none";
+    }
+
 
     @Override
     public SimpleCursorAdapter getAdapter() {
@@ -65,25 +122,6 @@ public class CalendarRulesFragment extends EditCursorListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        final long ruleid = id;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-               SQLiteDatabase db = new DbHelper(getActivity()).getReadableDatabase();
-                try {
-                    CalendarRule rule = CalendarRuleProvider.FindCalendarRule(db, ruleid);
-                    Intent intent = new Intent(getActivity(),NewEditCalendarRule.class);
-                    intent.putExtra(NewEditActivity.ACTION_KEY, NewEditActivity.ACTION_UPDATE);
-                    intent.putExtra(NewEditActivity.KEY_ORIG,rule);
-                    intent.putExtra(NewEditActivity.KEY_RULEID,ruleid);
-                    startActivity(intent);
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
-                }
-                finally {
-                    db.close();
-                }
-            }
-        }).start();
+        new DbOperation(myAction).execute(id);
     }
 }

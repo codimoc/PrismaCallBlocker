@@ -37,7 +37,7 @@ public class EditFilters extends AppCompatActivity {
         @Override
         protected void onPostExecute (ArrayList<String> names) {
             Intent intent = new Intent(EditFilters.this, NewEditFilter.class);
-            intent.putExtra(NewEditActivity.ACTION_KEY, NewEditActivity.ACTION_CREATE);
+            intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_CREATE);
             intent.putStringArrayListExtra(NewEditActivity.KEY_FILTERNAMES, names);
             startActivity(intent);
         }
@@ -58,7 +58,8 @@ public class EditFilters extends AppCompatActivity {
                 setTransition(FragmentTransaction.TRANSIT_ENTER_MASK).
                 replace(R.id.list_fragment_holder, new FilterFragment(), FRAGMENT).
                 commit();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar()!= null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 

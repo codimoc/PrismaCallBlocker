@@ -97,8 +97,8 @@ public class NewEditFilterRule extends NewEditActivity {
         Intent intent = getIntent();
         myRuleNames = intent.getStringArrayListExtra(KEY_RULENAMES);
         //ACTION UPDATE
-        if (intent.hasExtra(NewEditActivity.ACTION_KEY) &&
-            intent.getStringExtra(NewEditActivity.ACTION_KEY).equals(NewEditActivity.ACTION_UPDATE)) {
+        if (intent.hasExtra(NewEditActivity.KEY_ACTION) &&
+            intent.getStringExtra(NewEditActivity.KEY_ACTION).equals(NewEditActivity.ACTION_UPDATE)) {
             myOrigRule = intent.getParcelableExtra(NewEditActivity.KEY_ORIG);
             try {
                 myNewRule  = (FilterRule)myOrigRule.clone();
@@ -114,8 +114,8 @@ public class NewEditFilterRule extends NewEditActivity {
 
         }
         //ACTION_EDIT
-        else if (intent.hasExtra(NewEditActivity.ACTION_KEY) &&
-                 intent.getStringExtra(NewEditActivity.ACTION_KEY).equals(NewEditActivity.ACTION_EDIT)) {
+        else if (intent.hasExtra(NewEditActivity.KEY_ACTION) &&
+                 intent.getStringExtra(NewEditActivity.KEY_ACTION).equals(NewEditActivity.ACTION_EDIT)) {
             myOrigRule = intent.getParcelableExtra(NewEditActivity.KEY_ORIG);
             myNewRule = intent.getParcelableExtra(NewEditActivity.KEY_NEW);
             myRuleId = intent.getLongExtra(NewEditActivity.KEY_RULEID,0);
@@ -176,7 +176,7 @@ public class NewEditFilterRule extends NewEditActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putParcelable(NewEditActivity.KEY_NEW, myNewRule);
         savedInstanceState.putParcelable(NewEditActivity.KEY_ORIG, myOrigRule);
-        savedInstanceState.putString(NewEditActivity.ACTION_KEY, myAction);
+        savedInstanceState.putString(NewEditActivity.KEY_ACTION, myAction);
         savedInstanceState.putBoolean(NewEditActivity.KEY_ISNAMEVALID, isNameValid);
         savedInstanceState.putStringArrayList(NewEditActivity.KEY_RULENAMES, myRuleNames);
         savedInstanceState.putString(NewEditActivity.KEY_PTRULE, ptRule == myOrigRule ? "Original" : "New");
@@ -189,7 +189,7 @@ public class NewEditFilterRule extends NewEditActivity {
         super.onRestoreInstanceState(savedInstanceState);
         myNewRule = savedInstanceState.getParcelable(NewEditActivity.KEY_NEW);
         myOrigRule = savedInstanceState.getParcelable(NewEditActivity.KEY_ORIG);
-        myAction = savedInstanceState.getString(NewEditActivity.ACTION_KEY);
+        myAction = savedInstanceState.getString(NewEditActivity.KEY_ACTION);
         isNameValid = savedInstanceState.getBoolean(NewEditActivity.KEY_ISNAMEVALID);
         myRuleNames = savedInstanceState.getStringArrayList(NewEditActivity.KEY_RULENAMES);
         String rule = savedInstanceState.getString(NewEditActivity.KEY_PTRULE,"");

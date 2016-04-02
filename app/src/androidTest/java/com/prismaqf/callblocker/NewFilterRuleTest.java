@@ -51,7 +51,7 @@ public class NewFilterRuleTest {
     public void before() {
         ctx = myActivityRule.getActivity();
         intent = new Intent(ctx,NewEditFilterRule.class);
-        intent.putExtra(NewEditActivity.ACTION_KEY, NewEditActivity.ACTION_CREATE);
+        intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_CREATE);
     }
 
     @Test

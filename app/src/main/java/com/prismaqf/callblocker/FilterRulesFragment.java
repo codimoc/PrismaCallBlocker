@@ -75,7 +75,7 @@ public class FilterRulesFragment extends EditCursorListFragment {
                 try {
                     FilterRule rule = FilterRuleProvider.FindFilterRule(db, ruleid);
                     Intent intent = new Intent(getActivity(),NewEditFilterRule.class);
-                    intent.putExtra(NewEditActivity.ACTION_KEY, NewEditActivity.ACTION_UPDATE);
+                    intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_UPDATE);
                     intent.putExtra(NewEditActivity.KEY_ORIG,rule);
                     intent.putExtra(NewEditActivity.KEY_RULEID,ruleid);
                     startActivity(intent);

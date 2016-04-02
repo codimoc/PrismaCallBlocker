@@ -38,7 +38,7 @@ public class EditCalendarRules extends AppCompatActivity {
         @Override
         protected void onPostExecute (ArrayList<String> names) {
             Intent intent = new Intent(EditCalendarRules.this, NewEditCalendarRule.class);
-            intent.putExtra(NewEditActivity.ACTION_KEY, NewEditActivity.ACTION_CREATE);
+            intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_CREATE);
             intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, names);
             startActivity(intent);
         }
@@ -50,15 +50,24 @@ public class EditCalendarRules extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        CalendarRulesFragment fragment = new CalendarRulesFragment();
+        if (savedInstanceState == null)
+            fragment.setArguments(getIntent().getExtras());
+        else
+            fragment.setArguments(savedInstanceState);
+
+
         setContentView(R.layout.data_bound_edit_activity);
 
 
         getFragmentManager().
                 beginTransaction().
                 setTransition(FragmentTransaction.TRANSIT_ENTER_MASK).
-                replace(R.id.list_fragment_holder, new CalendarRulesFragment(), FRAGMENT).
+                replace(R.id.list_fragment_holder, fragment, FRAGMENT).
                 commit();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar()!= null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 

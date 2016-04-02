@@ -12,13 +12,13 @@ import android.widget.EditText;
  */
 public abstract class NewEditActivity extends AppCompatActivity {
 
-    static final String ACTION_KEY  = "com.prismaqft.callblocker:key";
     static final String KEY_NEW  = "com.prismaqft.callblocker:keynew";
     static final String KEY_ORIG  = "com.prismaqft.callblocker:keyorig";
     static final String KEY_ISNAMEVALID  = "com.prismaqft.callblocker:namevalid";
     static final String KEY_RULENAMES  = "com.prismaqft.callblocker:rulenames";
     static final String KEY_FILTERNAMES  = "com.prismaqft.callblocker:rulenames";
     static final String KEY_PTRULE  = "com.prismaqft.callblocker:ptrule";
+    static final String KEY_RULENAME = "com.prismaqft.callblocker:rulename";
     static final String KEY_RULEID = "com.prismaqft.callblocker:ruleid";
     static final String ACTION_CREATE  = "com.prismaqf.callblocker:create";
     static final String ACTION_UPDATE  = "com.prismaqf.callblocker:update";
@@ -45,7 +45,8 @@ public abstract class NewEditActivity extends AppCompatActivity {
         //add text validation
         getNameEditField().addTextChangedListener(getRuleNameValidator());
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar()!= null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_edit_rules, menu);
         mi_save = menu.findItem(R.id.action_save);

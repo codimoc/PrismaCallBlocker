@@ -13,9 +13,9 @@ import android.os.Parcelable;
 public class FilterHandle implements Cloneable, Parcelable {
 
     private String name;
-    private final String calendarRuleName;
-    private final String filterRuleName;
-    private final String actionName;
+    private String calendarRuleName;
+    private String filterRuleName;
+    private String actionName;
 
     private FilterHandle(Parcel in) {
         name = in.readString();
@@ -49,6 +49,18 @@ public class FilterHandle implements Cloneable, Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setCalendarRuleName(String calendarRuleName) {
+        this.calendarRuleName = calendarRuleName;
+    }
+
+    public void setFilterRuleName(String filterRuleName) {
+        this.filterRuleName = filterRuleName;
+    }
+
+    public void setActionName(String actionName) {
+        this.actionName = actionName;
     }
 
     @Override

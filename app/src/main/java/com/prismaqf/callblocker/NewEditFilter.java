@@ -1,5 +1,6 @@
 package com.prismaqf.callblocker;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,6 +65,9 @@ public class NewEditFilter extends NewEditActivity{
     }
 
     private static final String TAG = NewEditFilter.class.getCanonicalName();
+    private static final int PICK_CAL = 1001;
+    private static final int PICK_PAT = 1002;
+    private static final int PICK_ACT = 1003;
     private EditText ed_name;
     private TextView tv_calendar_name, tv_paterns_name, tv_action_name, tv_validation;
     private MenuItem mi_pickCalendar, mi_pickPatterns, mi_pickAction;
@@ -89,8 +93,8 @@ public class NewEditFilter extends NewEditActivity{
         Intent intent = getIntent();
         filterNames = intent.getStringArrayListExtra(KEY_FILTERNAMES);
         //ACTION UPDATE
-        if (intent.hasExtra(NewEditActivity.ACTION_KEY) &&
-                intent.getStringExtra(NewEditActivity.ACTION_KEY).equals(NewEditActivity.ACTION_UPDATE)) {
+        if (intent.hasExtra(NewEditActivity.KEY_ACTION) &&
+                intent.getStringExtra(NewEditActivity.KEY_ACTION).equals(NewEditActivity.ACTION_UPDATE)) {
             myOrigFilter = intent.getParcelableExtra(NewEditActivity.KEY_ORIG);
             try {
                 myNewFilter  = (FilterHandle)myOrigFilter.clone();
@@ -106,8 +110,8 @@ public class NewEditFilter extends NewEditActivity{
 
         }
         //ACTION_EDIT
-        else if (intent.hasExtra(NewEditActivity.ACTION_KEY) &&
-                intent.getStringExtra(NewEditActivity.ACTION_KEY).equals(NewEditActivity.ACTION_EDIT)) {
+        else if (intent.hasExtra(NewEditActivity.KEY_ACTION) &&
+                intent.getStringExtra(NewEditActivity.KEY_ACTION).equals(NewEditActivity.ACTION_EDIT)) {
             myOrigFilter = intent.getParcelableExtra(NewEditActivity.KEY_ORIG);
             myNewFilter = intent.getParcelableExtra(NewEditActivity.KEY_NEW);
             myFilterId = intent.getLongExtra(NewEditActivity.KEY_RULEID,0);
@@ -166,7 +170,7 @@ public class NewEditFilter extends NewEditActivity{
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putParcelable(NewEditActivity.KEY_NEW, myNewFilter);
         savedInstanceState.putParcelable(NewEditActivity.KEY_ORIG, myOrigFilter);
-        savedInstanceState.putString(NewEditActivity.ACTION_KEY, myAction);
+        savedInstanceState.putString(NewEditActivity.KEY_ACTION, myAction);
         savedInstanceState.putBoolean(NewEditActivity.KEY_ISNAMEVALID, isNameValid);
         savedInstanceState.putStringArrayList(NewEditActivity.KEY_RULENAMES, filterNames);
         savedInstanceState.putString(NewEditActivity.KEY_PTRULE, ptFilter == myOrigFilter ? "Original" : "New");
@@ -179,7 +183,7 @@ public class NewEditFilter extends NewEditActivity{
         super.onRestoreInstanceState(savedInstanceState);
         myNewFilter = savedInstanceState.getParcelable(NewEditActivity.KEY_NEW);
         myOrigFilter = savedInstanceState.getParcelable(NewEditActivity.KEY_ORIG);
-        myAction = savedInstanceState.getString(NewEditActivity.ACTION_KEY);
+        myAction = savedInstanceState.getString(NewEditActivity.KEY_ACTION);
         isNameValid = savedInstanceState.getBoolean(NewEditActivity.KEY_ISNAMEVALID);
         filterNames = savedInstanceState.getStringArrayList(NewEditActivity.KEY_RULENAMES);
         String rule = savedInstanceState.getString(NewEditActivity.KEY_PTRULE,"");
@@ -260,9 +264,9 @@ public class NewEditFilter extends NewEditActivity{
         }
         boolean canChangeFilter = ((myAction.equals(NewEditActivity.ACTION_EDIT) || myAction.equals(NewEditActivity.ACTION_CREATE)) &&
                                    ptFilter == myNewFilter);
-        mi_pickCalendar.setVisible(canChangeFilter);
-        mi_pickPatterns.setVisible(canChangeFilter);
-        mi_pickAction.setVisible(canChangeFilter);
+        if (mi_pickCalendar != null) mi_pickCalendar.setVisible(canChangeFilter);
+        if (mi_pickPatterns != null) mi_pickPatterns.setVisible(canChangeFilter);
+        if (mi_pickAction != null) mi_pickAction.setVisible(canChangeFilter);
     }
 
     @Override
@@ -319,7 +323,9 @@ public class NewEditFilter extends NewEditActivity{
     }
 
     private void pickCalendar() {
-        //todo: implement this
+        Intent intent = new Intent(this,EditCalendarRules.class);
+        intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_PICK);
+        startActivityForResult(intent, PICK_CAL);
     }
 
     private void pickPatterns() {
@@ -330,5 +336,12 @@ public class NewEditFilter extends NewEditActivity{
         //todo: implement this
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == PICK_CAL) {
+            ptFilter.setCalendarRuleName(data.getStringExtra(KEY_RULENAME));
+            refreshWidgets(true);
+        }
+    }
 
 }
