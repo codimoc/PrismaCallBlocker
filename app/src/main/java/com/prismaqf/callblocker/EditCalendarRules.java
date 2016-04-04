@@ -46,16 +46,26 @@ public class EditCalendarRules extends AppCompatActivity {
     }
 
     private final String FRAGMENT = "EditCalendarRulesFragment";
+    private String myAction;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
         CalendarRulesFragment fragment = new CalendarRulesFragment();
-        if (savedInstanceState == null)
-            fragment.setArguments(getIntent().getExtras());
-        else
+        if (savedInstanceState == null) {
+            Bundle b = getIntent().getExtras();
+            fragment.setArguments(b);
+            if (b!= null)
+                myAction = b.getString(NewEditActivity.KEY_ACTION,"none");
+            else
+                myAction = "none";
+        }
+        else {
             fragment.setArguments(savedInstanceState);
+            myAction = savedInstanceState.getString(NewEditActivity.KEY_ACTION,"none");
+        }
+
 
 
         setContentView(R.layout.data_bound_edit_activity);
@@ -89,7 +99,12 @@ public class EditCalendarRules extends AppCompatActivity {
                 newCalendarRule();
                 return true;
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                if (myAction.equals(NewEditActivity.ACTION_PICK)) {
+                    onBackPressed();
+                    return true;
+                } else {
+                    NavUtils.navigateUpFromSameTask(this);
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);

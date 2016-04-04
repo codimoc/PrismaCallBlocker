@@ -140,9 +140,11 @@ public class NewEditFilter extends NewEditActivity{
         mi_pickCalendar = menu.findItem(R.id.action_pick_calendar);
         mi_pickPatterns = menu.findItem(R.id.action_pick_patterns);
         mi_pickAction = menu.findItem(R.id.action_pick_action);
-        mi_pickCalendar.setVisible(true);
-        mi_pickPatterns.setVisible(true);
-        mi_pickAction.setVisible(true);
+        if (myAction.equals(ACTION_CREATE) || myAction.equals(ACTION_EDIT)) {
+            mi_pickCalendar.setVisible(true);
+            mi_pickPatterns.setVisible(true);
+            mi_pickAction.setVisible(true);
+        }
 
         return flag;
     }

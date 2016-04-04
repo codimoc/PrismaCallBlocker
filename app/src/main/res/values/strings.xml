@@ -49,14 +49,14 @@
     <string name="ac_edit_filter_rule">Edit a filter rule</string>
     <string name="ac_edit_filter_patterns">Edit filter patterns</string>
     <string name="ac_edit_filter">Edit a filter</string>
-    <string name="tx_calendar_rule_name">Name:</string>
+    <string name="tx_calendar_rule_name">Calendar name:</string>
     <string name="tx_calendar_rule_format">Format:</string>
     <string name="tx_call_received_default">0</string>
     <string name="tx_call_triggered_default">0</string>
-    <string name="tx_filter_rule_name">Name:</string>
+    <string name="tx_filter_rule_name">Filter rule name:</string>
     <string name="tx_filter_rule_description">Description:</string>
     <string name="tx_filter_name">Filter name:</string>
-    <string name="tx_action_name">Name:</string>
+    <string name="tx_action_name">Action name:</string>
     <string name="tx_data_bound_no_data">No data</string>
     <string name="tx_logged_call_timestamp">Timestamp:</string>
     <string name="tx_logged_call_number">Calling number:</string>
