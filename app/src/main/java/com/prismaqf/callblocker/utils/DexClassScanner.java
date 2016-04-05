@@ -4,10 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.util.Log;
 
-import com.prismaqf.callblocker.actions.AvailableAction;
-
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;

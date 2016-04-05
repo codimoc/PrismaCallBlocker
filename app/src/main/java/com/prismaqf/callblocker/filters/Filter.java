@@ -8,8 +8,6 @@ import com.prismaqf.callblocker.actions.ActionRegistry;
 import com.prismaqf.callblocker.actions.IAction;
 import com.prismaqf.callblocker.actions.Nothing;
 import com.prismaqf.callblocker.rules.Always;
-import com.prismaqf.callblocker.rules.CalendarRule;
-import com.prismaqf.callblocker.rules.FilterRule;
 import com.prismaqf.callblocker.rules.ICalendarRule;
 import com.prismaqf.callblocker.rules.IFilterRule;
 import com.prismaqf.callblocker.rules.NoMatches;
