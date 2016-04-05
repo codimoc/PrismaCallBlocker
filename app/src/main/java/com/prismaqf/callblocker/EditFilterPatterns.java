@@ -53,7 +53,8 @@ public class EditFilterPatterns extends AppCompatActivity {
                 setTransition(FragmentTransaction.TRANSIT_ENTER_MASK).
                 replace(R.id.list_fragment_holder, myFragment, FRAGMENT).
                 commit();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -121,7 +122,7 @@ public class EditFilterPatterns extends AppCompatActivity {
 
     private void pick() {
         Intent intent = new Intent(this, ShowLoggedCalls.class);
-        intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_PICK);
+        intent.putExtra(NewEditActivity.KEY_CONTEXT, NewEditActivity.CONTEXT_PICK);
         startActivityForResult(intent, RESULT_PICK);
         validateActions();
     }

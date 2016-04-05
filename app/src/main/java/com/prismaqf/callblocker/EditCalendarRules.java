@@ -1,5 +1,6 @@
 package com.prismaqf.callblocker;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,7 +23,15 @@ import java.util.ArrayList;
  */
 public class EditCalendarRules extends AppCompatActivity {
 
+    private static final int PICK = 1001;
+
     private class DbOperation extends AsyncTask<SQLiteDatabase, Void ,ArrayList<String>> {
+
+        private final String myContext;
+
+        public DbOperation(String context) {
+            myContext = context;
+        }
 
 
         @Override
@@ -40,13 +49,16 @@ public class EditCalendarRules extends AppCompatActivity {
             Intent intent = new Intent(EditCalendarRules.this, NewEditCalendarRule.class);
             intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_CREATE);
             intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, names);
-            startActivity(intent);
+            if (myContext !=null && myContext.equals(NewEditActivity.CONTEXT_PICK)) {
+                intent.putExtra(NewEditActivity.KEY_CONTEXT, myContext);
+                startActivityForResult(intent,PICK);
+            } else
+                startActivity(intent);
         }
-
     }
 
     private final String FRAGMENT = "EditCalendarRulesFragment";
-    private String myAction;
+    private String myContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,13 +69,13 @@ public class EditCalendarRules extends AppCompatActivity {
             Bundle b = getIntent().getExtras();
             fragment.setArguments(b);
             if (b!= null)
-                myAction = b.getString(NewEditActivity.KEY_ACTION,"none");
+                myContext = b.getString(NewEditActivity.KEY_CONTEXT,"none");
             else
-                myAction = "none";
+                myContext = "none";
         }
         else {
             fragment.setArguments(savedInstanceState);
-            myAction = savedInstanceState.getString(NewEditActivity.KEY_ACTION,"none");
+            myContext = savedInstanceState.getString(NewEditActivity.KEY_CONTEXT,"none");
         }
 
 
@@ -99,7 +111,7 @@ public class EditCalendarRules extends AppCompatActivity {
                 newCalendarRule();
                 return true;
             case android.R.id.home:
-                if (myAction.equals(NewEditActivity.ACTION_PICK)) {
+                if (myContext.equals(NewEditActivity.CONTEXT_PICK)) {
                     onBackPressed();
                     return true;
                 } else {
@@ -110,9 +122,19 @@ public class EditCalendarRules extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == PICK && data.hasExtra(NewEditActivity.KEY_RULENAME)) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra(NewEditActivity.KEY_RULENAME, data.getStringExtra(NewEditActivity.KEY_RULENAME));
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        }
+    }
+
     private void newCalendarRule() {
         SQLiteDatabase db = new DbHelper(this).getReadableDatabase();
-        (new DbOperation()).execute(db);
+        (new DbOperation(myContext)).execute(db);
     }
 }
 

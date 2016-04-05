@@ -19,7 +19,7 @@ public abstract class ShowListActivity extends ListActivity implements LoaderMan
 
     SimpleCursorAdapter myAdapter;
     SQLiteDatabase myDbConnection;
-    String myAction;
+    String myContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +27,10 @@ public abstract class ShowListActivity extends ListActivity implements LoaderMan
         super.onCreate(savedInstanceState);
         setContentView(R.layout.data_bound_list_activity);
         Intent intent = getIntent();
-        if (intent.hasExtra(NewEditActivity.KEY_ACTION))
-            myAction = intent.getStringExtra(NewEditActivity.KEY_ACTION);
+        if (intent.hasExtra(NewEditActivity.KEY_CONTEXT))
+            myContext = intent.getStringExtra(NewEditActivity.KEY_CONTEXT);
         else
-            myAction = "none";
+            myContext = "none";
 
         myDbConnection = new DbHelper(this).getReadableDatabase();
         myAdapter = getAdapter();

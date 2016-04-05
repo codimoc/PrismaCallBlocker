@@ -1,6 +1,7 @@
 package com.prismaqf.callblocker;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -104,7 +105,7 @@ public class NewEditCalendarRule extends NewEditActivity {
         }
     }
 
-    private class DbOperation extends AsyncTask<CalendarRule, Void, Void> {
+    private class DbOperation extends AsyncTask<CalendarRule, Void, CalendarRule> {
 
         private final String action;
         private final long ruleid;
@@ -114,7 +115,7 @@ public class NewEditCalendarRule extends NewEditActivity {
             this.ruleid = ruleid;
         }
         @Override
-        protected Void doInBackground(CalendarRule... rules) {
+        protected CalendarRule doInBackground(CalendarRule... rules) {
             SQLiteDatabase db = new DbHelper(NewEditCalendarRule.this).getWritableDatabase();
             CalendarRule rule = rules[0];
             try {
@@ -134,13 +135,21 @@ public class NewEditCalendarRule extends NewEditActivity {
             finally {
                 db.close();    
             }
-            return null;
+            return rule;
         }
 
         @Override
-        protected void onPostExecute (Void v) {
-            Intent intent = new Intent(NewEditCalendarRule.this, EditCalendarRules.class);
-            startActivity(intent);
+        protected void onPostExecute (CalendarRule rule) {
+            if (myContext.equals(CONTEXT_PICK)) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra(KEY_RULENAME,rule.getName());
+                setResult(Activity.RESULT_OK,resultIntent);
+                finish();
+
+            } else {
+                Intent intent = new Intent(NewEditCalendarRule.this, EditCalendarRules.class);
+                startActivity(intent);
+            }
         }
     }
 
@@ -151,7 +160,7 @@ public class NewEditCalendarRule extends NewEditActivity {
     private Button bn_from, bn_to, bn_alldays, bn_nodays, bn_workdays, bn_we;
     private CalendarRule myNewRule, myOrigRule, ptRule;  //ptRule is an alias to the active rule
     private ArrayList<String> myRuleNames;
-    private String myAction;
+    private String myAction, myContext;
     private long myRuleId=0;
     private boolean isNameValid = true;
 
@@ -217,6 +226,8 @@ public class NewEditCalendarRule extends NewEditActivity {
 
             enableWidgets(true,true);
         }
+
+        myContext = intent.hasExtra(KEY_CONTEXT)? intent.getStringExtra(KEY_CONTEXT): "none";
 
         if (getSupportActionBar()!=null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

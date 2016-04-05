@@ -326,7 +326,7 @@ public class NewEditFilter extends NewEditActivity{
 
     private void pickCalendar() {
         Intent intent = new Intent(this,EditCalendarRules.class);
-        intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_PICK);
+        intent.putExtra(NewEditActivity.KEY_CONTEXT, NewEditActivity.CONTEXT_PICK);
         startActivityForResult(intent, PICK_CAL);
     }
 

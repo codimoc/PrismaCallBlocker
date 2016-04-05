@@ -26,11 +26,11 @@ public class CalendarRulesFragment extends EditCursorListFragment {
 
     private class DbOperation extends AsyncTask<Long, Void, CalendarRule> {
 
-        private final String action;
+        private final String context;
         private long myRuleId;
 
-        DbOperation(String action) {
-            this.action = action;
+        DbOperation(String context) {
+            this.context = context;
         }
         @Override
         protected CalendarRule doInBackground(Long... ids) {
@@ -51,7 +51,7 @@ public class CalendarRulesFragment extends EditCursorListFragment {
 
         @Override
         protected void onPostExecute (CalendarRule rule) {
-            if (action.equals(NewEditActivity.ACTION_PICK)) {
+            if (context.equals(NewEditActivity.CONTEXT_PICK)) {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(NewEditActivity.KEY_RULENAME, rule.getName());
                 getActivity().setResult(Activity.RESULT_OK, returnIntent);
@@ -76,7 +76,7 @@ public class CalendarRulesFragment extends EditCursorListFragment {
         super.onStart();
         Bundle args = getArguments();
         if (args != null)
-            myAction = args.getString(NewEditActivity.KEY_ACTION,"none");
+            myAction = args.getString(NewEditActivity.KEY_CONTEXT,"none");
         else
             myAction = "none";
     }

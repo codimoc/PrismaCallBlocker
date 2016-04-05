@@ -24,8 +24,9 @@ public abstract class NewEditActivity extends AppCompatActivity {
     static final String ACTION_UPDATE  = "com.prismaqf.callblocker:update";
     static final String ACTION_EDIT  = "com.prismaqf.callblocker:edit";
     static final String ACTION_DELETE  = "com.prismaqf.callblocker:delete";
-    static final String ACTION_PICK  = "com.prismaqf.callblocker:pick";
-    public static final String KEY_ACTION = "com.prismaqf.callblocker:action";
+    static final String CONTEXT_PICK = "com.prismaqf.callblocker:pick";
+    static final String KEY_ACTION = "com.prismaqf.callblocker:action";
+    static final String KEY_CONTEXT = "com.prismaqf.callblocker:context";
     public static final String KEY_NUMBER = "com.prismaqf.callblocker:number";
     public static final String KEY_CHECKED = "com.prismaqf.callblocker:checked";
 

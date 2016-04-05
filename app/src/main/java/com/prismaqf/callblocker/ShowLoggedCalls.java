@@ -74,7 +74,7 @@ import com.prismaqf.callblocker.sql.LoggedCallProvider;
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        if (myAction!=null && myAction.equals(NewEditActivity.ACTION_PICK)) {
+        if (myContext !=null && myContext.equals(NewEditActivity.CONTEXT_PICK)) {
             Cursor c = (Cursor) myAdapter.getItem(position);
             String number = c.getString(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_NUMBER));
             Intent returnIntent = new Intent();
