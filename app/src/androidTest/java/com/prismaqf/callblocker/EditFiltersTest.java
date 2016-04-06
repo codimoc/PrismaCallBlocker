@@ -26,10 +26,12 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -43,6 +45,7 @@ public class EditFiltersTest {
     private static String PATTERNS_RULE = "patterns rule";
     private static String ACTION_NAME = "action name";
     private static String TEST_CAL_RULE = "My rule for testing";
+    private static String NEW_CAL_RULE = "New rule";
     @ClassRule
     public static final DebugDBFileName myDebugDB = new DebugDBFileName();
 
@@ -63,7 +66,8 @@ public class EditFiltersTest {
     public void after() {
         SQLiteDatabase db = new DbHelper(myActivityRule.getActivity()).getWritableDatabase();
         FilterProvider.DeleteFilter(db, FILTER_NAME);
-        CalendarRuleProvider.DeleteCalendarRule(db,TEST_CAL_RULE);
+        CalendarRuleProvider.DeleteCalendarRule(db, TEST_CAL_RULE);
+        CalendarRuleProvider.DeleteCalendarRule(db, NEW_CAL_RULE);
         db.close();
     }
 
@@ -146,7 +150,7 @@ public class EditFiltersTest {
         activity = InstrumentTestHelper.getCurrentActivity();
         assertEquals("Back in EditFilters activity", NewEditFilter.class.getCanonicalName(), activity.getClass().getCanonicalName());
         try {
-            onView(ViewMatchers.withId(R.id.action_undo)).check(matches(isDisplayed()));
+            onView(ViewMatchers.withId(R.id.action_undo)).perform(click());
         }
         catch (NoMatchingViewException e) {
             openActionBarOverflowOrOptionsMenu(activity);
@@ -154,5 +158,53 @@ public class EditFiltersTest {
         }
         onView(ViewMatchers.withId(R.id.action_undo)).check(doesNotExist());
         onView(ViewMatchers.withId(R.id.action_change)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void CreateAndSelectNewCalendarRule() {
+        Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
+        myActivityRule.getActivity().startActivity(intent);
+        //test that the filter is displayed
+        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        //now select it
+        onView(ViewMatchers.withId(R.id.text_filter_name)).perform(click());
+        //check that the change button is active
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
+        //now pick a new calendar rule
+        Activity activity = InstrumentTestHelper.getCurrentActivity();
+        openActionBarOverflowOrOptionsMenu(activity);
+        onView(withText("Pick a calendar rule")).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("EditCalendarRules activity", EditCalendarRules.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        onView(ViewMatchers.withId(R.id.action_new_item)).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("NewEditCalendarRule activity", NewEditCalendarRule.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        //now change the name and save
+        onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(replaceText(NEW_CAL_RULE));
+        onView(ViewMatchers.withId(R.id.action_save)).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("Back on NewEditFilter activity", NewEditFilter.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        onView(ViewMatchers.withId(R.id.text_calendar_name)).check(matches(withText(containsString(NEW_CAL_RULE))));
+    }
+
+    @Test
+    public void NavigateUpIsContextSensitive() {
+        Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
+        myActivityRule.getActivity().startActivity(intent);
+        //test that the filter is displayed
+        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        //now select it
+        onView(ViewMatchers.withId(R.id.text_filter_name)).perform(click());
+        //check that the change button is active
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
+        //now pick a new calendar rule
+        Activity activity = InstrumentTestHelper.getCurrentActivity();
+        openActionBarOverflowOrOptionsMenu(activity);
+        onView(withText("Pick a calendar rule")).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("EditCalendarRules activity", EditCalendarRules.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        onView(ViewMatchers.withContentDescription(containsString("Navigate up"))).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("Back on NewEditFilter activity", NewEditFilter.class.getCanonicalName(), activity.getClass().getCanonicalName());
     }
 }
