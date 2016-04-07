@@ -13,6 +13,7 @@ import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.FilterProvider;
+import com.prismaqf.callblocker.sql.FilterRuleProvider;
 import com.prismaqf.callblocker.utils.DebugDBFileName;
 import com.prismaqf.callblocker.utils.InstrumentTestHelper;
 
@@ -45,7 +46,7 @@ public class EditFiltersTest {
     private static String PATTERNS_RULE = "patterns rule";
     private static String ACTION_NAME = "action name";
     private static String TEST_CAL_RULE = "My rule for testing";
-    private static String NEW_CAL_RULE = "New rule";
+    private static String NEW_RULE = "New rule";
     @ClassRule
     public static final DebugDBFileName myDebugDB = new DebugDBFileName();
 
@@ -67,7 +68,8 @@ public class EditFiltersTest {
         SQLiteDatabase db = new DbHelper(myActivityRule.getActivity()).getWritableDatabase();
         FilterProvider.DeleteFilter(db, FILTER_NAME);
         CalendarRuleProvider.DeleteCalendarRule(db, TEST_CAL_RULE);
-        CalendarRuleProvider.DeleteCalendarRule(db, NEW_CAL_RULE);
+        CalendarRuleProvider.DeleteCalendarRule(db, NEW_RULE);
+        FilterRuleProvider.DeleteFilterRule(db, NEW_RULE);
         db.close();
     }
 
@@ -95,6 +97,32 @@ public class EditFiltersTest {
         onView(ViewMatchers.withId(R.id.text_calendar_name)).check(matches(withText(containsString(CAL_RULE))));
         onView(ViewMatchers.withId(R.id.text_filter_rule_name)).check(matches(withText(containsString(PATTERNS_RULE))));
         onView(ViewMatchers.withId(R.id.text_action_name)).check(matches(withText(containsString(ACTION_NAME))));
+    }
+
+    @Test
+    public void NewFilterTest() {
+        Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
+        myActivityRule.getActivity().startActivity(intent);
+        onView(ViewMatchers.withId(R.id.action_new_item)).perform(click());
+        //check that we land on a NewEditFilter activity and that we are in action create
+        Activity activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("Check the current running activity", NewEditFilter.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        onView(ViewMatchers.withId(R.id.action_save)).check(matches(isDisplayed()));
+        //now change the name to an existing one
+        onView(ViewMatchers.withId(R.id.edit_filter_name)).perform(replaceText(FILTER_NAME));
+        //the save action should disapper
+        onView(ViewMatchers.withId(R.id.action_save)).check(doesNotExist());
+        //and the validation text should tell
+        onView(ViewMatchers.withId(R.id.tx_filter_rule_validation)).check(matches(withText(containsString("name already used"))));
+        //now set the name to empty
+        onView(ViewMatchers.withId(R.id.edit_filter_name)).perform(replaceText(""));
+        //the save action should disapper
+        onView(ViewMatchers.withId(R.id.action_save)).check(doesNotExist());
+        //and the validation text should tell
+        onView(ViewMatchers.withId(R.id.tx_filter_rule_validation)).check(matches(withText(containsString("can not be empty"))));
+        //now reset to a valid name
+        onView(ViewMatchers.withId(R.id.edit_filter_name)).perform(replaceText("a1b2c3"));
+        onView(ViewMatchers.withId(R.id.action_save)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -180,11 +208,38 @@ public class EditFiltersTest {
         activity = InstrumentTestHelper.getCurrentActivity();
         assertEquals("NewEditCalendarRule activity", NewEditCalendarRule.class.getCanonicalName(), activity.getClass().getCanonicalName());
         //now change the name and save
-        onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(replaceText(NEW_CAL_RULE));
+        onView(ViewMatchers.withId(R.id.edit_calendar_rule_name)).perform(replaceText(NEW_RULE));
         onView(ViewMatchers.withId(R.id.action_save)).perform(click());
         activity = InstrumentTestHelper.getCurrentActivity();
         assertEquals("Back on NewEditFilter activity", NewEditFilter.class.getCanonicalName(), activity.getClass().getCanonicalName());
-        onView(ViewMatchers.withId(R.id.text_calendar_name)).check(matches(withText(containsString(NEW_CAL_RULE))));
+        onView(ViewMatchers.withId(R.id.text_calendar_name)).check(matches(withText(containsString(NEW_RULE))));
+    }
+
+    @Test
+    public void CreateAndSelectNewFilterRule() {
+        Intent intent = new Intent(myActivityRule.getActivity(), EditFilters.class);
+        myActivityRule.getActivity().startActivity(intent);
+        //test that the filter is displayed
+        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        //now select it
+        onView(ViewMatchers.withId(R.id.text_filter_name)).perform(click());
+        //check that the change button is active
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
+        //now pick a new filter rule
+        Activity activity = InstrumentTestHelper.getCurrentActivity();
+        openActionBarOverflowOrOptionsMenu(activity);
+        onView(withText("Pick a filter rule")).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("EditFilterRules activity", EditFilterRules.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        onView(ViewMatchers.withId(R.id.action_new_item)).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("NewEditFilterRule activity", NewEditFilterRule.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        //now change the name and save
+        onView(ViewMatchers.withId(R.id.edit_filter_rule_name)).perform(replaceText(NEW_RULE));
+        onView(ViewMatchers.withId(R.id.action_save)).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("Back on NewEditFilter activity", NewEditFilter.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        onView(ViewMatchers.withId(R.id.text_filter_rule_name)).check(matches(withText(containsString(NEW_RULE))));
     }
 
     @Test

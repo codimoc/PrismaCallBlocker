@@ -55,7 +55,7 @@ public class DexClassScanner {
             Log.e(TAG, e.getMessage());
         } finally {
             try {
-                dex.close();
+                if (dex!= null) dex.close();
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage());
             }

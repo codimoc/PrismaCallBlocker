@@ -212,6 +212,7 @@ public class DbHelperTest {
     public void MakeRuleFromSql() throws Exception {
         long id =  CalendarRuleProvider.InsertRow(myDb, new CalendarRule("first", CalendarRule.makeMask(9), 5,45,21,12));
         CalendarRule theRule = CalendarRuleProvider.FindCalendarRule(myDb, id);
+        assertNotNull("Rile not nulll",theRule );
         assertEquals("The name","first",theRule.getName());
         assertEquals("DayMask", 9, theRule.getBinaryMask());
         assertEquals("Start Hour", 5, theRule.getStartHour());
