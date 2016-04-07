@@ -1,10 +1,12 @@
 package com.prismaqf.callblocker;
 
+import android.app.Activity;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,8 +24,62 @@ import com.prismaqf.callblocker.sql.FilterRuleProvider;
  */
 public class FilterRulesFragment extends EditCursorListFragment {
 
+    private class DbOperation extends AsyncTask<Long, Void, FilterRule> {
+
+        private final String context;
+        private long myRuleId;
+
+        DbOperation(String context) {
+            this.context = context;
+        }
+        @Override
+        protected FilterRule doInBackground(Long... ids) {
+            SQLiteDatabase db = new DbHelper(getActivity()).getReadableDatabase();
+            final long ruleid = ids[0];
+            myRuleId = ruleid;
+            try {
+                return FilterRuleProvider.FindFilterRule(db, ruleid);
+
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
+            finally {
+                db.close();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute (FilterRule rule) {
+            if (context.equals(NewEditActivity.CONTEXT_PICK)) {
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra(NewEditActivity.KEY_RULENAME, rule.getName());
+                getActivity().setResult(Activity.RESULT_OK, returnIntent);
+                getActivity().finish();
+            } else {
+                Intent intent = new Intent(getActivity(),NewEditFilterRule.class);
+                intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_UPDATE);
+                intent.putExtra(NewEditActivity.KEY_ORIG,rule);
+                intent.putExtra(NewEditActivity.KEY_RULEID,myRuleId);
+                startActivity(intent);
+            }
+
+        }
+    }
+
     private final String TAG = FilterRulesFragment.class.getCanonicalName();
     private static final int URL_LOADER = 3; // Identifies a particular Loader being used in this component
+    private String myContext;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Bundle args = getArguments();
+        if (args != null)
+            myContext = args.getString(NewEditActivity.KEY_CONTEXT,"none");
+        else
+            myContext = "none";
+    }
 
     @Override
     protected SimpleCursorAdapter getAdapter() {
@@ -67,25 +123,6 @@ public class FilterRulesFragment extends EditCursorListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        final long ruleid = id;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SQLiteDatabase db = new DbHelper(getActivity()).getReadableDatabase();
-                try {
-                    FilterRule rule = FilterRuleProvider.FindFilterRule(db, ruleid);
-                    Intent intent = new Intent(getActivity(),NewEditFilterRule.class);
-                    intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_UPDATE);
-                    intent.putExtra(NewEditActivity.KEY_ORIG,rule);
-                    intent.putExtra(NewEditActivity.KEY_RULEID,ruleid);
-                    startActivity(intent);
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
-                }
-                finally {
-                    db.close();
-                }
-            }
-        }).start();
+        new DbOperation(myContext).execute(id);
     }
 }

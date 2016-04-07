@@ -69,16 +69,16 @@ public class CalendarRulesFragment extends EditCursorListFragment {
 
     private final String TAG = CalendarRulesFragment.class.getCanonicalName();
     private static final int URL_LOADER = 2; // Identifies a particular Loader being used in this component
-    private String myAction;
+    private String myContext;
 
     @Override
     public void onStart() {
         super.onStart();
         Bundle args = getArguments();
         if (args != null)
-            myAction = args.getString(NewEditActivity.KEY_CONTEXT,"none");
+            myContext = args.getString(NewEditActivity.KEY_CONTEXT,"none");
         else
-            myAction = "none";
+            myContext = "none";
     }
 
 
@@ -122,6 +122,6 @@ public class CalendarRulesFragment extends EditCursorListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        new DbOperation(myAction).execute(id);
+        new DbOperation(myContext).execute(id);
     }
 }

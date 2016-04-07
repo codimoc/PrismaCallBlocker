@@ -23,6 +23,7 @@ import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.FilterRuleProvider;
 
 import java.util.ArrayList;
+import java.util.logging.Filter;
 
 /**
  * Class to create and edit a filter rule
@@ -33,7 +34,7 @@ public class NewEditFilterRule extends NewEditActivity {
 
     private static final int EDIT_PATTERNS = 1001;
 
-    private class DbOperation extends AsyncTask<FilterRule, Void, Void> {
+    private class DbOperation extends AsyncTask<FilterRule, Void, FilterRule> {
 
         private final String action;
         private final long ruleid;
@@ -43,7 +44,7 @@ public class NewEditFilterRule extends NewEditActivity {
             this.ruleid = ruleid;
         }
         @Override
-        protected Void doInBackground(FilterRule... rules) {
+        protected FilterRule doInBackground(FilterRule... rules) {
             SQLiteDatabase db = new DbHelper(NewEditFilterRule.this).getWritableDatabase();
             FilterRule rule = rules[0];
             try {
@@ -62,13 +63,21 @@ public class NewEditFilterRule extends NewEditActivity {
             finally {
                 db.close();
             }
-            return null;
+            return rule;
         }
 
         @Override
-        protected void onPostExecute (Void v) {
-            Intent intent = new Intent(NewEditFilterRule.this, EditFilterRules.class);
-            startActivity(intent);
+        protected void onPostExecute (FilterRule rule) {
+            if (myContext.equals(CONTEXT_PICK)) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra(KEY_RULENAME,rule.getName());
+                setResult(Activity.RESULT_OK,resultIntent);
+                finish();
+
+            } else {
+                Intent intent = new Intent(NewEditFilterRule.this, EditFilterRules.class);
+                startActivity(intent);
+            }
         }
     }
     private static final String TAG = NewEditFilterRule.class.getCanonicalName();
@@ -77,7 +86,7 @@ public class NewEditFilterRule extends NewEditActivity {
     private Button bn_managePatterns;
     private TextView tv_patterns, tv_validation;
     private ArrayList<String> myRuleNames;
-    private String myAction;
+    private String myAction, myContext;
     private FilterRule myNewRule, myOrigRule, ptRule;  //ptRule is an alias to the active rule
     private boolean isNameValid = true;
     private long myRuleId=0;
@@ -149,6 +158,8 @@ public class NewEditFilterRule extends NewEditActivity {
                     validateActions();
             }
         });
+
+        myContext = intent.hasExtra(KEY_CONTEXT)? intent.getStringExtra(KEY_CONTEXT): "none";
 
         if (getSupportActionBar()!=null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

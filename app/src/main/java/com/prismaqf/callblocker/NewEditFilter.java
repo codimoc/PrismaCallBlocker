@@ -331,7 +331,9 @@ public class NewEditFilter extends NewEditActivity{
     }
 
     private void pickPatterns() {
-        //todo: implement this
+        Intent intent = new Intent(this,EditFilterRules.class);
+        intent.putExtra(NewEditActivity.KEY_CONTEXT, NewEditActivity.CONTEXT_PICK);
+        startActivityForResult(intent, PICK_PAT);
     }
 
     private void pickAction() {
@@ -342,6 +344,11 @@ public class NewEditFilter extends NewEditActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == PICK_CAL) {
             ptFilter.setCalendarRuleName(data.getStringExtra(KEY_RULENAME));
+            refreshWidgets(true);
+            return;
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == PICK_PAT) {
+            ptFilter.setFilterRuleName(data.getStringExtra(KEY_RULENAME));
             refreshWidgets(true);
         }
     }

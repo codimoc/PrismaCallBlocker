@@ -1,5 +1,6 @@
 package com.prismaqf.callblocker;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,8 +23,15 @@ import java.util.ArrayList;
  */
 public class EditFilterRules extends AppCompatActivity {
 
+    private static final int PICK = 1002;
+
     private class DbOperation extends AsyncTask<SQLiteDatabase, Void ,ArrayList<String>> {
 
+        private final String myContext;
+
+        public DbOperation(String context) {
+            myContext = context;
+        }
 
         @Override
         protected ArrayList<String> doInBackground(SQLiteDatabase... dbs) {
@@ -38,18 +46,37 @@ public class EditFilterRules extends AppCompatActivity {
         @Override
         protected void onPostExecute (ArrayList<String> names) {
             Intent intent = new Intent(EditFilterRules.this, NewEditFilterRule.class);
-            intent.putExtra(NewEditActivity.KEY_ACTION,NewEditActivity.ACTION_CREATE);
+            intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_CREATE);
             intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, names);
-            startActivity(intent);
+            if (myContext !=null && myContext.equals(NewEditActivity.CONTEXT_PICK)) {
+                intent.putExtra(NewEditActivity.KEY_CONTEXT, myContext);
+                startActivityForResult(intent,PICK);
+            } else
+                startActivity(intent);
         }
 
     }
 
     private final String FRAGMENT = "EditFilterRulesFragment";
+    private String myContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FilterRulesFragment fragment = new FilterRulesFragment();
+        if (savedInstanceState == null) {
+            Bundle b = getIntent().getExtras();
+            fragment.setArguments(b);
+            if (b!= null)
+                myContext = b.getString(NewEditActivity.KEY_CONTEXT,"none");
+            else
+                myContext = "none";
+        }
+        else {
+            fragment.setArguments(savedInstanceState);
+            myContext = savedInstanceState.getString(NewEditActivity.KEY_CONTEXT,"none");
+        }
 
         setContentView(R.layout.data_bound_edit_activity);
 
@@ -57,7 +84,7 @@ public class EditFilterRules extends AppCompatActivity {
         getFragmentManager().
                 beginTransaction().
                 setTransition(FragmentTransaction.TRANSIT_ENTER_MASK).
-                replace(R.id.list_fragment_holder, new FilterRulesFragment(), FRAGMENT).
+                replace(R.id.list_fragment_holder, fragment, FRAGMENT).
                 commit();
         if (getSupportActionBar()!= null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -82,14 +109,29 @@ public class EditFilterRules extends AppCompatActivity {
                 newFilterRule();
                 return true;
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                if (myContext.equals(NewEditActivity.CONTEXT_PICK)) {
+                    onBackPressed();
+                    return true;
+                } else {
+                    NavUtils.navigateUpFromSameTask(this);
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == PICK && data.hasExtra(NewEditActivity.KEY_RULENAME)) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra(NewEditActivity.KEY_RULENAME, data.getStringExtra(NewEditActivity.KEY_RULENAME));
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        }
+    }
+
     private void newFilterRule() {
         SQLiteDatabase db = new DbHelper(this).getReadableDatabase();
-        (new DbOperation()).execute(db);
+        (new DbOperation(myContext)).execute(db);
     }
 }

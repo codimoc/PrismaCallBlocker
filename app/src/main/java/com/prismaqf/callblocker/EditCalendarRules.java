@@ -59,6 +59,7 @@ public class EditCalendarRules extends AppCompatActivity {
 
     private final String FRAGMENT = "EditCalendarRulesFragment";
     private String myContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
