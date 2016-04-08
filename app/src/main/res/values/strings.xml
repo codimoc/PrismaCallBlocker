@@ -105,5 +105,6 @@
     <string name="mn_pick_calendar">Pick a calendar rule</string>
     <string name="mn_pick_patterns">Pick a filter rule</string>
     <string name="mn_pick_action">Pick an action</string>
+    <string name="tx_action_class">Action class:</string>
 
 </resources>
