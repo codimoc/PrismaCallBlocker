@@ -99,6 +99,13 @@
                 android:value=".NewEditFilterRule" />
         </activity>
 
+        <activity android:name=".PickAction"
+            android:label="@string/ac_pick_action">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".NewEditFilter" />
+        </activity>        
+
         <activity android:name=".NewEditFilter"
             android:label="@string/ac_edit_filter">
             <meta-data

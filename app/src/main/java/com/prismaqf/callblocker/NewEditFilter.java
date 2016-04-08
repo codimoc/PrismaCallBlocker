@@ -337,7 +337,8 @@ public class NewEditFilter extends NewEditActivity{
     }
 
     private void pickAction() {
-        //todo: implement this
+        Intent intent = new Intent(this,PickAction.class);
+        startActivityForResult(intent, PICK_ACT);
     }
 
     @Override
@@ -349,6 +350,10 @@ public class NewEditFilter extends NewEditActivity{
         }
         if (resultCode == Activity.RESULT_OK && requestCode == PICK_PAT) {
             ptFilter.setFilterRuleName(data.getStringExtra(KEY_RULENAME));
+            refreshWidgets(true);
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == PICK_ACT) {
+            ptFilter.setActionName(data.getStringExtra(KEY_ACTIONNAME));
             refreshWidgets(true);
         }
     }

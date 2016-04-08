@@ -19,6 +19,7 @@ public abstract class NewEditActivity extends AppCompatActivity {
     static final String KEY_FILTERNAMES  = "com.prismaqft.callblocker:rulenames";
     static final String KEY_PTRULE  = "com.prismaqft.callblocker:ptrule";
     static final String KEY_RULENAME = "com.prismaqft.callblocker:rulename";
+    static final String KEY_ACTIONNAME = "com.prismaqft.callblocker:actionname";
     static final String KEY_RULEID = "com.prismaqft.callblocker:ruleid";
     static final String ACTION_CREATE  = "com.prismaqf.callblocker:create";
     static final String ACTION_UPDATE  = "com.prismaqf.callblocker:update";
