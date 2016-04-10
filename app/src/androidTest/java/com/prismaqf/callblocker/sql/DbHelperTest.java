@@ -65,6 +65,7 @@ public class DbHelperTest {
         assertEquals("Expected calls received",2,received);
         long triggered  = c.getLong(c.getColumnIndexOrThrow(DbContract.ServiceRuns.COLUMN_NAME_TOTAL_TRIGGERED));
         assertEquals("Expected calls triggered",1,triggered);
+        c.close();
     }
 
     @Test

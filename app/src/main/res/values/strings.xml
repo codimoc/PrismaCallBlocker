@@ -102,7 +102,6 @@
     <string name="tx_calendar_rule_title">Calendar Rule</string>
     <string name="tx_filter_rule_title">Filter Rule</string>
     <string name="tx_action_name_title">Action</string>
-    <string name="tx_action_description">Description:</string>
     <string name="mn_pick_calendar">Pick a calendar rule</string>
     <string name="mn_pick_patterns">Pick a filter rule</string>
     <string name="mn_pick_action">Pick an action</string>

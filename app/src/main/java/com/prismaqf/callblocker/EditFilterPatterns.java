@@ -25,7 +25,6 @@ import com.prismaqf.callblocker.utils.PatternAdapter;
  */
 public class EditFilterPatterns extends AppCompatActivity {
 
-    private final String FRAGMENT = "EditFilterPatternsFragment";
     private EditPatternsFragment myFragment;
     private final int RESULT_PICK = 1001;
     private MenuItem mi_update, mi_delete;
@@ -48,6 +47,7 @@ public class EditFilterPatterns extends AppCompatActivity {
         }
 
 
+        String FRAGMENT = "EditFilterPatternsFragment";
         getFragmentManager().
                 beginTransaction().
                 setTransition(FragmentTransaction.TRANSIT_ENTER_MASK).

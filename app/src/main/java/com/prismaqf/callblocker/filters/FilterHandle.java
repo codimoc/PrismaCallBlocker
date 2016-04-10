@@ -40,6 +40,13 @@ public class FilterHandle implements Cloneable, Parcelable {
         return actionName==null ? "" : actionName;
     }
 
+    public String getActionSimpleName() {
+        if (actionName==null) return "";
+        int lastDot = actionName.lastIndexOf ('.');
+        if (lastDot==-1) return actionName;
+        return actionName.substring (lastDot+1,actionName.length());
+    }
+
     public FilterHandle(String name, String calendarRuleName, String filterRuleName, String actionName) {
         this.name = name;
         this.calendarRuleName = calendarRuleName;

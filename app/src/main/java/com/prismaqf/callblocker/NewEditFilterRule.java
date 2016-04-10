@@ -23,7 +23,6 @@ import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.FilterRuleProvider;
 
 import java.util.ArrayList;
-import java.util.logging.Filter;
 
 /**
  * Class to create and edit a filter rule

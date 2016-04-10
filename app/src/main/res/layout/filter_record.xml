@@ -9,6 +9,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id ="@+id/private_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -20,8 +21,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@id/private_name"
+            android:layout_toEndOf="@id/private_name"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/text_filter_name" />
     </RelativeLayout>
@@ -31,6 +34,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id ="@+id/private_calendar"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -42,8 +46,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@id/private_calendar"
+            android:layout_toEndOf="@id/private_calendar"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/text_calendar_rule_name" />
     </RelativeLayout>
@@ -53,6 +59,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id ="@+id/private_patterns"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -64,8 +71,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@id/private_patterns"
+            android:layout_toEndOf="@id/private_patterns"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/text_filter_rule_name" />
     </RelativeLayout>
@@ -75,6 +84,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id ="@+id/private_action"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -86,8 +96,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@id/private_action"
+            android:layout_toEndOf="@id/private_action"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/text_action_name" />
     </RelativeLayout>
