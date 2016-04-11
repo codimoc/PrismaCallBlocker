@@ -44,8 +44,6 @@ public class EditFilters extends AppCompatActivity {
 
     }
 
-    private final String FRAGMENT = "EditFilterFragment";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +51,7 @@ public class EditFilters extends AppCompatActivity {
         setContentView(R.layout.data_bound_edit_activity);
 
 
+        String FRAGMENT = "EditFilterFragment";
         getFragmentManager().
                 beginTransaction().
                 setTransition(FragmentTransaction.TRANSIT_ENTER_MASK).

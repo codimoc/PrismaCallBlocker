@@ -57,7 +57,6 @@ public class EditCalendarRules extends AppCompatActivity {
         }
     }
 
-    private final String FRAGMENT = "EditCalendarRulesFragment";
     private String myContext;
 
     @Override
@@ -84,6 +83,7 @@ public class EditCalendarRules extends AppCompatActivity {
         setContentView(R.layout.data_bound_edit_activity);
 
 
+        String FRAGMENT = "EditCalendarRulesFragment";
         getFragmentManager().
                 beginTransaction().
                 setTransition(FragmentTransaction.TRANSIT_ENTER_MASK).

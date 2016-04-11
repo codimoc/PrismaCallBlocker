@@ -57,7 +57,6 @@ public class EditFilterRules extends AppCompatActivity {
 
     }
 
-    private final String FRAGMENT = "EditFilterRulesFragment";
     private String myContext;
 
     @Override
@@ -81,6 +80,7 @@ public class EditFilterRules extends AppCompatActivity {
         setContentView(R.layout.data_bound_edit_activity);
 
 
+        String FRAGMENT = "EditFilterRulesFragment";
         getFragmentManager().
                 beginTransaction().
                 setTransition(FragmentTransaction.TRANSIT_ENTER_MASK).

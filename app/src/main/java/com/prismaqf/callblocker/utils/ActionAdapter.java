@@ -20,13 +20,12 @@ import com.prismaqf.callblocker.actions.LogIncoming;
  */
 public class ActionAdapter extends ArrayAdapter<IAction> {
 
-    private String TAG = ActionAdapter.class.getCanonicalName();
-
     public ActionAdapter(Context context) {
         super(context, 0);
         try {
             super.addAll(ActionRegistry.getAvailableActions(context));
         } catch (Exception e) {
+            String TAG = ActionAdapter.class.getCanonicalName();
             Log.e(TAG, e.getMessage());
             super.add(new LogIncoming());
         }

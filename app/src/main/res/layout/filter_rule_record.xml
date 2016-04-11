@@ -9,6 +9,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id = "@+id/private_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -20,8 +21,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@id/private_name"
+            android:layout_toEndOf="@id/private_name"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/text_rule_name" />
     </RelativeLayout>
@@ -31,6 +34,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id = "@+id/private_description"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -42,8 +46,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@id/private_description"
+            android:layout_toEndOf="@id/private_description"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/text_rule_description" />
     </RelativeLayout>

@@ -31,7 +31,6 @@ public class CallBlockerManager extends AppCompatActivity {
     private CallEventReceiver callEventReceiver;
     private Button buttonReceived;
     private Button buttonTriggered;
-    private CallDetectService myService;
     private boolean isBound;
 
     private final ServiceConnection myConnection = new ServiceConnection() {
@@ -39,7 +38,7 @@ public class CallBlockerManager extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
             CallDetectService.LocalBinder binder = (CallDetectService.LocalBinder) service;
-            myService = binder.getService();
+            CallDetectService myService = binder.getService();
             isBound = true;
             buttonReceived.setText(String.valueOf(myService.getNumReceived()));
             buttonReceived.invalidate();

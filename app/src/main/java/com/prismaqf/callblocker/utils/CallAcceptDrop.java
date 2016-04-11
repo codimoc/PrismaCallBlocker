@@ -27,7 +27,6 @@ public class CallAcceptDrop extends Activity {
     private static final String MANUFACTURER_HTC = "HTC";
 
     private KeyguardManager keyguardManager;
-    private AudioManager audioManager;
     private CallStateReceiver callStateReceiver;
 
     @Override
@@ -35,7 +34,7 @@ public class CallAcceptDrop extends Activity {
         super.onCreate(savedInstanceState);
 
         keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
     }
 
     @Override

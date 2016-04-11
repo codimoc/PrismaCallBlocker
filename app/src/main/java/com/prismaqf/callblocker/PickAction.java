@@ -11,8 +11,6 @@ import android.view.MenuItem;
  * Created by ConteDiMonteCristo
  */
 public class PickAction extends AppCompatActivity {
-    private final String FRAGMENT = "PickActionFragment";
-    private PickActionFragment myFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +18,9 @@ public class PickAction extends AppCompatActivity {
 
         setContentView(R.layout.data_bound_edit_activity);
 
-        myFragment = new PickActionFragment();
+        PickActionFragment myFragment = new PickActionFragment();
 
+        String FRAGMENT = "PickActionFragment";
         getFragmentManager().
                 beginTransaction().
                 setTransition(FragmentTransaction.TRANSIT_ENTER_MASK).

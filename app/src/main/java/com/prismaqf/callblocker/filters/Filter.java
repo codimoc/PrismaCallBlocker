@@ -116,12 +116,11 @@ public class Filter{
     public boolean equals(Object o) {
         if (o == this) return true;
         if (!(o instanceof Filter)) return false;
-        Filter other = (Filter)o;
-        if (!name.equals(other.name)) return false;
-        if (!calendarRule.equals(other.calendarRule)) return false;
-        if (!filterRule.equals(other.filterRule)) return false;
-        if (!action.getClass().getCanonicalName().equals(other.action.getClass().getCanonicalName())) return false;
-        return true;
+        Filter other = (Filter) o;
+        return name.equals(other.name) &&
+               calendarRule.equals(other.calendarRule) &&
+               filterRule.equals(other.filterRule) &&
+               action.getClass().getCanonicalName().equals(other.action.getClass().getCanonicalName());
     }
 
     @Override

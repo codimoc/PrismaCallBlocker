@@ -44,7 +44,6 @@
     <string name="tx_from_time">From 00:00</string>
     <string name="tx_to_time">To 23:59</string>
     <string name="tx_rule_validation">Rule validation:</string>
-    <string name="tx_new_calendar_rule">New calendar rule</string>
     <string name="ac_edit_calendar_rule">Edit a calendar rule</string>
     <string name="ac_edit_filter_rule">Edit a filter rule</string>
     <string name="ac_edit_filter_patterns">Edit filter patterns</string>
@@ -88,14 +87,10 @@
     <string name="tx_calendar_rule_help_title">Help on editing calendar rules</string>
     <string name="tx_filter_rule_help_title">Help on editing filter rules</string>
     <string name="tx_description">Description</string>
-    <string name="tx_pick_from_log">Pick From Log</string>
-    <string name="tx_delete_selected">Delete Selected</string>
-    <string name="tx_insert_pattern">Insert Pattern</string>
     <string name="bt_manage_patterns">Manage Patterns</string>
     <string name="tx_patterns_in_rule">Patterns in rule:\n</string>
     <string name="mn_add_pattern">Add a pattern</string>
     <string name="mn_delete_pattern">Delete selected patterns</string>
-    <string name="tx_pattern">Pattern:</string>
     <string name="mn_update_patterns">Update patterns</string>
     <string name="mn_pick_log">Pick from log</string>
     <string name="tx_manage_patterns_help">Manage filter patterns</string>

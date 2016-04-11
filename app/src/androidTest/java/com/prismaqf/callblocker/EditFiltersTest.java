@@ -261,4 +261,28 @@ public class EditFiltersTest {
         activity = InstrumentTestHelper.getCurrentActivity();
         assertEquals("Back on NewEditFilter activity", NewEditFilter.class.getCanonicalName(), activity.getClass().getCanonicalName());
     }
+
+    @Test
+    public void PickActionTest() {
+        Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
+        myActivityRule.getActivity().startActivity(intent);
+        //test that the filter is displayed
+        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        //now select it
+        onView(ViewMatchers.withId(R.id.text_filter_name)).perform(click());
+        //check that the change button is active
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
+        //now pick a new filter rule
+        Activity activity = InstrumentTestHelper.getCurrentActivity();
+        openActionBarOverflowOrOptionsMenu(activity);
+        onView(withText("Pick an action")).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("PickAction activity", PickAction.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        onView(ViewMatchers.withText("DropCallByEndCall")).perform(click());
+        //back to the NewEditFilter action
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("NewEditFilter activity", NewEditFilter.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        onView(ViewMatchers.withText(containsString("DropCallByEndCall"))).check(matches(isDisplayed()));
+
+    }
 }

@@ -79,11 +79,11 @@ public class FilterHandle implements Cloneable, Parcelable {
     public boolean equals(Object o) {
         if (o == this) return true;
         if (!(o instanceof FilterHandle)) return false;
-        FilterHandle other = (FilterHandle)o;
-        if (!name.equals(other.name)) return false;
-        if (!calendarRuleName.equals(other.calendarRuleName)) return false;
-        if (!filterRuleName.equals(other.filterRuleName)) return false;
-        return actionName.equals(other.actionName);
+        FilterHandle other = (FilterHandle) o;
+        return name.equals(other.name) &&
+               calendarRuleName.equals(other.calendarRuleName) &&
+               filterRuleName.equals(other.filterRuleName) &&
+               actionName.equals(other.actionName);
     }
 
     @Override
