@@ -8,11 +8,14 @@ import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.prismaqf.callblocker.filters.FilterHandle;
 import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
+import com.prismaqf.callblocker.sql.FilterProvider;
 import com.prismaqf.callblocker.utils.DebugDBFileName;
 import com.prismaqf.callblocker.utils.InstrumentTestHelper;
+import com.prismaqf.callblocker.utils.ToastMatcher;
 
 import org.junit.After;
 import org.junit.Before;
@@ -27,6 +30,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.doesNotExis
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 
@@ -35,6 +39,8 @@ public class UpdateCalendarRuleTest {
 
     private long myRuleId;
     private static final String TEST_RULE = "My rule for testing";
+    private static final String TEST_RULE_IN_FILTER = "My rule belonging to a filter";
+    private static final String TEST_FILTER = "My filter for testing";
 
     @ClassRule
     public static final DebugDBFileName myDebugDB = new DebugDBFileName();
@@ -48,6 +54,8 @@ public class UpdateCalendarRuleTest {
         SQLiteDatabase db = new DbHelper(myActivityRule.getActivity()).getWritableDatabase();
         CalendarRuleProvider.DeleteCalendarRule(db, TEST_RULE);
         myRuleId = CalendarRuleProvider.InsertRow(db, new CalendarRule(TEST_RULE,CalendarRule.makeMask(9), 1,2,23,22));
+        CalendarRuleProvider.InsertRow(db, new CalendarRule(TEST_RULE_IN_FILTER,CalendarRule.makeMask(0)));
+        FilterProvider.InsertRow(db, new FilterHandle(TEST_FILTER,TEST_RULE_IN_FILTER,"dummy1","dummy2"));
         db.close();
         Intent intent = new Intent(myActivityRule.getActivity(),EditCalendarRules.class);
         myActivityRule.getActivity().startActivity(intent); //relaunch
@@ -57,6 +65,8 @@ public class UpdateCalendarRuleTest {
     public void after() {
         SQLiteDatabase db = new DbHelper(myActivityRule.getActivity()).getWritableDatabase();
         CalendarRuleProvider.DeleteCalendarRule(db, myRuleId);
+        CalendarRuleProvider.DeleteCalendarRule(db, TEST_RULE_IN_FILTER);
+        FilterProvider.DeleteFilter(db,TEST_FILTER);
         db.close();
     }
 
@@ -113,6 +123,18 @@ public class UpdateCalendarRuleTest {
         //a dialog confirmation should appear
         onView(ViewMatchers.withText(myActivityRule.getActivity().getString(R.string.tx_rule_delete_confirm)))
                 .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void TestDeleteRuleWhenUsedShouldFlag() {
+        onView(ViewMatchers.withText(TEST_RULE_IN_FILTER)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText(TEST_RULE_IN_FILTER)).perform(click());
+        onView(ViewMatchers.withId(R.id.action_delete)).perform(click());
+        onView(ViewMatchers.withText(myActivityRule.getActivity().getString(R.string.tx_rule_delete_confirm)))
+                .check(matches(isDisplayed()));
+        onView(ViewMatchers.withText(containsString("Yes"))).perform(click());
+        ToastMatcher matcher = new ToastMatcher("toast!");
+        onView(ViewMatchers.withText(R.string.msg_can_not_delete_rule)).inRoot(matcher).check(matches(isDisplayed()));
     }
 
     @Test

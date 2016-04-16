@@ -24,10 +24,12 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
+import com.prismaqf.callblocker.sql.FilterProvider;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -109,6 +111,7 @@ public class NewEditCalendarRule extends NewEditActivity {
 
         private final String action;
         private final long ruleid;
+        private boolean cantDelete = false;
 
         DbOperation(String action, long ruleid) {
             this.action = action;
@@ -128,7 +131,10 @@ public class NewEditCalendarRule extends NewEditActivity {
                         break;
                     default:
                         //ACTION_DELETE
-                        CalendarRuleProvider.DeleteCalendarRule(db, ruleid);
+                        if (FilterProvider.HasCalendarRule(db,rule.getName())) {
+                            cantDelete = true;
+                        } else
+                            CalendarRuleProvider.DeleteCalendarRule(db, ruleid);
                         break;
                 }
             }
@@ -140,7 +146,10 @@ public class NewEditCalendarRule extends NewEditActivity {
 
         @Override
         protected void onPostExecute (CalendarRule rule) {
-            if (myContext.equals(CONTEXT_PICK)) {
+            if (cantDelete) {
+                Toast.makeText(getBaseContext(), getString(R.string.msg_can_not_delete_rule), Toast.LENGTH_LONG).show();
+            }
+            else if (myContext.equals(CONTEXT_PICK)) {
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra(KEY_RULENAME,rule.getName());
                 setResult(Activity.RESULT_OK,resultIntent);

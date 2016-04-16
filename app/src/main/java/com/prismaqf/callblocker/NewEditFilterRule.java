@@ -17,9 +17,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.prismaqf.callblocker.rules.FilterRule;
 import com.prismaqf.callblocker.sql.DbHelper;
+import com.prismaqf.callblocker.sql.FilterProvider;
 import com.prismaqf.callblocker.sql.FilterRuleProvider;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class NewEditFilterRule extends NewEditActivity {
 
         private final String action;
         private final long ruleid;
+        private boolean cantDelete = false;
 
         DbOperation(String action, long ruleid) {
             this.action = action;
@@ -55,7 +58,10 @@ public class NewEditFilterRule extends NewEditActivity {
                         FilterRuleProvider.UpdateFilterRule(db, ruleid, rule);
                         break;
                     default:
-                        FilterRuleProvider.DeleteFilterRule(db, ruleid);
+                        if (FilterProvider.HasFilterRule(db,rule.getName())) {
+                            cantDelete = true;
+                        } else
+                            FilterRuleProvider.DeleteFilterRule(db, ruleid);
                         break;
                 }
             }
@@ -67,7 +73,10 @@ public class NewEditFilterRule extends NewEditActivity {
 
         @Override
         protected void onPostExecute (FilterRule rule) {
-            if (myContext.equals(CONTEXT_PICK)) {
+            if (cantDelete) {
+                Toast.makeText(getBaseContext(), getString(R.string.msg_can_not_delete_rule), Toast.LENGTH_LONG).show();
+            }
+            else if (myContext.equals(CONTEXT_PICK)) {
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra(KEY_RULENAME,rule.getName());
                 setResult(Activity.RESULT_OK,resultIntent);

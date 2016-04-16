@@ -88,7 +88,7 @@ public class FilterProvider {
             vals.put(DbContract.Filters.COLUMN_NAME_ACTIONNAME,fh.getActionName());
         String selection = DbContract.Filters._ID + " = ?";
         String[] selectionArgs = { String.valueOf(filterId) };
-        db.update(DbContract.Filters.TABLE_NAME,vals,selection,selectionArgs);
+        db.update(DbContract.Filters.TABLE_NAME, vals, selection, selectionArgs);
     }
 
     /**
@@ -163,5 +163,37 @@ public class FilterProvider {
         }
         c.close();
         return null;
+    }
+
+    /**
+     * Checks if the given calendar rule name is used in a filter
+     * @param db the SQLite connection
+     * @param ruleName the rule name
+     * @return a flag indicating if the rule exixts or not
+     */
+    public static synchronized boolean HasCalendarRule(SQLiteDatabase db, String ruleName) {
+        String where = DbContract.Filters.COLUMN_NAME_CALENDARRULENAME + " = ?";
+        String[] args = {ruleName};
+        Cursor c = db.query(DbContract.Filters.TABLE_NAME, null, where, args, null, null, null, null);
+        boolean flag = false;
+        if (c.getCount() > 0) flag = true;
+        c.close();
+        return flag;
+    }
+
+    /**
+     * Checks if the given filter rule name is used in a filter
+     * @param db the SQLite connection
+     * @param ruleName the rule name
+     * @return a flag indicating if the rule exixts or not
+     */
+    public static synchronized boolean HasFilterRule(SQLiteDatabase db, String ruleName) {
+        String where = DbContract.Filters.COLUMN_NAME_FILTERRULENAME + " = ?";
+        String[] args = {ruleName};
+        Cursor c = db.query(DbContract.Filters.TABLE_NAME, null, where, args, null, null, null, null);
+        boolean flag = false;
+        if (c.getCount() > 0) flag = true;
+        c.close();
+        return flag;
     }
 }

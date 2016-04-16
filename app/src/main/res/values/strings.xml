@@ -101,5 +101,6 @@
     <string name="mn_pick_patterns">Pick a filter rule</string>
     <string name="mn_pick_action">Pick an action</string>
     <string name="tx_action_class">Action class:</string>
+    <string name="msg_can_not_delete_rule">Can\'t delete because rule name is in use in a filter</string>
 
 </resources>
