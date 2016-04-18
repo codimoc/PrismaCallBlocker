@@ -81,8 +81,12 @@ public class NewEditFilterRule extends NewEditActivity {
                 resultIntent.putExtra(KEY_RULENAME,rule.getName());
                 setResult(Activity.RESULT_OK,resultIntent);
                 finish();
-
-            } else {
+            }
+            else if (myContext.equals(CONTEXT_EDIT)) {
+                Intent resultIntent = new Intent();
+                setResult(Activity.RESULT_OK,resultIntent);
+                finish();
+            }else {
                 Intent intent = new Intent(NewEditFilterRule.this, EditFilterRules.class);
                 startActivity(intent);
             }

@@ -8,7 +8,8 @@ import org.hamcrest.CustomTypeSafeMatcher;
 
 
 /**
- * onView(withText(R.string.mssage)).inRoot(new ToastMatcher()).check(matches(isDisplayed()));
+ * Helper class to intercept a Toast message in Espresso
+ * @author ConteDiMonteCristo
  */
 public class ToastMatcher extends CustomTypeSafeMatcher<Root> {
     public ToastMatcher(String description) {

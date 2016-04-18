@@ -14,8 +14,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.prismaqf.callblocker.filters.FilterHandle;
+import com.prismaqf.callblocker.rules.CalendarRule;
+import com.prismaqf.callblocker.rules.FilterRule;
+import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.FilterProvider;
+import com.prismaqf.callblocker.sql.FilterRuleProvider;
 
 import java.util.ArrayList;
 
@@ -64,13 +68,81 @@ public class NewEditFilter extends NewEditActivity{
         }
     }
 
+    private class DbCalendar extends AsyncTask<String, Void, CalendarRule> {
+
+        private String myRuleName;
+        private long myRuleId = 0;
+
+        @Override
+        protected CalendarRule doInBackground(String... names) {
+            SQLiteDatabase db = new DbHelper(NewEditFilter.this).getReadableDatabase();
+            myRuleName = names[0];
+            try {
+                myRuleId = CalendarRuleProvider.FindCalendarRuleId(db,myRuleName);
+                return CalendarRuleProvider.FindCalendarRule(db, myRuleName);
+
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
+            finally {
+                db.close();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute (CalendarRule rule) {
+            Intent intent = new Intent(NewEditFilter.this,NewEditCalendarRule.class);
+            intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_UPDATE);
+            intent.putExtra(NewEditActivity.KEY_CONTEXT, NewEditActivity.CONTEXT_EDIT);
+            intent.putExtra(NewEditActivity.KEY_ORIG,rule);
+            intent.putExtra(NewEditActivity.KEY_RULEID,myRuleId);
+            startActivityForResult(intent, EDIT_CAL);
+        }
+    }
+
+    private class DbPatterns extends AsyncTask<String, Void, FilterRule> {
+
+        private String myRuleName;
+        private long myRuleId = 0;
+
+        @Override
+        protected FilterRule doInBackground(String... names) {
+            SQLiteDatabase db = new DbHelper(NewEditFilter.this).getReadableDatabase();
+            myRuleName = names[0];
+            try {
+                myRuleId = FilterRuleProvider.FindFilterRuleId(db, myRuleName);
+                return FilterRuleProvider.FindFilterRule(db, myRuleName);
+
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
+            finally {
+                db.close();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute (FilterRule rule) {
+            Intent intent = new Intent(NewEditFilter.this,NewEditFilterRule.class);
+            intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_UPDATE);
+            intent.putExtra(NewEditActivity.KEY_CONTEXT, NewEditActivity.CONTEXT_EDIT);
+            intent.putExtra(NewEditActivity.KEY_ORIG,rule);
+            intent.putExtra(NewEditActivity.KEY_RULEID,myRuleId);
+            startActivityForResult(intent, EDIT_PAT);
+        }
+    }
+
     private static final String TAG = NewEditFilter.class.getCanonicalName();
     private static final int PICK_CAL = 1001;
     private static final int PICK_PAT = 1002;
     private static final int PICK_ACT = 1003;
+    private static final int EDIT_CAL = 1004;
+    private static final int EDIT_PAT = 1005;
     private EditText ed_name;
     private TextView tv_calendar_name, tv_paterns_name, tv_action_name, tv_validation;
-    private MenuItem mi_pickCalendar, mi_pickPatterns, mi_pickAction;
+    private MenuItem mi_pickCalendar, mi_pickPatterns, mi_pickAction, mi_editCalendar, mi_editPatterns;
     private ArrayList<String> filterNames;
     private String myAction;
     private FilterHandle myNewFilter, myOrigFilter, ptFilter;  //ptFilter is an alias to the active filter
@@ -140,10 +212,19 @@ public class NewEditFilter extends NewEditActivity{
         mi_pickCalendar = menu.findItem(R.id.action_pick_calendar);
         mi_pickPatterns = menu.findItem(R.id.action_pick_patterns);
         mi_pickAction = menu.findItem(R.id.action_pick_action);
-        if (myAction.equals(ACTION_CREATE) || myAction.equals(ACTION_EDIT)) {
+        mi_editCalendar = menu.findItem(R.id.action_edit_calendar);
+        mi_editPatterns = menu.findItem(R.id.action_edit_patterns);
+        if (myAction.equals(ACTION_CREATE)) {
             mi_pickCalendar.setVisible(true);
             mi_pickPatterns.setVisible(true);
             mi_pickAction.setVisible(true);
+        }
+        else if (myAction.equals(ACTION_EDIT)) {
+            mi_pickCalendar.setVisible(true);
+            mi_pickPatterns.setVisible(true);
+            mi_pickAction.setVisible(true);
+            mi_editCalendar.setVisible(true);
+            mi_editPatterns.setVisible(true);
         }
 
         return flag;
@@ -162,6 +243,12 @@ public class NewEditFilter extends NewEditActivity{
                 return true;
             case R.id.action_pick_action:
                 pickAction();
+                return true;
+            case R.id.action_edit_calendar:
+                editCalendar();
+                return true;
+            case R.id.action_edit_patterns:
+                editPatterns();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -269,6 +356,8 @@ public class NewEditFilter extends NewEditActivity{
         if (mi_pickCalendar != null) mi_pickCalendar.setVisible(canChangeFilter);
         if (mi_pickPatterns != null) mi_pickPatterns.setVisible(canChangeFilter);
         if (mi_pickAction != null) mi_pickAction.setVisible(canChangeFilter);
+        if (mi_editCalendar != null) mi_editCalendar.setVisible(canChangeFilter);
+        if (mi_editPatterns != null) mi_editPatterns.setVisible(canChangeFilter);
     }
 
     @Override
@@ -341,6 +430,14 @@ public class NewEditFilter extends NewEditActivity{
         startActivityForResult(intent, PICK_ACT);
     }
 
+    private void editCalendar() {
+        new DbCalendar().execute(ptFilter.getCalendarRuleName());
+    }
+
+    private void editPatterns() {
+        new DbPatterns().execute(ptFilter.getFilterRuleName());
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == PICK_CAL) {
@@ -351,9 +448,18 @@ public class NewEditFilter extends NewEditActivity{
         if (resultCode == Activity.RESULT_OK && requestCode == PICK_PAT) {
             ptFilter.setFilterRuleName(data.getStringExtra(KEY_RULENAME));
             refreshWidgets(true);
+            return;
         }
         if (resultCode == Activity.RESULT_OK && requestCode == PICK_ACT) {
             ptFilter.setActionName(data.getStringExtra(KEY_ACTIONNAME));
+            refreshWidgets(true);
+            return;
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == EDIT_CAL) {
+            refreshWidgets(true);
+            return;
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == EDIT_PAT) {
             refreshWidgets(true);
         }
     }

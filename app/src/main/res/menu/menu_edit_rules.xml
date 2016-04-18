@@ -43,4 +43,14 @@
         android:orderInCategory="120"
         android:visible="false"
         com.prismaqf.callblocker:showAsAction="never"/>
+    <item android:id="@+id/action_edit_calendar"
+        android:title="@string/mn_edit_calendar"
+        android:orderInCategory="130"
+        android:visible="false"
+        com.prismaqf.callblocker:showAsAction="never"/>
+    <item android:id="@+id/action_edit_patterns"
+        android:title="@string/mn_edit_patterns"
+        android:orderInCategory="140"
+        android:visible="false"
+        com.prismaqf.callblocker:showAsAction="never"/>
 </menu>

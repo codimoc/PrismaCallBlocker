@@ -112,7 +112,7 @@ public class FilterRuleProvider {
         db.update(DbContract.FilterRules.TABLE_NAME,vals,selection,selectionArgs);
         //now delete and reinsert the patterns
         selection = DbContract.FilterPatterns.COLUMN_NAME_RULEID + " = ?";
-        db.delete(DbContract.FilterPatterns.TABLE_NAME,selection,selectionArgs);
+        db.delete(DbContract.FilterPatterns.TABLE_NAME, selection, selectionArgs);
         for (String regex: fr.getPatternKeys()) {
             vals = new ContentValues();
             vals.put(DbContract.FilterPatterns.COLUMN_NAME_RULEID,ruleId);
@@ -188,5 +188,16 @@ public class FilterRuleProvider {
         }
         c.close();
         return null;
+    }
+
+    public static synchronized long FindFilterRuleId(SQLiteDatabase db, String ruleName) {
+        String selection = DbContract.FilterRules.COLUMN_NAME_RULENAME + " = ?";
+        String[] selectionArgs = { ruleName };
+        Cursor c = db.query(DbContract.FilterRules.TABLE_NAME,null,selection,selectionArgs,null,null,null,null);
+        if (c.getCount() >0) {
+            c.moveToLast(); //get the last occurrency (should be only one entry
+            return c.getLong(c.getColumnIndexOrThrow(DbContract.FilterRules._ID));
+        }
+        return 0;
     }
 }

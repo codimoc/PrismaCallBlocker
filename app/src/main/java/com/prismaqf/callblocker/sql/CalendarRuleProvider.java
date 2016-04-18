@@ -152,6 +152,17 @@ public class CalendarRuleProvider {
         return null;
     }
 
+    public static synchronized long FindCalendarRuleId(SQLiteDatabase db, String ruleName) {
+        String selection = DbContract.CalendarRules.COLUMN_NAME_RULENAME + " = ?";
+        String[] selectionArgs = { ruleName };
+        Cursor c = db.query(DbContract.CalendarRules.TABLE_NAME,null,selection,selectionArgs,null,null,null,null);
+        if (c.getCount() >0) {
+            c.moveToLast(); //get the last occurrency (should be only one entry
+            return c.getLong(c.getColumnIndexOrThrow(DbContract.CalendarRules._ID));
+        }
+        return 0;
+    }
+
     private static String makeRuleFormat(int daymask, String from, String to) {
         StringBuilder buffer = new StringBuilder("Days ");
         if ((daymask & 1) == 1) buffer.append('M');

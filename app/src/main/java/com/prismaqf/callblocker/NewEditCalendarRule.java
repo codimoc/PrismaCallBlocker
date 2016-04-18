@@ -154,7 +154,11 @@ public class NewEditCalendarRule extends NewEditActivity {
                 resultIntent.putExtra(KEY_RULENAME,rule.getName());
                 setResult(Activity.RESULT_OK,resultIntent);
                 finish();
-
+            }
+            else if (myContext.equals(CONTEXT_EDIT)) {
+                Intent resultIntent = new Intent();
+                setResult(Activity.RESULT_OK,resultIntent);
+                finish();
             } else {
                 Intent intent = new Intent(NewEditCalendarRule.this, EditCalendarRules.class);
                 startActivity(intent);
@@ -411,7 +415,9 @@ public class NewEditCalendarRule extends NewEditActivity {
                            !myNewRule.equals(myOrigRule) && isNameValid);
 
         //Delete only valid in UPDATE mode
-        mi_delete.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptRule == myOrigRule);
+        mi_delete.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) &&
+                             ptRule == myOrigRule &&
+                             !myContext.equals(NewEditActivity.CONTEXT_EDIT));
         //Change only valid in UPDATE mode
         mi_change.setVisible(myAction.equals(NewEditActivity.ACTION_UPDATE) && ptRule == myOrigRule);
         //Undo only valid in EDIT mode where there have been changes
