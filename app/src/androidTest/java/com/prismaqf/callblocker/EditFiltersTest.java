@@ -10,6 +10,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.prismaqf.callblocker.filters.FilterHandle;
 import com.prismaqf.callblocker.rules.CalendarRule;
+import com.prismaqf.callblocker.rules.FilterRule;
 import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.FilterProvider;
@@ -30,6 +31,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -41,10 +43,12 @@ import static org.hamcrest.CoreMatchers.not;
 public class EditFiltersTest {
 
     private static String FILTER_NAME = "dummy filter";
+    private static String FILTER_NAME_2 = "My filter with existing rules";
     private static String CAL_RULE = "cal rule";
     private static String PATTERNS_RULE = "patterns rule";
     private static String ACTION_NAME = "action name";
-    private static String TEST_CAL_RULE = "My rule for testing";
+    private static String TEST_CAL_RULE = "My calendar rule for testing";
+    private static String TEST_PAT_RULE = "My filter rule for testing";
     private static String NEW_RULE = "New rule";
     @ClassRule
     public static final DebugDBFileName myDebugDB = new DebugDBFileName();
@@ -57,8 +61,12 @@ public class EditFiltersTest {
         FilterHandle filter = new FilterHandle(FILTER_NAME,CAL_RULE, PATTERNS_RULE, ACTION_NAME);
         SQLiteDatabase db = new DbHelper(myActivityRule.getActivity()).getWritableDatabase();
         FilterProvider.InsertRow(db, filter);
+        filter = new FilterHandle(FILTER_NAME_2,TEST_CAL_RULE, TEST_PAT_RULE, ACTION_NAME);
+        FilterProvider.InsertRow(db, filter);
         CalendarRule crule = new CalendarRule(TEST_CAL_RULE,CalendarRule.makeMask(9), 1,2,23,22);
-        CalendarRuleProvider.InsertRow(db,crule);
+        CalendarRuleProvider.InsertRow(db, crule);
+        FilterRule frule = new FilterRule(TEST_PAT_RULE,"test rule");
+        FilterRuleProvider.InsertRow(db,frule);
         db.close();
     }
 
@@ -66,9 +74,11 @@ public class EditFiltersTest {
     public void after() {
         SQLiteDatabase db = new DbHelper(myActivityRule.getActivity()).getWritableDatabase();
         FilterProvider.DeleteFilter(db, FILTER_NAME);
+        FilterProvider.DeleteFilter(db, FILTER_NAME_2);
         CalendarRuleProvider.DeleteCalendarRule(db, TEST_CAL_RULE);
         CalendarRuleProvider.DeleteCalendarRule(db, NEW_RULE);
         FilterRuleProvider.DeleteFilterRule(db, NEW_RULE);
+        FilterRuleProvider.DeleteFilterRule(db, TEST_PAT_RULE);
         db.close();
     }
 
@@ -77,7 +87,7 @@ public class EditFiltersTest {
         Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
         myActivityRule.getActivity().startActivity(intent);
         //test that the filter is displayed
-        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        onView(ViewMatchers.withText(FILTER_NAME)).check(matches(withText(FILTER_NAME)));
         //test that the add action is present
         onView(ViewMatchers.withId(R.id.action_new_item)).check(matches(isDisplayed()));
     }
@@ -87,9 +97,9 @@ public class EditFiltersTest {
         Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
         myActivityRule.getActivity().startActivity(intent);
         //test that the filter is displayed
-        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        onView(ViewMatchers.withText(FILTER_NAME)).check(matches(withText(FILTER_NAME)));
         //now select it
-        onView(ViewMatchers.withId(R.id.text_filter_name)).perform(click());
+        onView(ViewMatchers.withText(FILTER_NAME)).perform(click());
         //check the current activity
         Activity activity = InstrumentTestHelper.getCurrentActivity();
         assertEquals("Check the current running activity",NewEditFilter.class.getCanonicalName(),activity.getClass().getCanonicalName());
@@ -129,9 +139,9 @@ public class EditFiltersTest {
         Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
         myActivityRule.getActivity().startActivity(intent);
         //test that the filter is displayed
-        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        onView(ViewMatchers.withText(FILTER_NAME)).check(matches(withText(FILTER_NAME)));
         //now select it
-        onView(ViewMatchers.withId(R.id.text_filter_name)).perform(click());
+        onView(ViewMatchers.withText(FILTER_NAME)).perform(click());
         //check that the change button is active
         onView(ViewMatchers.withId(R.id.action_change)).check(matches(isDisplayed()));
         onView(ViewMatchers.withId(R.id.text_calendar_name)).check(matches(not(isEnabled())));
@@ -145,9 +155,9 @@ public class EditFiltersTest {
         Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
         myActivityRule.getActivity().startActivity(intent);
         //test that the filter is displayed
-        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        onView(ViewMatchers.withText(FILTER_NAME)).check(matches(withText(FILTER_NAME)));
         //now select it
-        onView(ViewMatchers.withId(R.id.text_filter_name)).perform(click());
+        onView(ViewMatchers.withText(FILTER_NAME)).perform(click());
         //check that the change button is active
         onView(ViewMatchers.withId(R.id.action_delete)).check(matches(isDisplayed()));
         //click the delete rule
@@ -162,9 +172,9 @@ public class EditFiltersTest {
         Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
         myActivityRule.getActivity().startActivity(intent);
         //test that the filter is displayed
-        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        onView(ViewMatchers.withText(FILTER_NAME)).check(matches(withText(FILTER_NAME)));
         //now select it
-        onView(ViewMatchers.withId(R.id.text_filter_name)).perform(click());
+        onView(ViewMatchers.withText(FILTER_NAME)).perform(click());
         //check that the change button is active
         onView(ViewMatchers.withId(R.id.action_undo)).check(doesNotExist());
         onView(ViewMatchers.withId(R.id.action_change)).perform(click());
@@ -192,9 +202,9 @@ public class EditFiltersTest {
         Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
         myActivityRule.getActivity().startActivity(intent);
         //test that the filter is displayed
-        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        onView(ViewMatchers.withText(FILTER_NAME)).check(matches(withText(FILTER_NAME)));
         //now select it
-        onView(ViewMatchers.withId(R.id.text_filter_name)).perform(click());
+        onView(ViewMatchers.withText(FILTER_NAME)).perform(click());
         //check that the change button is active
         onView(ViewMatchers.withId(R.id.action_change)).perform(click());
         //now pick a new calendar rule
@@ -219,9 +229,9 @@ public class EditFiltersTest {
         Intent intent = new Intent(myActivityRule.getActivity(), EditFilters.class);
         myActivityRule.getActivity().startActivity(intent);
         //test that the filter is displayed
-        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        onView(ViewMatchers.withText(FILTER_NAME)).check(matches(withText(FILTER_NAME)));
         //now select it
-        onView(ViewMatchers.withId(R.id.text_filter_name)).perform(click());
+        onView(ViewMatchers.withText(FILTER_NAME)).perform(click());
         //check that the change button is active
         onView(ViewMatchers.withId(R.id.action_change)).perform(click());
         //now pick a new filter rule
@@ -246,9 +256,9 @@ public class EditFiltersTest {
         Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
         myActivityRule.getActivity().startActivity(intent);
         //test that the filter is displayed
-        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        onView(ViewMatchers.withText(FILTER_NAME)).check(matches(withText(FILTER_NAME)));
         //now select it
-        onView(ViewMatchers.withId(R.id.text_filter_name)).perform(click());
+        onView(ViewMatchers.withText(FILTER_NAME)).perform(click());
         //check that the change button is active
         onView(ViewMatchers.withId(R.id.action_change)).perform(click());
         //now pick a new calendar rule
@@ -267,9 +277,9 @@ public class EditFiltersTest {
         Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
         myActivityRule.getActivity().startActivity(intent);
         //test that the filter is displayed
-        onView(ViewMatchers.withId(R.id.text_filter_name)).check(matches(withText(FILTER_NAME)));
+        onView(ViewMatchers.withText(FILTER_NAME)).check(matches(withText(FILTER_NAME)));
         //now select it
-        onView(ViewMatchers.withId(R.id.text_filter_name)).perform(click());
+        onView(ViewMatchers.withText(FILTER_NAME)).perform(click());
         //check that the change button is active
         onView(ViewMatchers.withId(R.id.action_change)).perform(click());
         //now pick a new filter rule
@@ -284,5 +294,54 @@ public class EditFiltersTest {
         assertEquals("NewEditFilter activity", NewEditFilter.class.getCanonicalName(), activity.getClass().getCanonicalName());
         onView(ViewMatchers.withText(containsString("DropCallByEndCall"))).check(matches(isDisplayed()));
 
+    }
+
+    @Test
+    public void EditTheCalendarRule() {
+        Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
+        myActivityRule.getActivity().startActivity(intent);
+        //now select it
+        onView(ViewMatchers.withText(FILTER_NAME_2)).perform(click());
+        //check that the change button is active
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
+        Activity activity = InstrumentTestHelper.getCurrentActivity();
+        openActionBarOverflowOrOptionsMenu(activity);
+        onView(withText("Edit the calendar rule")).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("NewEditCalendarRule activity", NewEditCalendarRule.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
+        onView(ViewMatchers.withId(R.id.cb_Sunday)).check(matches(not(isChecked())));
+        onView(ViewMatchers.withId(R.id.cb_Sunday)).perform(click());
+        onView(ViewMatchers.withId(R.id.action_save)).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("NewEditFilter activity", NewEditFilter.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        openActionBarOverflowOrOptionsMenu(activity);
+        onView(withText("Edit the calendar rule")).perform(click());
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
+        onView(ViewMatchers.withId(R.id.cb_Sunday)).check(matches(isChecked()));
+    }
+
+    @Test
+    public void EditTheFilterRule() {
+        Intent intent = new Intent(myActivityRule.getActivity(),EditFilters.class);
+        myActivityRule.getActivity().startActivity(intent);
+        //now select it
+        onView(ViewMatchers.withText(FILTER_NAME_2)).perform(click());
+        //check that the change button is active
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
+        Activity activity = InstrumentTestHelper.getCurrentActivity();
+        openActionBarOverflowOrOptionsMenu(activity);
+        onView(withText("Edit the filter rule")).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("NewEditFilterRule activity", NewEditFilterRule.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
+        onView(ViewMatchers.withId(R.id.edit_filter_rule_description)).perform(replaceText("bibbo"));
+        onView(ViewMatchers.withId(R.id.action_save)).perform(click());
+        activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("NewEditFilter activity", NewEditFilter.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        openActionBarOverflowOrOptionsMenu(activity);
+        onView(withText("Edit the filter rule")).perform(click());
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
+        onView(ViewMatchers.withId(R.id.edit_filter_rule_description)).check(matches(withText("bibbo")));
     }
 }
