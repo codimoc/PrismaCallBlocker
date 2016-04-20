@@ -87,6 +87,7 @@
     <string name="tx_calendar_rule_help_title">Help on editing calendar rules</string>
     <string name="tx_filter_rule_help_title">Help on editing filter rules</string>
     <string name="tx_filter_help_title">Help on editing filters</string>
+    <string name="tx_actions_help_title">Help on chosing actions</string>
     <string name="tx_description">Description</string>
     <string name="bt_manage_patterns">Manage Patterns</string>
     <string name="tx_patterns_in_rule">Patterns in rule:\n</string>
