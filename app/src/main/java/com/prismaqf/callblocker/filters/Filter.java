@@ -6,8 +6,10 @@ import android.util.Log;
 
 import com.prismaqf.callblocker.actions.ActionRegistry;
 import com.prismaqf.callblocker.actions.IAction;
+import com.prismaqf.callblocker.actions.LogInfo;
 import com.prismaqf.callblocker.actions.Nothing;
 import com.prismaqf.callblocker.rules.Always;
+import com.prismaqf.callblocker.rules.FilterRule;
 import com.prismaqf.callblocker.rules.ICalendarRule;
 import com.prismaqf.callblocker.rules.IFilterRule;
 import com.prismaqf.callblocker.rules.NoMatches;
@@ -23,7 +25,7 @@ import java.sql.SQLException;
  * two rules matches
  * @author ConteDiMonteCristo
  */
-public class Filter{
+public class Filter implements IAction{
 
     private static final String TAG = Filter.class.getCanonicalName();
 
@@ -132,5 +134,13 @@ public class Filter{
         result = prime * result + filterRule.hashCode();
         result = prime * result + action.getClass().getCanonicalName().hashCode();
         return result;
+    }
+
+    @Override
+    public void act(Context context, String number, LogInfo info) {
+        if (calendarRule.IsActive() && filterRule.Matches(number))
+            info.setNumReceived(info.getNumReceived()+1);
+            info.setNumTriggered(info.getNumTriggered() + 1);
+            action.act(context,number,info);
     }
 }

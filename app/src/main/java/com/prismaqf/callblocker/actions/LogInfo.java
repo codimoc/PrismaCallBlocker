@@ -5,13 +5,11 @@ package com.prismaqf.callblocker.actions;
  */
 public class LogInfo {
     private long runId;
-    private int ruleId;
     private int numReceived;
     private int numTriggered;
 
-    public void setAll(long runId, int ruleId, int numReceived, int numTriggered) {
+    public void setAll(long runId, int numReceived, int numTriggered) {
         this.runId = runId;
-        this.ruleId = ruleId;
         this.numReceived = numReceived;
         this.numTriggered = numTriggered;
     }
@@ -22,14 +20,6 @@ public class LogInfo {
 
     public void setRunId(long runId) {
         this.runId = runId;
-    }
-
-    public int getRuleId() {
-        return ruleId;
-    }
-
-    public void setRuleId(int ruleId) {
-        this.ruleId = ruleId;
     }
 
     public int getNumReceived() {

@@ -30,7 +30,8 @@ public class LogIncoming implements IAction{
                 SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
                 try {
                     String contactDescription = CallHelper.resolveContactDescription(ctx,number);
-                    LoggedCallProvider.LoggedCall lc = new LoggedCallProvider.LoggedCall(info.getRunId(),info.getRuleId(),number,contactDescription);
+                    //todo: remove ruleId info
+                    LoggedCallProvider.LoggedCall lc = new LoggedCallProvider.LoggedCall(info.getRunId(),-1,number,contactDescription);
                     LoggedCallProvider.InsertRow(db, lc);
                     ServiceRunProvider.UpdateWhileRunning(db, info.getRunId(), info.getNumReceived(), info.getNumTriggered());
                 }

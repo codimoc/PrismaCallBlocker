@@ -15,8 +15,15 @@ import android.widget.Toast;
 
 import com.prismaqf.callblocker.actions.LogIncoming;
 import com.prismaqf.callblocker.actions.LogInfo;
+import com.prismaqf.callblocker.filters.Filter;
+import com.prismaqf.callblocker.filters.FilterHandle;
 import com.prismaqf.callblocker.sql.DbHelper;
+import com.prismaqf.callblocker.sql.FilterProvider;
 import com.prismaqf.callblocker.sql.ServiceRunProvider;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Helper class to detect incoming and outgoing calls
@@ -53,6 +60,7 @@ public class CallHelper {
     private int numReceived;
     private int numTriggered;
     private long myRunId;
+    private List<Filter> myFilters;
 
     /**
      * Method to return the only intance of CallHelper (singleton)
@@ -75,28 +83,27 @@ public class CallHelper {
         public void onCallStateChanged(int state, final String incomingNumber) {
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING: //someone is ringing to this phone
-
-                    //todo: only received is updated for the time being
-                    setNumReceived(numReceived + 1);
+                    LogInfo info = new LogInfo();
+                    info.setAll(myRunId,numReceived, numTriggered);
+                    boolean logging = false;
+                    for (Filter f : myFilters) {
+                        f.act(ctx,incomingNumber,info);
+                        if (f.getAction().getClass().getCanonicalName().equals(LogIncoming.class.getCanonicalName()))
+                            logging = true;
+                    }
+                    setNumReceived(info.getNumReceived());
+                    setNumTriggered(info.getNumTriggered());
                     Intent intent = new Intent();
                     intent.setAction(ctx.getString(R.string.ac_call));
                     intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                     intent.putExtra(ctx.getString(R.string.ky_number_called), incomingNumber);
-                    intent.putExtra(ctx.getString(R.string.ky_received),numReceived);
-                    intent.putExtra(ctx.getString(R.string.ky_triggered), numTriggered);
+                    intent.putExtra(ctx.getString(R.string.ky_received),getNumReceived());
+                    intent.putExtra(ctx.getString(R.string.ky_triggered), getNumTriggered());
                     ctx.sendBroadcast(intent);
                     Toast.makeText(ctx, "Incoming: " + incomingNumber, Toast.LENGTH_LONG).show();
-                    LogIncoming action = new LogIncoming();
-                    //todo: get rule id
-                    //todo: only numreceived is updated for the time being
-                    LogInfo info = new LogInfo();
-                    info.setAll(myRunId, -1, numReceived, numTriggered);
-                    /*if (incomingNumber.contains("523792")) {
-                        //todo: adrop and below is clearly experimental. CHANGE
-                        IAction adrop = new DropCallByRoot(ctx);
-                        adrop.act(incomingNumber,info);}
-                    else*/
-                        action.act(ctx, incomingNumber,info);
+                    if (!logging) {
+                        new LogIncoming().act(ctx,incomingNumber,info);
+                    }
                     break;
             }
         }
@@ -128,6 +135,7 @@ public class CallHelper {
      * Start calls detection
      */
     public void start() {
+        loadFilters(ctx);
         Log.i(TAG, "Registering the listeners");
         tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
         tm.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
@@ -198,6 +206,28 @@ public class CallHelper {
         }
 
         return description;
+    }
+
+    private void loadFilters(final Context context) {
+        myFilters = new ArrayList<>();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG,"Loading the filters");
+                SQLiteDatabase db = null;
+                try {
+                    db = new DbHelper(context).getReadableDatabase();
+                    List<FilterHandle> handles = FilterProvider.LoadFilters(db);
+                    for(FilterHandle h : handles)
+                        myFilters.add(Filter.makeFilter(context,h));
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                } finally {
+                    Log.i(TAG,String.format("%d filters loaded",myFilters.size()));
+                    if (db != null) db.close();
+                }
+            }
+        }).start();
     }
 
 

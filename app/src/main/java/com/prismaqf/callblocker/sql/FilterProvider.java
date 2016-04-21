@@ -8,6 +8,7 @@ import android.util.Log;
 import com.prismaqf.callblocker.filters.FilterHandle;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ConteDiMonteCristo
@@ -195,5 +196,23 @@ public class FilterProvider {
         if (c.getCount() > 0) flag = true;
         c.close();
         return flag;
+    }
+
+    /**
+     * Returns a collection of all existing filter handles
+     * @param db the SQLite db connection
+     * @return a list of filter handles
+     */
+    public static synchronized List<FilterHandle> LoadFilters(SQLiteDatabase db) {
+        List<FilterHandle> handles = new ArrayList<>();
+        Cursor c = db.query(DbContract.Filters.TABLE_NAME, null, null, null, null, null, null, null);
+        while (c.moveToNext()) {
+            String name = c.getString(c.getColumnIndexOrThrow(DbContract.Filters.COLUMN_NAME_FILTERNAME));
+            String calendar = c.getString(c.getColumnIndexOrThrow(DbContract.Filters.COLUMN_NAME_CALENDARRULENAME));
+            String patterns = c.getString(c.getColumnIndexOrThrow(DbContract.Filters.COLUMN_NAME_FILTERRULENAME));
+            String action = c.getString(c.getColumnIndexOrThrow(DbContract.Filters.COLUMN_NAME_ACTIONNAME));
+            handles.add(new FilterHandle(name,calendar,patterns,action));
+        }
+        return handles;
     }
 }
