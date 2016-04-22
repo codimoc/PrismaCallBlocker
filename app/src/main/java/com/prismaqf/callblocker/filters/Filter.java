@@ -138,9 +138,9 @@ public class Filter implements IAction{
 
     @Override
     public void act(Context context, String number, LogInfo info) {
-        if (calendarRule.IsActive() && filterRule.Matches(number))
-            info.setNumReceived(info.getNumReceived()+1);
+        if (calendarRule.IsActive() && filterRule.Matches(number)) {
             info.setNumTriggered(info.getNumTriggered() + 1);
             action.act(context,number,info);
+        }
     }
 }

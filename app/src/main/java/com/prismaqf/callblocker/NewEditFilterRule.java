@@ -86,7 +86,19 @@ public class NewEditFilterRule extends NewEditActivity {
                 Intent resultIntent = new Intent();
                 setResult(Activity.RESULT_OK,resultIntent);
                 finish();
-            }else {
+            }
+            else if (myContext.equals(CONTEXT_SAVE)) {
+                myContext = CONTEXT_EDIT;
+                Intent intent = new Intent(NewEditFilterRule.this, NewEditFilterRule.class);
+                intent.putExtra(NewEditActivity.KEY_NEW, myNewRule);
+                intent.putExtra(NewEditActivity.KEY_ORIG, myOrigRule);
+                intent.putExtra(NewEditActivity.KEY_ACTION, ACTION_EDIT);
+                intent.putExtra(NewEditActivity.KEY_ISNAMEVALID, isNameValid);
+                intent.putExtra(NewEditActivity.KEY_RULENAMES, myRuleNames);
+                intent.putExtra(NewEditActivity.KEY_PTRULE, ptRule == myOrigRule ? "Original" : "New");
+                startActivity(intent);
+            }
+            else {
                 Intent intent = new Intent(NewEditFilterRule.this, EditFilterRules.class);
                 startActivity(intent);
             }
@@ -231,7 +243,7 @@ public class NewEditFilterRule extends NewEditActivity {
     protected void change() {
         myAction = NewEditActivity.ACTION_EDIT;
         ptRule = myNewRule;
-        enableWidgets(false,true);
+        enableWidgets(false, true);
         validateActions();
     }
 
@@ -371,6 +383,11 @@ public class NewEditFilterRule extends NewEditActivity {
             for(String pattern: updatedRule.getPatternKeys())
                 ptRule.addPattern(pattern);
             refreshWidgets(true);
+            if (!myAction.equals(ACTION_CREATE) && mi_save != null && mi_save.isVisible()) {
+                myContext = CONTEXT_SAVE;
+                save();
+            }
+
         }
     }
 

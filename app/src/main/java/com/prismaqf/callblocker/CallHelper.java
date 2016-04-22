@@ -84,7 +84,7 @@ public class CallHelper {
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING: //someone is ringing to this phone
                     LogInfo info = new LogInfo();
-                    info.setAll(myRunId,numReceived, numTriggered);
+                    info.setAll(myRunId,numReceived+1, numTriggered);
                     boolean logging = false;
                     for (Filter f : myFilters) {
                         f.act(ctx,incomingNumber,info);

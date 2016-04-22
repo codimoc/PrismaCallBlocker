@@ -9,8 +9,10 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.EditText;
 
+import com.prismaqf.callblocker.rules.FilterRule;
 import com.prismaqf.callblocker.sql.DbContract;
 import com.prismaqf.callblocker.sql.DbHelper;
+import com.prismaqf.callblocker.sql.FilterRuleProvider;
 import com.prismaqf.callblocker.sql.LoggedCallProvider;
 import com.prismaqf.callblocker.utils.CountingMatcher;
 import com.prismaqf.callblocker.utils.DebugDBFileName;
@@ -28,6 +30,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -38,6 +41,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -55,8 +60,9 @@ public class ManageFilterPatternsTest{
 
     @Before
     public void before() {
-
         SQLiteDatabase db = new DbHelper(myActivityRule.getActivity()).getWritableDatabase();
+        db.delete(DbContract.FilterRules.TABLE_NAME, null, null);
+        db.delete(DbContract.FilterPatterns.TABLE_NAME, null, null);
         db.delete(DbContract.LoggedCalls.TABLE_NAME,null,null);
         LoggedCallProvider.LoggedCall lc1 = new LoggedCallProvider.LoggedCall(1,-1,"123","dummy1");
         LoggedCallProvider.LoggedCall lc2 = new LoggedCallProvider.LoggedCall(2,-1,"456","dummy2");
