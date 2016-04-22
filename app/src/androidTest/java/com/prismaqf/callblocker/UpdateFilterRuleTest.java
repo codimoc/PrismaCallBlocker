@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.widget.EditText;
 
 import com.prismaqf.callblocker.filters.FilterHandle;
 import com.prismaqf.callblocker.rules.FilterRule;
@@ -24,15 +25,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
 public class UpdateFilterRuleTest {
@@ -153,5 +161,26 @@ public class UpdateFilterRuleTest {
         onView(ViewMatchers.withId(R.id.action_change)).check(matches(isDisplayed()));
         //and undo disappear
         onView(ViewMatchers.withId(R.id.action_undo)).check(doesNotExist());
+    }
+
+    @Test
+    public void TestAutoSaveAfterPatternsUpdate() {
+        onView(ViewMatchers.withText(TEST_RULE)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText(TEST_RULE)).perform(click());
+        onView(ViewMatchers.withId(R.id.action_change)).perform(click());
+        onView(ViewMatchers.withId(R.id.bt_filter_rule_patterns)).perform(click());
+        Activity activity = InstrumentTestHelper.getCurrentActivity();
+        assertEquals("EditFilterPatterns activity", EditFilterPatterns.class.getCanonicalName(), activity.getClass().getCanonicalName());
+        openActionBarOverflowOrOptionsMenu(activity);
+        onView(withText("Add a pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("123456"));
+        onView(withText("OK")).perform(click());
+        onView(withText("123456")).check(matches(isDisplayed()));
+        onView(withId(R.id.action_update_patterns)).perform(click());
+        //now chack that it is saved
+        SQLiteDatabase db = new DbHelper(activity).getReadableDatabase();
+        FilterRule fr = FilterRuleProvider.FindFilterRule(db,TEST_RULE);
+        assertNotNull("The rule is not null",fr);
+        assertNotNull("The rule contains the pattern",fr.getPattern("123456"));
     }
 }
