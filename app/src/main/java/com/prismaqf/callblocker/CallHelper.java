@@ -21,7 +21,6 @@ import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.FilterProvider;
 import com.prismaqf.callblocker.sql.ServiceRunProvider;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +34,7 @@ public class CallHelper {
     private static final String TAG = CallHelper.class.getCanonicalName();
 
     private static CallHelper theHelper = null;
+    private static boolean isRunning = false;
 
     private final Context ctx;
     private TelephonyManager tm;
@@ -72,6 +72,12 @@ public class CallHelper {
         if (theHelper==null) theHelper = new CallHelper(ctx);
         return theHelper;
     }
+
+    /**
+     * Check if the serice is running
+     * @return a boolean flag to indicate if the service is running
+     */
+    public static boolean IsRunning() { return isRunning;}
 
 
     /**
@@ -142,6 +148,7 @@ public class CallHelper {
 
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL);
         ctx.registerReceiver(outgoingReceiver, intentFilter);
+        isRunning = true;
     }
 
     /**
@@ -173,6 +180,7 @@ public class CallHelper {
      * Stop calls detection
      */
     public void stop() {
+        isRunning = false;
         Log.i(TAG, "Unregistering the listeners");
         tm.listen(callListener, PhoneStateListener.LISTEN_NONE);
         ctx.unregisterReceiver(outgoingReceiver);
@@ -208,7 +216,7 @@ public class CallHelper {
         return description;
     }
 
-    private void loadFilters(final Context context) {
+    public void loadFilters(final Context context) {
         myFilters = new ArrayList<>();
         new Thread(new Runnable() {
             @Override

@@ -57,6 +57,8 @@ public class NewEditFilter extends NewEditActivity{
                         FilterProvider.DeleteFilter(db, filterid);
                         break;
                 }
+                if (CallHelper.IsRunning())
+                    CallHelper.GetHelper(NewEditFilter.this).loadFilters(NewEditFilter.this);
             }
             finally {
                 db.close();

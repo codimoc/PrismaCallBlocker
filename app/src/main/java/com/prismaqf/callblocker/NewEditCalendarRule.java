@@ -128,6 +128,8 @@ public class NewEditCalendarRule extends NewEditActivity {
                         break;
                     case NewEditActivity.ACTION_EDIT:
                         CalendarRuleProvider.UpdateCalendarRule(db, ruleid, rule);
+                        if (CallHelper.IsRunning() && FilterProvider.HasCalendarRule(db,rule.getName()))
+                            CallHelper.GetHelper(NewEditCalendarRule.this).loadFilters(NewEditCalendarRule.this);
                         break;
                     default:
                         //ACTION_DELETE
