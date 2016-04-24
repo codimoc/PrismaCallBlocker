@@ -160,6 +160,7 @@ public class CalendarRuleProvider {
             c.moveToLast(); //get the last occurrency (should be only one entry
             return c.getLong(c.getColumnIndexOrThrow(DbContract.CalendarRules._ID));
         }
+        c.close();
         return 0;
     }
 

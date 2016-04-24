@@ -13,7 +13,6 @@ import android.view.KeyEvent;
 public class DropCallByDownButton implements IAction{
     private final static String TAG = DropCallByDownButton.class.getCanonicalName();
     private final static String DESCRIPTION = "Drop call by down button + headset hook";
-    private final IAction logger = new LogIncoming();
 
 
     @Override
@@ -22,7 +21,6 @@ public class DropCallByDownButton implements IAction{
         Intent buttonDown = new Intent(Intent.ACTION_MEDIA_BUTTON);
         buttonDown.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HEADSETHOOK));
         ctx.sendOrderedBroadcast(buttonDown, "android.permission.CALL_PRIVILEGED");
-        logger.act(ctx, number, info);
     }
 
     @Override

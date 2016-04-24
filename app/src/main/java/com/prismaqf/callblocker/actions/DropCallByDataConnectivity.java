@@ -16,7 +16,6 @@ public class DropCallByDataConnectivity implements IAction {
     private final static String TAG = DropCallByDataConnectivity.class.getCanonicalName();
     private final static String DESCRIPTION = "Drop call by switching off data connectivity (requires special permission)";
 
-    private final IAction logger = new LogIncoming();
 
     @Override
     public void act(final Context ctx, final String number, final LogInfo info) {
@@ -26,7 +25,6 @@ public class DropCallByDataConnectivity implements IAction {
         } catch (Exception e) {
             Log.e(TAG,e.getMessage());
         }
-        logger.act(ctx, number, info);
     }
 
     @Override

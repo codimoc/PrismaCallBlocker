@@ -19,7 +19,6 @@ public class DropCallByEndCall implements IAction{
     private final static String TAG = DropCallByEndCall.class.getCanonicalName();
     private final static String DESCRIPTION = "Use ITelephony to end call (preferred action)";
 
-    private final IAction logger = new LogIncoming();
 
 
     @Override
@@ -38,8 +37,6 @@ public class DropCallByEndCall implements IAction{
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
-
-        logger.act(ctx, number,info);
     }
 
     @Override

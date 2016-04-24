@@ -213,6 +213,7 @@ public class FilterProvider {
             String action = c.getString(c.getColumnIndexOrThrow(DbContract.Filters.COLUMN_NAME_ACTIONNAME));
             handles.add(new FilterHandle(name,calendar,patterns,action));
         }
+        c.close();
         return handles;
     }
 }

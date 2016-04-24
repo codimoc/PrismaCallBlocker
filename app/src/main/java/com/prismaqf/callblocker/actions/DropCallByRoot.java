@@ -11,9 +11,6 @@ import java.io.IOException;
  */
 @AvailableAction(description = "Drop for rooted phone (require grant)")
 public class DropCallByRoot implements IAction {
-
-    private final IAction logger = new LogIncoming();
-
     private final static String TAG = DropCallByRoot.class.getCanonicalName();
     private final static String DESCRIPTION = "Reject call for rooted phones (requires granting su privilege)";
 
@@ -25,7 +22,6 @@ public class DropCallByRoot implements IAction {
         } catch (IOException e) {
             Log.e(TAG,e.getMessage());
         }
-        logger.act(ctx, number, info);
     }
 
     @Override

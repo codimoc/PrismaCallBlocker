@@ -198,6 +198,7 @@ public class FilterRuleProvider {
             c.moveToLast(); //get the last occurrency (should be only one entry
             return c.getLong(c.getColumnIndexOrThrow(DbContract.FilterRules._ID));
         }
+        c.close();
         return 0;
     }
 }
