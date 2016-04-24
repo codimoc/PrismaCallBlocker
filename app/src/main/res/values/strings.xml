@@ -62,7 +62,7 @@
     <string name="tx_logged_call_number">Calling number:</string>
     <string name="tx_logged_call_description">Description:</string>
     <string name="tx_logged_call_none">none</string>
-    <string name="tx_logged_call_rule_matched">Rule matched:</string>
+    <string name="tx_logged_call_action_matched">Action matched:</string>
     <string name="tx_service_run_start">Start service:</string>
     <string name="tx_service_run_stop">End service:</string>
     <string name="tx_service_run_tot_received">Total received:</string>

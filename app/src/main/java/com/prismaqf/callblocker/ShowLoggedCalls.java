@@ -52,18 +52,17 @@ import com.prismaqf.callblocker.sql.LoggedCallProvider;
 
     @Override
     public SimpleCursorAdapter getAdapter() {
-        // TODO: change ruleid with rule description by joining tables
         return new SimpleCursorAdapter(this,
                 R.layout.logged_call_record,
                 null,  //no cursor yet
                 new String[] {DbContract.LoggedCalls.COLUMN_NAME_TIMESTAMP,
                         DbContract.LoggedCalls.COLUMN_NAME_NUMBER,
                         DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION,
-                        DbContract.LoggedCalls.COLUMN_NAME_RULEID},
+                        DbContract.LoggedCalls.COLUMN_NAME_ACTION},
                 new int[] {R.id.text_timestamp,
                         R.id.text_calling_number,
                         R.id.text_description,
-                        R.id.text_rule_matched}, 0);
+                        R.id.text_action_matched}, 0);
     }
 
     @Override

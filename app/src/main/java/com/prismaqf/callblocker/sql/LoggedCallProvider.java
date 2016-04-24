@@ -15,12 +15,12 @@ public class LoggedCallProvider {
         private final long runid;
         private final String number;
         private final String description;
-        private final int ruleid;
+        private final String action;
 
 
-        public LoggedCall(long runid, int ruleid, String number, String description) {
+        public LoggedCall(long runid, String action, String number, String description) {
             this.runid = runid;
-            this.ruleid = ruleid;
+            this.action = action;
             this.number = number;
             this.description = description;
         }
@@ -37,20 +37,20 @@ public class LoggedCallProvider {
             return description;
         }
 
-        public int getRuleid() {
-            return ruleid;
+        public String getAction() {
+            return action;
         }
 
     }
 
     public static LoggedCall deserialize(Cursor c) {
         long runId = c.getLong(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_RUNID));
-        int ruleId = -1;
-        if (!c.isNull(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_RULEID)))
-            ruleId = c.getInt(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_RULEID));
+        String action=null;
+        if (!c.isNull(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_ACTION)))
+            action = c.getString(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_ACTION));
         String number = c.getString(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_NUMBER));
         String description = c.getString(c.getColumnIndexOrThrow(DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION));
-        return new LoggedCall(runId,ruleId,number,description);
+        return new LoggedCall(runId,action,number,description);
     }
 
     public static void serialize(SQLiteDatabase db, LoggedCall lc) {
@@ -69,8 +69,8 @@ public class LoggedCallProvider {
         vals.put(DbContract.LoggedCalls.COLUMN_NAME_NUMBER,lc.getNumber());
         if (lc.getDescription() != null)
             vals.put(DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION,lc.getDescription());
-        if (lc.getRuleid() > 0)
-            vals.put(DbContract.LoggedCalls.COLUMN_NAME_RULEID,lc.getRuleid());
+        if (lc.getAction()!=null)
+            vals.put(DbContract.LoggedCalls.COLUMN_NAME_ACTION,lc.getAction());
         return db.insert(DbContract.LoggedCalls.TABLE_NAME, DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION, vals);
     }
 

@@ -57,7 +57,7 @@ public class DbContract {
         public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
         public static final String COLUMN_NAME_NUMBER = "number";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
-        public static final String COLUMN_NAME_RULEID = "ruleid";
+        public static final String COLUMN_NAME_ACTION = "action";
         //sql table creation and deletion
         public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + OPEN_BRAC +
                 _ID + IPK +
@@ -65,7 +65,7 @@ public class DbContract {
                 COLUMN_NAME_TIMESTAMP + TYPE_TEXT + DEF_TIMESTAMP + COMMA_SEP +
                 COLUMN_NAME_NUMBER + TYPE_TEXT + NOT_NULL + COMMA_SEP +
                 COLUMN_NAME_DESCRIPTION + TYPE_TEXT + COMMA_SEP +
-                COLUMN_NAME_RULEID + TYPE_INT +
+                COLUMN_NAME_ACTION + TYPE_TEXT +
                 CLOSE_BRAC;
         public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 

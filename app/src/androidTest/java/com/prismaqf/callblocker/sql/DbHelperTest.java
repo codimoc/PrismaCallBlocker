@@ -46,7 +46,7 @@ public class DbHelperTest {
 
     @Test
     public void dbSmokeTest() {
-        assertEquals("DB version", 12, myDb.getVersion());
+        assertEquals("DB version", 14, myDb.getVersion());
     }
 
     @Test
@@ -113,34 +113,34 @@ public class DbHelperTest {
 
     @Test
     public void LoggedCallsInsertRows() {
-        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15, -1, "123", "a dummy"));
-        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(21, -1, "321", "another dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15, null, "123", "a dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(21, null, "321", "another dummy"));
         Cursor c = LoggedCallProvider.LatestCalls(myDb, 5);
         assertEquals("There should be two records",2,c.getCount());
     }
 
     @Test
     public void LoggedCallsLatest() {
-        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15,-1, "123", "a dummy"));
-        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(21,1, "321", "another dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15,null, "123", "a dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(21,"dummy", "321", "another dummy"));
         Cursor c = LoggedCallProvider.LatestCalls(myDb, 5);
         //they should appear in reverse order
         c.moveToFirst();
         assertEquals("Check the second run id", 21, c.getInt(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_RUNID)));
         assertEquals("Check the second number","321", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_NUMBER)));
         assertEquals("Check the second description", "another dummy", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION)));
-        assertNotNull("The second rule id is not null", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_RULEID)));
-        assertEquals("Check the second rule id", 1, c.getInt(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_RULEID)));
+        assertNotNull("The second action is not null", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_ACTION)));
+        assertEquals("Check the second action", "dummy", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_ACTION)));
         c.moveToNext();
         assertEquals("Check the first run id", 15, c.getInt(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_RUNID)));
         assertEquals("Check the first number", "123", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_NUMBER)));
         assertEquals("Check the first description", "a dummy", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_DESCRIPTION)));
-        assertNull("The first rule id is null", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_RULEID)));
+        assertNull("The first action is null", c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_ACTION)));
     }
 
     @Test
     public void LoggedCallCheckTimeStamp() {
-        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15, -1, "123", "a dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(15, null, "123", "a dummy"));
         Cursor c = LoggedCallProvider.LatestCalls(myDb, 5);
         c.moveToFirst();
         String ts = c.getString(c.getColumnIndex(DbContract.LoggedCalls.COLUMN_NAME_TIMESTAMP));

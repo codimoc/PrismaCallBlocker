@@ -59,8 +59,8 @@ public class ManageFilterPatternsTest{
         db.delete(DbContract.FilterRules.TABLE_NAME, null, null);
         db.delete(DbContract.FilterPatterns.TABLE_NAME, null, null);
         db.delete(DbContract.LoggedCalls.TABLE_NAME,null,null);
-        LoggedCallProvider.LoggedCall lc1 = new LoggedCallProvider.LoggedCall(1,-1,"123","dummy1");
-        LoggedCallProvider.LoggedCall lc2 = new LoggedCallProvider.LoggedCall(2,-1,"456","dummy2");
+        LoggedCallProvider.LoggedCall lc1 = new LoggedCallProvider.LoggedCall(1,null,"123","dummy1");
+        LoggedCallProvider.LoggedCall lc2 = new LoggedCallProvider.LoggedCall(2,null,"456","dummy2");
         n1 = LoggedCallProvider.InsertRow(db,lc1);
         n2 = LoggedCallProvider.InsertRow(db,lc2);
         db.close();

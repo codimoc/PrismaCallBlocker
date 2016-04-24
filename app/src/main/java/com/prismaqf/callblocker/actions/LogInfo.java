@@ -8,10 +8,13 @@ public class LogInfo {
     private int numReceived;
     private int numTriggered;
 
-    public void setAll(long runId, int numReceived, int numTriggered) {
+    private String action;
+
+    public void setAll(long runId, int numReceived, int numTriggered, String action) {
         this.runId = runId;
         this.numReceived = numReceived;
         this.numTriggered = numTriggered;
+        this.action = action;
     }
 
     public long getRunId() {
@@ -37,4 +40,9 @@ public class LogInfo {
     public void setNumTriggered(int numTriggered) {
         this.numTriggered = numTriggered;
     }
+
+    public String getAction() { return action; }
+
+    public void setAction(String action) { this.action = action; }
+
 }

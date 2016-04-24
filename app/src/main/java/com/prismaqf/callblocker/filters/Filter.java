@@ -139,6 +139,7 @@ public class Filter implements IAction{
     public void act(Context context, String number, LogInfo info) {
         if (calendarRule.IsActive() && filterRule.Matches(number)) {
             info.setNumTriggered(info.getNumTriggered() + 1);
+            info.setAction(action.getClass().getSimpleName());
             action.act(context,number,info);
         }
     }

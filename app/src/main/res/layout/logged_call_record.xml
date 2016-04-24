@@ -92,7 +92,7 @@
             android:layout_alignParentStart="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
-            android:text="@string/tx_logged_call_rule_matched" />
+            android:text="@string/tx_logged_call_action_matched" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -103,7 +103,7 @@
             android:layout_marginStart="5dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/tx_logged_call_none"
-            android:id="@+id/text_rule_matched" />
+            android:id="@+id/text_action_matched" />
     </RelativeLayout>
 
 </LinearLayout>

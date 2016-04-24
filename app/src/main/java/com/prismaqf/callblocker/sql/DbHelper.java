@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.prismaqf.callblocker.R;
+import com.prismaqf.callblocker.filters.FilterHandle;
 import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.rules.FilterRule;
 import com.prismaqf.callblocker.utils.DebugKey;
@@ -28,7 +29,7 @@ public class DbHelper extends SQLiteOpenHelper{
      * implementation they throw an exception becase a single version is
      * assumed. The proper implentation should try to preserve the data
      */
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 14;
     private static final String TAG = DbHelper.class.getCanonicalName();
 
     private static String debugDb = null;
@@ -82,7 +83,7 @@ public class DbHelper extends SQLiteOpenHelper{
 
             List<FilterRule> filterRules = FilterRuleProvider.AllFilterRules(db);
 
-            //todo: filters retrieve
+            List<FilterHandle> filters = FilterProvider.AllFilters(db);
 
             dropAllTables(db);
             onCreate(db);
@@ -95,9 +96,9 @@ public class DbHelper extends SQLiteOpenHelper{
             for (CalendarRule cr : calendarRules)
                 CalendarRuleProvider.serialize(db, cr);
             for (FilterRule fr : filterRules)
-                FilterRuleProvider.InsertRow(db,fr);
-
-            //todo: filters serialize
+                FilterRuleProvider.InsertRow(db, fr);
+            for (FilterHandle fh : filters)
+                FilterProvider.InsertRow(db, fh);
         }
     }
 
