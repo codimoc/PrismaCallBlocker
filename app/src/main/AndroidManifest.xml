@@ -44,6 +44,13 @@
                 android:value=".CallBlockerManager" />
         </activity>
 
+        <activity android:name=".ShowTriggerEvents"
+            android:label="@string/ac_show_triggers">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CallBlockerManager" />
+        </activity>
+
         <activity android:name=".EditCalendarRules"
                   android:label="@string/ac_show_calendar_rules">
             <meta-data

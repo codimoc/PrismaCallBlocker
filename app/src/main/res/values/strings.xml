@@ -20,6 +20,7 @@
     <string name="ac_show_filters">Show active filters</string>
     <string name="ac_show_runs">Show latest service runs</string>
     <string name="ac_show_calls">Show latest call received</string>
+    <string name="ac_show_triggers">Show latest triggered events</string>
     <string name="ac_show_calendar_rules">Show calendar rules</string>
     <string name="ac_show_filter_rules">Show filter rules</string>
     <string name="tx_sql_limit">Max sixe of DB query</string>
@@ -88,6 +89,7 @@
     <string name="tx_filter_rule_help_title">Help on editing filter rules</string>
     <string name="tx_filter_help_title">Help on editing filters</string>
     <string name="tx_actions_help_title">Help on chosing actions</string>
+    <string name="tx_main_help_title">Help on PrismaCallBlocker</string>
     <string name="tx_description">Description</string>
     <string name="bt_manage_patterns">Manage Patterns</string>
     <string name="tx_patterns_in_rule">Patterns in rule:\n</string>

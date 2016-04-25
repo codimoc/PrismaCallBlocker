@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -129,6 +130,39 @@ public class CallHelper {
         }
     }
 
+    private class LoadFilters extends AsyncTask<Context, Void, Context> {
+
+        @Override
+        protected Context doInBackground(Context... ctxs) {
+            Context mctx = ctxs[0];
+            Log.i(TAG,"Loading the filters");
+            SQLiteDatabase db = null;
+            try {
+                db = new DbHelper(mctx).getReadableDatabase();
+                List<FilterHandle> handles = FilterProvider.LoadFilters(db);
+                for(FilterHandle h : handles)
+                    myFilters.add(Filter.makeFilter(mctx,h));
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            } finally {
+                String msg = myFilters.size() > 1 ?
+                        String.format("%d filters loaded", myFilters.size()):
+                        String.format("%d filter loaded", myFilters.size());
+                Log.i(TAG,msg);
+                if (db != null) db.close();
+            }
+            return mctx;
+        }
+
+        @Override
+        protected void onPostExecute (Context context) {
+            String msg = myFilters.size() > 1 ?
+                    String.format("%d filters loaded", myFilters.size()):
+                    String.format("%d filter loaded", myFilters.size());
+            Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+        }
+    }
+
     private CallHelper(Context ctx) {
         this.ctx = ctx;
         callListener = new CallStateListener();
@@ -218,24 +252,7 @@ public class CallHelper {
 
     public void loadFilters(final Context context) {
         myFilters = new ArrayList<>();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(TAG,"Loading the filters");
-                SQLiteDatabase db = null;
-                try {
-                    db = new DbHelper(context).getReadableDatabase();
-                    List<FilterHandle> handles = FilterProvider.LoadFilters(db);
-                    for(FilterHandle h : handles)
-                        myFilters.add(Filter.makeFilter(context,h));
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
-                } finally {
-                    Log.i(TAG,String.format("%d filters loaded",myFilters.size()));
-                    if (db != null) db.close();
-                }
-            }
-        }).start();
+        new LoadFilters().execute(context);
     }
 
 

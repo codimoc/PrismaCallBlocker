@@ -1,9 +1,11 @@
 package com.prismaqf.callblocker;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -16,7 +18,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -78,7 +83,6 @@ public class CallBlockerManager extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +117,20 @@ public class CallBlockerManager extends AppCompatActivity {
         //call stats buttons
         buttonReceived = (Button) findViewById(R.id.button_received);
         buttonTriggered = (Button) findViewById(R.id.button_triggered);
+
+        //register button events
+        buttonReceived.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCalls();
+            }
+        });
+        buttonTriggered.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTriggers();
+            }
+        });
 
     }
 
@@ -173,6 +191,9 @@ public class CallBlockerManager extends AppCompatActivity {
                 return true;
             case R.id.action_show_filters:
                 showFilters();
+                return true;
+            case R.id.action_help:
+                showHelp();
                 return true;
         }
 
@@ -251,6 +272,11 @@ public class CallBlockerManager extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void showTriggers() {
+        Intent intent = new Intent(this,ShowTriggerEvents.class);
+        startActivity(intent);
+    }
+
     private void showCalendarRules() {
         Intent intent = new Intent(this,EditCalendarRules.class);
         startActivity(intent);
@@ -270,6 +296,27 @@ public class CallBlockerManager extends AppCompatActivity {
     private void showFilters() {
         Intent intent = new Intent(this,EditFilters.class);
         startActivity(intent);
+    }
+    private void showHelp() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(R.string.tx_main_help_title);
+
+        WebView wv = new WebView(this);
+        wv.loadUrl("file:///android_asset/html/main.html");
+        ScrollView scroll = new ScrollView(this);
+        scroll.setVerticalScrollBarEnabled(true);
+        scroll.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        scroll.addView(wv);
+
+        alert.setView(scroll);
+        alert.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
     }
 
 }

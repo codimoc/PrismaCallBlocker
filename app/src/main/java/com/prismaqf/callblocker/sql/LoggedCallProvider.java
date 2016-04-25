@@ -109,4 +109,25 @@ public class LoggedCallProvider {
             limit = String.valueOf(maxRecords);
         return db.query(DbContract.LoggedCalls.TABLE_NAME, null, null, null, null, null, orderby, limit);
     }
+
+    /**
+     * Retrieves the latest calls logged
+     * @param db the SQLite connection
+     * @param maxRecords the total number of records returned
+     * @param descending a flag to inicate the sorting order, descending when the flag is true
+     * @return a cursor
+     */
+    public static synchronized Cursor LatestTriggered(SQLiteDatabase db, int maxRecords, boolean descending) {
+        String orderby;
+        if (descending)
+            orderby= String.format("%s desc",DbContract.LoggedCalls._ID);
+        else
+            orderby= String.format("%s asc", DbContract.LoggedCalls._ID);
+
+        String limit = null;
+        if (maxRecords > 0)
+            limit = String.valueOf(maxRecords);
+        String selection = String.format("%s is not null",DbContract.LoggedCalls.COLUMN_NAME_ACTION);
+        return db.query(DbContract.LoggedCalls.TABLE_NAME, null, selection, null, null, null, orderby, limit);
+    }
 }

@@ -18,9 +18,10 @@ import com.prismaqf.callblocker.sql.LoggedCallProvider;
 /**
  * Activity to show a list of recent logged calls with
  * timestamp, calling number, description
- * and name of the rule matched (if any
+ * and name of the action matched (if any)
  * @author ConteDiMonteCristo
- */public class ShowLoggedCalls extends ShowListActivity {
+ */
+public class ShowLoggedCalls extends ShowListActivity {
 
     private final String TAG = ShowLoggedCalls.class.getCanonicalName();
     private static final int URL_LOADER = 1; // Identifies a particular Loader being used in this component
