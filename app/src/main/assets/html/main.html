@@ -6,6 +6,37 @@
     <link rel="stylesheet" type="text/css" href="help.css" media="screen" />
 </head>
 <body>
+<p>This app blocks or reacts to unwanted calls on a rule-based logic. The main-home
+activity controls the turning on and off of a background service that listens to incoming calls.
+This service is <em>sticky</em> and survives crashes and reboots of the system.</p>
+<p>When an incoming call is detected, the service loops through the list of active <b>filters</b>,
+and for each filter, if there is a match, an action is performed, like dropping the call,
+logging the event or sending a warning Toast message. Hence central to this design is the definition of
+a <b>filter</b> object.</p>
+<p>A <b>filter</b> is assembled by combining two rules and one action objects: a <b>calendar rule</b> to define
+when the filter is active, a <b>filter rule</b> to define the numbers and patterns against which
+the incoming call is matched and an <b>action</b> to be performed when the filter is active and
+there is a match.</p>
+<p>Filters can be created and edited (changed and deleted) using the "<b>Show active filters</b>" in the menu
+drop-down inside the action bar. This functionality allows to create a new filter or to modify an
+existing one. <b>Calendar rules</b> and <b>filter rules</b> can be created independently and then
+assembled into a filter or can be created directly when creating the filter. It is <b>important to notice</b>
+that all filters shown by the action "<b>Show active filters</b>" will be used by the service when an
+incoming call is detected.</p>
+<p>Here is a list of all menu items avaible from the drop-down menu:</p>
+<ul>
+    <li><b>Show active filters</b>, to create and edit active filters; This is a main entry point in the use of this app.</li>
+    <li><b>Show latest service runs</b>, this is a brief summary of recent service runs, where a run is defined as the period
+    between two consecutive service-start and service-stop events,</li>
+    <li><b>Show latest calls received</b>, a log of the incoming calls most recently received.</li>
+    <li><b>Show calendar rules</b>, the activity to create and edit calendar rules.</li>
+    <li><b>Show filter rules</b>, the activity to create and edit filter rules.</li>
+    <li><b>Settings</b>, a setting page for further customization.</li>
+</ul>
+<p>Once the service is running, the main activity's page also shows a brief statistics of the total
+number of calls received and triggered events, <em>i.e.</em> when the filter reacted by performing an action.
+These statistics are displayed on top of two buttons that allow to navigate directly to the relevant logs: the latest
+calls received and latest calls that triggered an action, respectively.</p>
 
 </body>
 </html>
