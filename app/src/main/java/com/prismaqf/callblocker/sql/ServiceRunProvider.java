@@ -226,11 +226,11 @@ public class ServiceRunProvider {
         db.delete(DbContract.ServiceRuns.TABLE_NAME, where, args);
     }
 
-    public static synchronized void PurgeLog(SQLiteDatabase db, Context context, String longevity) {
+    public static synchronized int PurgeLog(SQLiteDatabase db, Context context, String longevity) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String key = context.getString(R.string.pk_log_longevity);
         String theLongevity = longevity!=null ? longevity : prefs.getString(key, "no limit");
-        if (theLongevity.equals("no limit")) return;
+        if (theLongevity.equals("no limit")) return 0;
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         cal.setTime(new Date());
         if (theLongevity.contains("day")) cal.add(Calendar.DATE,-1);
@@ -243,7 +243,7 @@ public class ServiceRunProvider {
         Cursor c = LatestRuns(db,-1,false); //everything in ascending order
         while (c.moveToNext()) {
             ServiceRun r = deserialize(c);
-            if (r.getStop().before(cal.getTime()))
+            if (r.getStop() != null && r.getStop().before(cal.getTime()))
                 candidates.add(r.getId());
         }
         c.close();
@@ -252,6 +252,7 @@ public class ServiceRunProvider {
             DeleteServiceRun(db,id);
             LoggedCallProvider.DeleteLoggedCallInRun(db,id);
         }
+        return candidates.size();
     }
 
 

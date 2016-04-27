@@ -60,8 +60,6 @@ public class CallHelper {
 
     private int numReceived;
     private int numTriggered;
-    private int lastNumReceived;
-    private int lastNumTriggered;
     private long myRunId;
     private List<Filter> myFilters;
 
@@ -132,18 +130,20 @@ public class CallHelper {
         }
     }
 
-    private class LoadFilters extends AsyncTask<Context, Void, Context> {
+    private class LoadFilters extends AsyncTask<Context, Void, Void> {
+
+        Context myContext;
 
         @Override
-        protected Context doInBackground(Context... ctxs) {
-            Context mctx = ctxs[0];
+        protected Void doInBackground(Context... ctxs) {
+            myContext = ctxs[0];
             Log.i(TAG,"Loading the filters");
             SQLiteDatabase db = null;
             try {
-                db = new DbHelper(mctx).getReadableDatabase();
+                db = new DbHelper(myContext).getReadableDatabase();
                 List<FilterHandle> handles = FilterProvider.LoadFilters(db);
                 for(FilterHandle h : handles)
-                    myFilters.add(Filter.makeFilter(mctx,h));
+                    myFilters.add(Filter.makeFilter(myContext,h));
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
             } finally {
@@ -153,15 +153,51 @@ public class CallHelper {
                 Log.i(TAG,msg);
                 if (db != null) db.close();
             }
-            return mctx;
+            return null;
         }
 
         @Override
-        protected void onPostExecute (Context context) {
+        protected void onPostExecute (Void v) {
+            if (myContext==null) return;
             String msg = myFilters.size() > 1 ?
                     String.format("%d filters loaded", myFilters.size()):
                     String.format("%d filter loaded", myFilters.size());
-            Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+            Toast.makeText(myContext, msg, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class PurgeLogs extends AsyncTask<Context, Void, Integer> {
+
+        Context myContext;
+
+        @Override
+        protected Integer doInBackground(Context... ctxs) {
+            myContext = ctxs[0];
+            Log.i(TAG,"Purging the logs");
+            SQLiteDatabase db = null;
+            int purged = 0;
+            try {
+                db = new DbHelper(myContext).getWritableDatabase();
+                purged = ServiceRunProvider.PurgeLog(db,myContext,null);
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            } finally {
+                String msg = purged > 0  ?
+                        String.format("%d service run records purged", purged):
+                        "No service run records purged";
+                Log.i(TAG,msg);
+                if (db != null) db.close();
+            }
+            return purged;
+        }
+
+        @Override
+        protected void onPostExecute (Integer purged) {
+            if (myContext==null) return;
+            String msg = purged > 0  ?
+                    String.format("%d service run records purged", purged):
+                    "No service run records purged";
+            Toast.makeText(myContext, msg, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -177,6 +213,7 @@ public class CallHelper {
      * Start calls detection
      */
     public void start() {
+        purgeLogs(ctx);
         loadFilters(ctx);
         Log.i(TAG, "Registering the listeners");
         tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
@@ -197,13 +234,13 @@ public class CallHelper {
             ServiceRunProvider.ServiceRun lastRun = ServiceRunProvider.LatestRun(db);
             if (lastRun.getId()==0 || lastRun.getStop() != null) {
                 //new run
-                lastNumReceived = lastRun.getNumReceived();
-                lastNumTriggered = lastRun.getNumTriggered();
                 setNumReceived(0);
                 setNumTriggered(0);
                 myRunId = ServiceRunProvider.InsertAtServiceStart(db);
             } //otherwise the service was restarted and continue with old run
             else {
+                setNumReceived(lastRun.getNumReceived());
+                setNumTriggered(lastRun.getNumTriggered());
                 myRunId = lastRun.getId();
             }
             ServiceRunProvider.UpdateWhileRunning(db, myRunId, -1, -1);
@@ -229,10 +266,11 @@ public class CallHelper {
     public void recordServiceStop() {
         Log.i(TAG, "Closing the DB connection and updating the ServiceRunProvider record");
         SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
+        ServiceRunProvider.ServiceRun lastRun = ServiceRunProvider.LatestRun(db);
         try {
             ServiceRunProvider.UpdateAtServiceStop(db, myRunId,
-                                                   numReceived + lastNumReceived,
-                                                   numTriggered + lastNumTriggered);
+                                                   numReceived + lastRun.getNumReceived(),
+                                                   numTriggered + lastRun.getNumTriggered());
         }
         finally {
             db.close();
@@ -258,6 +296,10 @@ public class CallHelper {
     public void loadFilters(final Context context) {
         myFilters = new ArrayList<>();
         new LoadFilters().execute(context);
+    }
+
+    public void purgeLogs(final Context context) {
+        new PurgeLogs().execute(context);
     }
 
 
