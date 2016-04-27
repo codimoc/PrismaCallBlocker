@@ -3,6 +3,7 @@ package com.prismaqf.callblocker.rules;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
@@ -124,6 +125,7 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
     }
 
 
+    @SuppressWarnings("unchecked")
     private CalendarRule(Parcel in) {
         name = in.readString();
         dayMask = (EnumSet<DayOfWeek>)in.readSerializable();

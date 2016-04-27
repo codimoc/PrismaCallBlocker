@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -24,9 +23,6 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
-import com.prismaqf.callblocker.sql.DbHelper;
-import com.prismaqf.callblocker.sql.ServiceRunProvider;
 
 public class CallBlockerManager extends AppCompatActivity {
 
