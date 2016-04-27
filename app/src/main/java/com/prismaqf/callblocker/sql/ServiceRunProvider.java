@@ -1,16 +1,23 @@
 package com.prismaqf.callblocker.sql;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.prismaqf.callblocker.R;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * @author ConteDiMonteCristo.
@@ -212,5 +219,40 @@ public class ServiceRunProvider {
         Date end = cal.getTime();
         UpdateRow(db,runid, end,numReceived,numTriggered);
     }
+
+    public static synchronized void DeleteServiceRun(SQLiteDatabase db, long runid) {
+        String where = DbContract.ServiceRuns._ID + " = ?";
+        String[] args = {String.valueOf(runid)};
+        db.delete(DbContract.ServiceRuns.TABLE_NAME, where, args);
+    }
+
+    public static synchronized void PurgeLog(SQLiteDatabase db, Context context, String longevity) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String key = context.getString(R.string.pk_log_longevity);
+        String theLongevity = longevity!=null ? longevity : prefs.getString(key, "no limit");
+        if (theLongevity.equals("no limit")) return;
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        cal.setTime(new Date());
+        if (theLongevity.contains("day")) cal.add(Calendar.DATE,-1);
+        else if (theLongevity.contains("week")) cal.add(Calendar.DATE,-7);
+        else if (theLongevity.contains("month")) cal.add(Calendar.MONTH,-1);
+        else if (theLongevity.contains("year")) cal.add(Calendar.YEAR,-1);
+        //now delete:
+        //1. first create a map of records to delete
+        Set<Long> candidates = new HashSet<>();
+        Cursor c = LatestRuns(db,-1,false); //everything in ascending order
+        while (c.moveToNext()) {
+            ServiceRun r = deserialize(c);
+            if (r.getStop().before(cal.getTime()))
+                candidates.add(r.getId());
+        }
+        c.close();
+        //2. now delete service runs and associated calls
+        for (long id : candidates) {
+            DeleteServiceRun(db,id);
+            LoggedCallProvider.DeleteLoggedCallInRun(db,id);
+        }
+    }
+
 
 }

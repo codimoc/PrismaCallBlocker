@@ -60,6 +60,8 @@ public class CallHelper {
 
     private int numReceived;
     private int numTriggered;
+    private int lastNumReceived;
+    private int lastNumTriggered;
     private long myRunId;
     private List<Filter> myFilters;
 
@@ -192,12 +194,13 @@ public class CallHelper {
         Log.i(TAG, "Opening a DB connection and recording service start");
         SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
         try {
-
             ServiceRunProvider.ServiceRun lastRun = ServiceRunProvider.LatestRun(db);
-            setNumReceived(lastRun.getNumReceived());
-            setNumTriggered(lastRun.getNumTriggered());
             if (lastRun.getId()==0 || lastRun.getStop() != null) {
                 //new run
+                lastNumReceived = lastRun.getNumReceived();
+                lastNumTriggered = lastRun.getNumTriggered();
+                setNumReceived(0);
+                setNumTriggered(0);
                 myRunId = ServiceRunProvider.InsertAtServiceStart(db);
             } //otherwise the service was restarted and continue with old run
             else {
@@ -227,7 +230,9 @@ public class CallHelper {
         Log.i(TAG, "Closing the DB connection and updating the ServiceRunProvider record");
         SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
         try {
-            ServiceRunProvider.UpdateAtServiceStop(db, myRunId, numReceived, numTriggered);
+            ServiceRunProvider.UpdateAtServiceStop(db, myRunId,
+                                                   numReceived + lastNumReceived,
+                                                   numTriggered + lastNumTriggered);
         }
         finally {
             db.close();

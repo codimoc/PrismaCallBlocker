@@ -30,10 +30,11 @@ public class DbHelperTest {
     public static final String DB_NAME = "unitTest.db";
 
     private SQLiteDatabase myDb;
+    Context myContext;
 
     @Before
     public void before() {
-        Context myContext = InstrumentationRegistry.getTargetContext();
+        myContext = InstrumentationRegistry.getTargetContext();
         DbHelper myDbHelper = new DbHelper(myContext, DB_NAME);
         myDb = myDbHelper.getWritableDatabase();
         myDb.delete(DbContract.ServiceRuns.TABLE_NAME,null,null);
@@ -109,6 +110,156 @@ public class DbHelperTest {
         assertEquals("There should be two records",2, latest.getId());
         assertEquals("Total of 3 calls received",3, latest.getNumReceived());
         assertEquals("Total of 1 event triggered",1, latest.getNumTriggered());
+    }
+
+    @Test
+    public void TestPurgeServiceRunLogOneDay() {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        cal.add(Calendar.DATE, -2);
+        Date start1 = cal.getTime();
+        cal.add(Calendar.HOUR, 1);
+        Date end1 = cal.getTime();
+        ServiceRunProvider.ServiceRun r1 = new ServiceRunProvider.ServiceRun(1,start1,end1,0,0);
+        cal.add(Calendar.DATE, 1);
+        Date start2 = cal.getTime();
+        cal.add(Calendar.HOUR, 1);
+        Date end2 = cal.getTime();
+        ServiceRunProvider.ServiceRun r2 = new ServiceRunProvider.ServiceRun(2,start2,end2,2,1);
+        long rid1 = ServiceRunProvider.InsertRow(myDb, r1);
+        long rid2 = ServiceRunProvider.InsertRow(myDb, r2);
+        //insert calls
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(rid1, null, "123", "dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(rid2, null, "456", "dummy"));
+        Cursor latest = ServiceRunProvider.LatestRuns(myDb, -1);
+        assertEquals("There should be two records", 2, latest.getCount());
+        Cursor calls =  LoggedCallProvider.LatestCalls(myDb,-1);
+        assertEquals("There should be two records", 2, latest.getCount());
+        ServiceRunProvider.PurgeLog(myDb, myContext, "one day");
+        latest = ServiceRunProvider.LatestRuns(myDb, -1);
+        assertEquals("Only one record left after purging", 1, latest.getCount());
+        assertEquals("Only one record left after purging", 1, calls.getCount());
+        latest.close();
+        calls.close();
+    }
+
+    @Test
+    public void TestPurgeServiceRunLogOneWeek() {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        cal.add(Calendar.DATE, -10);
+        Date start1 = cal.getTime();
+        cal.add(Calendar.HOUR, 1);
+        Date end1 = cal.getTime();
+        ServiceRunProvider.ServiceRun r1 = new ServiceRunProvider.ServiceRun(1,start1,end1,0,0);
+        cal.add(Calendar.DATE, 8);
+        Date start2 = cal.getTime();
+        cal.add(Calendar.HOUR, 1);
+        Date end2 = cal.getTime();
+        ServiceRunProvider.ServiceRun r2 = new ServiceRunProvider.ServiceRun(2,start2,end2,2,1);
+        long rid1 = ServiceRunProvider.InsertRow(myDb, r1);
+        long rid2 = ServiceRunProvider.InsertRow(myDb, r2);
+        //insert calls
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(rid1, null, "123", "dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(rid2, null, "456", "dummy"));
+        Cursor latest = ServiceRunProvider.LatestRuns(myDb, -1);
+        assertEquals("There should be two records", 2, latest.getCount());
+        Cursor calls =  LoggedCallProvider.LatestCalls(myDb,-1);
+        assertEquals("There should be two records", 2, latest.getCount());
+        ServiceRunProvider.PurgeLog(myDb, myContext, "one week");
+        latest = ServiceRunProvider.LatestRuns(myDb, -1);
+        assertEquals("Only one record left after purging", 1, latest.getCount());
+        assertEquals("Only one record left after purging", 1, calls.getCount());
+        latest.close();
+        calls.close();
+    }
+
+    @Test
+    public void TestPurgeServiceRunLogOneMonth() {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        cal.add(Calendar.DATE, -40);
+        Date start1 = cal.getTime();
+        cal.add(Calendar.HOUR, 1);
+        Date end1 = cal.getTime();
+        ServiceRunProvider.ServiceRun r1 = new ServiceRunProvider.ServiceRun(1,start1,end1,0,0);
+        cal.add(Calendar.DATE, 20);
+        Date start2 = cal.getTime();
+        cal.add(Calendar.HOUR, 1);
+        Date end2 = cal.getTime();
+        ServiceRunProvider.ServiceRun r2 = new ServiceRunProvider.ServiceRun(2,start2,end2,2,1);
+        long rid1 = ServiceRunProvider.InsertRow(myDb, r1);
+        long rid2 = ServiceRunProvider.InsertRow(myDb, r2);
+        //insert calls
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(rid1, null, "123", "dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(rid2, null, "456", "dummy"));
+        Cursor latest = ServiceRunProvider.LatestRuns(myDb, -1);
+        assertEquals("There should be two records", 2, latest.getCount());
+        Cursor calls =  LoggedCallProvider.LatestCalls(myDb,-1);
+        assertEquals("There should be two records", 2, latest.getCount());
+        ServiceRunProvider.PurgeLog(myDb, myContext, "one month");
+        latest = ServiceRunProvider.LatestRuns(myDb, -1);
+        assertEquals("Only one record left after purging", 1, latest.getCount());
+        assertEquals("Only one record left after purging", 1, calls.getCount());
+        latest.close();
+        calls.close();
+    }
+
+    @Test
+    public void TestPurgeServiceRunLogOneYear() {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        cal.add(Calendar.DATE, -400);
+        Date start1 = cal.getTime();
+        cal.add(Calendar.HOUR, 1);
+        Date end1 = cal.getTime();
+        ServiceRunProvider.ServiceRun r1 = new ServiceRunProvider.ServiceRun(1,start1,end1,0,0);
+        cal.add(Calendar.DATE, 200);
+        Date start2 = cal.getTime();
+        cal.add(Calendar.HOUR, 1);
+        Date end2 = cal.getTime();
+        ServiceRunProvider.ServiceRun r2 = new ServiceRunProvider.ServiceRun(2,start2,end2,2,1);
+        long rid1 = ServiceRunProvider.InsertRow(myDb, r1);
+        long rid2 = ServiceRunProvider.InsertRow(myDb, r2);
+        //insert calls
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(rid1, null, "123", "dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(rid2, null, "456", "dummy"));
+        Cursor latest = ServiceRunProvider.LatestRuns(myDb, -1);
+        assertEquals("There should be two records", 2, latest.getCount());
+        Cursor calls =  LoggedCallProvider.LatestCalls(myDb,-1);
+        assertEquals("There should be two records", 2, latest.getCount());
+        ServiceRunProvider.PurgeLog(myDb, myContext, "one year");
+        latest = ServiceRunProvider.LatestRuns(myDb, -1);
+        assertEquals("Only one record left after purging", 1, latest.getCount());
+        assertEquals("Only one record left after purging", 1, calls.getCount());
+        latest.close();
+        calls.close();
+    }
+
+    @Test
+    public void TestPurgeServiceRunLogNoLimit() {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        cal.add(Calendar.DATE, -400);
+        Date start1 = cal.getTime();
+        cal.add(Calendar.HOUR, 1);
+        Date end1 = cal.getTime();
+        ServiceRunProvider.ServiceRun r1 = new ServiceRunProvider.ServiceRun(1,start1,end1,0,0);
+        cal.add(Calendar.DATE, 200);
+        Date start2 = cal.getTime();
+        cal.add(Calendar.HOUR, 1);
+        Date end2 = cal.getTime();
+        ServiceRunProvider.ServiceRun r2 = new ServiceRunProvider.ServiceRun(2,start2,end2,2,1);
+        long rid1 = ServiceRunProvider.InsertRow(myDb, r1);
+        long rid2 = ServiceRunProvider.InsertRow(myDb, r2);
+        //insert calls
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(rid1, null, "123", "dummy"));
+        LoggedCallProvider.InsertRow(myDb, new LoggedCallProvider.LoggedCall(rid2, null, "456", "dummy"));
+        Cursor latest = ServiceRunProvider.LatestRuns(myDb,-1);
+        assertEquals("There should be two records", 2, latest.getCount());
+        Cursor calls =  LoggedCallProvider.LatestCalls(myDb,-1);
+        assertEquals("There should be two records", 2, latest.getCount());
+        ServiceRunProvider.PurgeLog(myDb, myContext, "no limit");
+        latest = ServiceRunProvider.LatestRuns(myDb, -1);
+        assertEquals("No purging",2, latest.getCount());
+        assertEquals("No purging",2, calls.getCount());
+        latest.close();
+        calls.close();
     }
 
     @Test

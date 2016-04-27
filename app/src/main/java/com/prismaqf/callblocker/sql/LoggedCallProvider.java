@@ -80,6 +80,12 @@ public class LoggedCallProvider {
         db.delete(DbContract.LoggedCalls.TABLE_NAME, where, args);
     }
 
+    public static synchronized void DeleteLoggedCallInRun(SQLiteDatabase db, long runid) {
+        String where = DbContract.LoggedCalls.COLUMN_NAME_RUNID + " = ?";
+        String[] args = {String.valueOf(runid)};
+        db.delete(DbContract.LoggedCalls.TABLE_NAME, where, args);
+    }
+
     /**
      * Retrieves the latest calls logged
      * @param db the SQLite connection
@@ -102,7 +108,7 @@ public class LoggedCallProvider {
         if (descending)
             orderby= String.format("%s desc",DbContract.LoggedCalls._ID);
         else
-            orderby= String.format("%s asc",DbContract.LoggedCalls._ID);
+            orderby= String.format("%s asc", DbContract.LoggedCalls._ID);
 
         String limit = null;
         if (maxRecords > 0)

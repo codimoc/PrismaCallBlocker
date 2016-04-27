@@ -244,11 +244,6 @@ public class CallBlockerManager extends AppCompatActivity {
         Intent intent = new Intent(this, CallDetectService.class);
         startService(intent);
         textDetectState.setText((R.string.tx_detect));
-        //todo: might need to use an async task
-        SQLiteDatabase db = new DbHelper(this).getReadableDatabase();
-        ServiceRunProvider.ServiceRun last = ServiceRunProvider.LatestRun(db);
-        buttonReceived.setText(String.valueOf(last.getNumReceived()));
-        buttonTriggered.setText(String.valueOf(last.getNumTriggered()));
     }
 
 

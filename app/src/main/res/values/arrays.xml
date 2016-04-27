@@ -22,4 +22,12 @@
         <item>100000</item>
     </string-array>
 
+    <string-array name="log_longevity">
+        <item>one day</item>
+        <item>one week</item>
+        <item>one month</item>
+        <item>one year</item>
+        <item>no limit</item>
+    </string-array>
+
 </resources>

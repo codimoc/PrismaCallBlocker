@@ -5,7 +5,13 @@
         android:title="@string/tx_sql_limit"
         android:defaultValue="10"
         android:entries="@array/sql_limit_keys"
-        android:entryValues="@array/sql_limits_vals"
-        />
+        android:entryValues="@array/sql_limits_vals" />
+
+    <ListPreference
+        android:key="@string/pk_log_longevity"
+        android:title="@string/tx_log_longevity"
+        android:defaultValue="no limit"
+        android:entries="@array/log_longevity"
+        android:entryValues="@array/log_longevity" />
 
 </PreferenceScreen>
