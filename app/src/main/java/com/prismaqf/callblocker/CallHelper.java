@@ -213,6 +213,11 @@ public class CallHelper {
      * Start calls detection
      */
     public void start() {
+        if (isRunning) {
+            Log.e(TAG,"The service is already running");
+            Toast.makeText(ctx,"The service is already running",Toast.LENGTH_LONG).show();
+            return;
+        }
         purgeLogs(ctx);
         loadFilters(ctx);
         Log.i(TAG, "Registering the listeners");
@@ -258,6 +263,8 @@ public class CallHelper {
         Log.i(TAG, "Unregistering the listeners");
         tm.listen(callListener, PhoneStateListener.LISTEN_NONE);
         ctx.unregisterReceiver(outgoingReceiver);
+        setNumTriggered(0);
+        setNumReceived(0);
     }
 
     /**
@@ -266,7 +273,7 @@ public class CallHelper {
     public void recordServiceStop() {
         Log.i(TAG, "Closing the DB connection and updating the ServiceRunProvider record");
         SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
-        ServiceRunProvider.ServiceRun lastRun = ServiceRunProvider.LatestRun(db);
+        ServiceRunProvider.ServiceRun lastRun = ServiceRunProvider.LatestCompletedRun(db);
         try {
             ServiceRunProvider.UpdateAtServiceStop(db, myRunId,
                                                    numReceived + lastRun.getNumReceived(),
@@ -278,6 +285,8 @@ public class CallHelper {
     }
 
     public static String resolveContactDescription(Context ctx, String incomingNumber) {
+        if (incomingNumber==null || incomingNumber.isEmpty() || incomingNumber.toLowerCase().contains("private"))
+            return "private number";
         String description = "Not found";
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(incomingNumber));
         String[] projection = new String[]{ ContactsContract.PhoneLookup.DISPLAY_NAME};

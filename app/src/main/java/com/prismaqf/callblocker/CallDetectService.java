@@ -84,7 +84,7 @@ import android.util.Log;
 
     private void sendNotification() {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.police_32)
+                .setSmallIcon(R.drawable.police)
                 .setContentTitle(getText(R.string.app_name))
                 .setContentText(getText(R.string.tx_notification));
         Intent resultIntent = new Intent(this, CallBlockerManager.class);

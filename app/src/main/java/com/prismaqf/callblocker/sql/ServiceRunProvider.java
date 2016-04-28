@@ -106,6 +106,24 @@ public class ServiceRunProvider {
     }
 
     /**
+     * Find the latest run before the current one
+     * @param db the SQLite connection
+     * @return the new run id
+     */
+    public static synchronized ServiceRun LatestCompletedRun(SQLiteDatabase db) {
+        String orderby = String.format("%s desc",DbContract.ServiceRuns._ID);
+        String limit = "1";
+        String selection = DbContract.ServiceRuns.COLUMN_NAME_STOP + "<> ?";
+        String[] selectionArgs = { RUNNING };
+        Cursor c = db.query(DbContract.ServiceRuns.TABLE_NAME, null, selection, selectionArgs, null, null, orderby, limit);
+        if (c.getCount() > 0) {
+            c.moveToFirst();
+            return deserialize(c);
+        }
+        return new ServiceRun(0,null,null,0,0);
+    }
+
+    /**
      * Retrieves the latest service runs
      * @param db the SQLite connection
      * @param maxRecords the total number of records returned
@@ -204,7 +222,7 @@ public class ServiceRunProvider {
         ServiceRun lrun = LatestRun(db);
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         Date start = cal.getTime();
-        return InsertRow(db, new ServiceRun(lrun.getId()+1, start, null, lrun.getNumReceived(), lrun.getNumTriggered()));
+        return InsertRow(db, new ServiceRun(lrun.getId()+1, start, null, 0, 0));
     }
 
     /**
