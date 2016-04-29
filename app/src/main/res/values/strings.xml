@@ -24,7 +24,7 @@
     <string name="ac_show_calendar_rules">Show calendar rules</string>
     <string name="ac_show_filter_rules">Show filter rules</string>
     <string name="tx_sql_limit">Max sixe of DB query</string>
-    <string name="tx_log_longevity">Keep call logs for...</string>
+    <string name="tx_log_longevity">Keep call logs for…</string>
     <string name="ac_setting">Settings</string>
     <string name="pk_sql_limit">sql_query_limit</string>
     <string name="pk_log_longevity">log_longevity</string>
