@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PrismaCallBlocker</string>
+    <string name="app_name">Prisma CallBlocker</string>
     <string name="tx_no_detect">Not detecting</string>
     <string name="tx_detect">Detecting</string>
     <string name="tx_notification">Go to the service manager</string>
