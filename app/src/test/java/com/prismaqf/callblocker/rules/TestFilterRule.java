@@ -6,7 +6,6 @@ import org.junit.runners.JUnit4;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Filter;
 import java.util.regex.Pattern;
 
 import static junit.framework.Assert.assertEquals;

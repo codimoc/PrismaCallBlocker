@@ -35,6 +35,12 @@ public class DbHelper extends SQLiteOpenHelper{
     private static String debugDb = null;
     private static final Object lock = new Object();
 
+    /**
+     * To force locking write operation from outside
+     * @return the lock object
+     */
+    public static Object getDbHelperLock() {return lock;}
+
     public DbHelper(Context context) {
         super(context, debugDb==null? context.getString(R.string.db_file_name) : debugDb, null, DATABASE_VERSION);
     }
@@ -124,5 +130,21 @@ public class DbHelper extends SQLiteOpenHelper{
 
     }
 
+    @Override
+    public SQLiteDatabase getWritableDatabase() {
+        //so that if the program acquires the lock
+        //when doing backup, the DB can not be written
+        synchronized (lock) {
+            return super.getWritableDatabase();
+        }
+    }
 
+    @Override
+    public SQLiteDatabase getReadableDatabase() {
+        //so that if the program acquires the lock
+        //when doing backup, the DB can not be written
+        synchronized (lock) {
+            return super.getReadableDatabase();
+        }
+    }
 }

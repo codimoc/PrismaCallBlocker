@@ -54,7 +54,7 @@ public class EditFilters extends AppCompatActivity {
         String FRAGMENT = "EditFilterFragment";
         getFragmentManager().
                 beginTransaction().
-                setTransition(FragmentTransaction.TRANSIT_ENTER_MASK).
+                setTransition(FragmentTransaction.TRANSIT_NONE).
                 replace(R.id.list_fragment_holder, new FilterFragment(), FRAGMENT).
                 commit();
         if (getSupportActionBar()!= null)

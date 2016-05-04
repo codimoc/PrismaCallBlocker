@@ -1,7 +1,5 @@
 package com.prismaqf.callblocker.rules;
 
-import android.os.Bundle;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

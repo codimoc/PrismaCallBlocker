@@ -3,7 +3,6 @@ package com.prismaqf.callblocker.rules;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;

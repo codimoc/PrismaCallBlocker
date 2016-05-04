@@ -2,6 +2,7 @@ package com.prismaqf.callblocker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.backup.BackupManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -69,6 +70,7 @@ public class NewEditFilterRule extends NewEditActivity {
             }
             finally {
                 db.close();
+                BackupManager.dataChanged(NewEditFilterRule.this.getPackageName());
             }
             return rule;
         }
@@ -123,7 +125,7 @@ public class NewEditFilterRule extends NewEditActivity {
         setContentView(R.layout.filter_rule_edit);
 
         ed_name = (EditText) findViewById(R.id.edit_filter_rule_name);
-        ed_name.clearFocus();
+        if (ed_name != null) ed_name.clearFocus();
         ed_description = (EditText) findViewById(R.id.edit_filter_rule_description);
         bn_managePatterns = (Button) findViewById(R.id.bt_filter_rule_patterns);
         tv_patterns = (TextView) findViewById(R.id.tx_rule_description);

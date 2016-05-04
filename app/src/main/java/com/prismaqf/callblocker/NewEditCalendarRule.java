@@ -192,7 +192,7 @@ public class NewEditCalendarRule extends NewEditActivity {
         cb_Saturday = (CheckBox) findViewById(R.id.cb_Saturday);
         cb_Sunday = (CheckBox) findViewById(R.id.cb_Sunday);
         ed_name = (EditText) findViewById(R.id.edit_calendar_rule_name);
-        ed_name.clearFocus();
+        if (ed_name != null) ed_name.clearFocus();
         bn_from = (Button) findViewById(R.id.bt_from_time);
         bn_to = (Button) findViewById(R.id.bt_to_time);
         bn_alldays = (Button) findViewById(R.id.bt_all_days);

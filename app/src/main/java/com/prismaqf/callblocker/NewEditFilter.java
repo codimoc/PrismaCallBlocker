@@ -161,7 +161,7 @@ public class NewEditFilter extends NewEditActivity{
         setContentView(R.layout.filter_edit);
 
         ed_name = (EditText) findViewById(R.id.edit_filter_name);
-        ed_name.clearFocus();
+        if (ed_name != null) ed_name.clearFocus();
         tv_calendar_name = (TextView) findViewById(R.id.text_calendar_name);
         tv_paterns_name = (TextView) findViewById(R.id.text_filter_rule_name);
         tv_action_name = (TextView) findViewById(R.id.text_action_name);

@@ -83,7 +83,7 @@ public class EditFilterRules extends AppCompatActivity {
         String FRAGMENT = "EditFilterRulesFragment";
         getFragmentManager().
                 beginTransaction().
-                setTransition(FragmentTransaction.TRANSIT_ENTER_MASK).
+                setTransition(FragmentTransaction.TRANSIT_NONE).
                 replace(R.id.list_fragment_holder, fragment, FRAGMENT).
                 commit();
         if (getSupportActionBar()!= null)

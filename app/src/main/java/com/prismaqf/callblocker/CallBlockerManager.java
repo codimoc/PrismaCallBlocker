@@ -86,24 +86,30 @@ public class CallBlockerManager extends AppCompatActivity {
 
         textDetectState = (TextView) findViewById(R.id.textDetectState);
         ToggleButton buttonToggleDetect = (ToggleButton) findViewById(R.id.buttonDetectToggle);
-        if (isServiceRunning(this)) {
+        if (isServiceRunning(this) && buttonToggleDetect!=null) {
             textDetectState.setText(R.string.tx_detect);
             buttonToggleDetect.setChecked(true);
         }
         Button buttonExit = (Button) findViewById(R.id.buttonExit);
 
-        buttonToggleDetect.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setDetectEnabled();
-            }
-        });
-        buttonExit.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        if (buttonToggleDetect != null) {
+            buttonToggleDetect.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setDetectEnabled();
+                }
+            });
+        }
+
+        if (buttonExit != null) {
+            buttonExit.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+        }
+
 
         //call receiver
         callEventReceiver = new CallEventReceiver();

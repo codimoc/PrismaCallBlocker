@@ -50,7 +50,7 @@ public class EditFilterPatterns extends AppCompatActivity {
         String FRAGMENT = "EditFilterPatternsFragment";
         getFragmentManager().
                 beginTransaction().
-                setTransition(FragmentTransaction.TRANSIT_ENTER_MASK).
+                setTransition(FragmentTransaction.TRANSIT_NONE).
                 replace(R.id.list_fragment_holder, myFragment, FRAGMENT).
                 commit();
         if (getSupportActionBar() != null)
