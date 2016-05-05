@@ -13,7 +13,7 @@ public class DebugDBFileName extends ExternalResource {
 
     static class MyKey extends DebugKey {}
 
-    private MyKey myKey = new MyKey();
+    private final MyKey myKey = new MyKey();
 
     @Override
     protected void before() throws Throwable {

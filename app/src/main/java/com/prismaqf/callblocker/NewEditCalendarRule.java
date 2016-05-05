@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.app.backup.BackupManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -141,7 +142,8 @@ public class NewEditCalendarRule extends NewEditActivity {
                 }
             }
             finally {
-                db.close();    
+                db.close();
+                BackupManager.dataChanged(NewEditCalendarRule.this.getPackageName());
             }
             return rule;
         }
@@ -359,7 +361,7 @@ public class NewEditCalendarRule extends NewEditActivity {
 
 
     @Override
-    protected void refreshWidgets(boolean validate) {
+    void refreshWidgets(boolean validate) {
         ed_name.setText(ptRule.getName());
         cb_Monday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.MONDAY));
         cb_Tuesday.setChecked(ptRule.getDayMask().contains(CalendarRule.DayOfWeek.TUESDAY));

@@ -2,6 +2,7 @@ package com.prismaqf.callblocker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.backup.BackupManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -62,6 +63,7 @@ public class NewEditFilter extends NewEditActivity{
             }
             finally {
                 db.close();
+                BackupManager.dataChanged(NewEditFilter.this.getPackageName());
             }
             return null;
         }
@@ -428,7 +430,7 @@ public class NewEditFilter extends NewEditActivity{
     }
 
     @Override
-    protected void refreshWidgets(boolean validate) {
+    void refreshWidgets(boolean validate) {
         ed_name.setText(ptFilter.getName());
         tv_calendar_name.setText(String.format("%s %s", getString(R.string.tx_calendar_rule_name), ptFilter.getCalendarRuleName()));
         tv_paterns_name.setText(String.format("%s %s", getString(R.string.tx_filter_rule_name), ptFilter.getFilterRuleName()));

@@ -35,8 +35,8 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class FilterCreationTest {
 
-    private static String CAL_RULE = "my calendar rule";
-    private static String FIL_RULE = "my filter rule";
+    private static final String CAL_RULE = "my calendar rule";
+    private static final String FIL_RULE = "my filter rule";
 
     @ClassRule
     public static final DebugDBFileName myDebugDB = new DebugDBFileName();

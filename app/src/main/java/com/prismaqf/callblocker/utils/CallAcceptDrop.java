@@ -34,7 +34,6 @@ public class CallAcceptDrop extends Activity {
         super.onCreate(savedInstanceState);
 
         keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
     }
 
     @Override

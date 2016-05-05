@@ -15,6 +15,7 @@ import com.prismaqf.callblocker.utils.DebugKey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Helper class extending SQLiteOpenHelper to manage the DB in Android fashion
@@ -68,7 +69,7 @@ public class DbHelper extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         synchronized (lock) {
-            String msg = String.format("The DB version has changed from v.%d to v.%d and a destructive upgrade (drop/recreate) is performed",oldVersion,newVersion);
+            String msg = String.format(Locale.getDefault(),"The DB version has changed from v.%d to v.%d and a destructive upgrade (drop/recreate) is performed",oldVersion,newVersion);
             Log.w(TAG, msg);
 
             Cursor c = ServiceRunProvider.LatestRuns(db, -1, false);

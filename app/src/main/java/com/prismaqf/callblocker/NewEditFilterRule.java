@@ -26,6 +26,7 @@ import com.prismaqf.callblocker.sql.FilterProvider;
 import com.prismaqf.callblocker.sql.FilterRuleProvider;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Class to create and edit a filter rule
@@ -196,7 +197,7 @@ public class NewEditFilterRule extends NewEditActivity {
     private String makeRuleDescription() {
         StringBuilder builder = new StringBuilder("Patterns in rule. ");
         if (ptRule!=null) {
-            builder.append(String.format("Total of %d\n",ptRule.getPatternKeys().size()));
+            builder.append(String.format(Locale.getDefault(),"Total of %d\n",ptRule.getPatternKeys().size()));
             int i=0;
             for (String p : ptRule.getPatternKeys()){
                 builder.append(p);
@@ -372,7 +373,7 @@ public class NewEditFilterRule extends NewEditActivity {
     }
 
     @Override
-    protected void refreshWidgets(boolean validate) {
+    void refreshWidgets(boolean validate) {
         ed_name.setText(ptRule.getName());
         ed_description.setText(ptRule.getDescription());
         tv_patterns.setText(makeRuleDescription());

@@ -9,7 +9,7 @@ public class DebugKey {
      * This is the key that can only be constructed here and
      * hence accessible only to derived classes
      */
-    private DbKey myKey = new DbKey();
+    private final DbKey myKey = new DbKey();
 
     DbKey getKey() {return myKey;}
 

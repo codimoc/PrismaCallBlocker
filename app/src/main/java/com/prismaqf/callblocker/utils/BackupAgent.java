@@ -18,9 +18,7 @@ import com.prismaqf.callblocker.sql.DbHelper;
  */
 public class BackupAgent extends BackupAgentHelper {
 
-    private static String dbname="../databases/pcb.db";
-    private static String preferences = "com.prismaqf.callblocker_preferences";
-    private static String TAG = BackupAgent.class.getCanonicalName();
+    private static final String TAG = BackupAgent.class.getCanonicalName();
 
     class DbBackupHelper extends FileBackupHelper{
 
@@ -67,10 +65,12 @@ public class BackupAgent extends BackupAgentHelper {
 
     @Override
     public void onCreate(){
+        String dbname = "../databases/pcb.db";
         DbBackupHelper dbs = new DbBackupHelper(this, dbname);
         String DBKEY = "dbs";
         addHelper(DBKEY, dbs);
-        PrefBackupHelper prefs = new PrefBackupHelper(this,preferences);
+        String preferences = "com.prismaqf.callblocker_preferences";
+        PrefBackupHelper prefs = new PrefBackupHelper(this, preferences);
         String PREFKEY = "prefs";
         addHelper(PREFKEY,prefs);
     }

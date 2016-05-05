@@ -69,13 +69,13 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
         this.endMin = endMin;
     }
 
-    public String getStartTime() { return String.format("From %02d:%02d",startHour, startMin);}
+    public String getStartTime() { return String.format(Locale.getDefault(),"From %02d:%02d",startHour, startMin);}
 
-    public String getBareStartTime() { return String.format("%02d:%02d",startHour, startMin);}
+    public String getBareStartTime() { return String.format(Locale.getDefault(),"%02d:%02d",startHour, startMin);}
 
-    public String getEndTime() { return String.format("To %02d:%02d",endHour, endMin);}
+    public String getEndTime() { return String.format(Locale.getDefault(),"To %02d:%02d",endHour, endMin);}
 
-    public String getBareEndTime() { return String.format("%02d:%02d",endHour, endMin);}
+    public String getBareEndTime() { return String.format(Locale.getDefault(),"%02d:%02d",endHour, endMin);}
 
     /**
      * A calendar rule based on a mask for the days of the week when the rule should be active
@@ -269,7 +269,7 @@ public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
         else buffer.append('-');
         if (dayMask.contains(DayOfWeek.SUNDAY)) buffer.append('S');
         else buffer.append('-');
-        buffer.append(String.format(", from %02d:%02d to %02d:%02d]",startHour,startMin,endHour,endMin));
+        buffer.append(String.format(Locale.getDefault(),", from %02d:%02d to %02d:%02d]",startHour,startMin,endHour,endMin));
         return buffer.toString();
     }
 

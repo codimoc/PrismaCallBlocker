@@ -12,6 +12,7 @@
     <application
         android:allowBackup="true"
         android:backupAgent=".utils.BackupAgent"
+        android:fullBackupContent="@xml/backupscheme"
         android:icon="@mipmap/police_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"

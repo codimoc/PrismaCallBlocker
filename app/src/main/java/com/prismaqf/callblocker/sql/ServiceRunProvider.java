@@ -129,7 +129,7 @@ public class ServiceRunProvider {
      * @param maxRecords the total number of records returned
      * @return a cursor
      */
-    public static Cursor LatestRuns(SQLiteDatabase db, int maxRecords) {
+    public static synchronized Cursor LatestRuns(SQLiteDatabase db, int maxRecords) {
         return LatestRuns(db, maxRecords, true);
     }
 
@@ -218,7 +218,7 @@ public class ServiceRunProvider {
      * @param db the SQLite connection
      * @return the run id
      */
-    public static long InsertAtServiceStart(SQLiteDatabase db) {
+    public static synchronized long InsertAtServiceStart(SQLiteDatabase db) {
         ServiceRun lrun = LatestRun(db);
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         Date start = cal.getTime();
@@ -232,13 +232,13 @@ public class ServiceRunProvider {
      * @param numReceived the number of calls received during the service run
      * @param numTriggered the number of events triggered during the service run
      */
-    public static void UpdateAtServiceStop(SQLiteDatabase db, long runid, int numReceived, int numTriggered) {
+    public static synchronized void UpdateAtServiceStop(SQLiteDatabase db, long runid, int numReceived, int numTriggered) {
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         Date end = cal.getTime();
         UpdateRow(db,runid, end,numReceived,numTriggered);
     }
 
-    public static synchronized void DeleteServiceRun(SQLiteDatabase db, long runid) {
+    private static synchronized void DeleteServiceRun(SQLiteDatabase db, long runid) {
         String where = DbContract.ServiceRuns._ID + " = ?";
         String[] args = {String.valueOf(runid)};
         db.delete(DbContract.ServiceRuns.TABLE_NAME, where, args);

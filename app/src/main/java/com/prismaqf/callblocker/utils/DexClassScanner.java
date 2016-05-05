@@ -19,7 +19,7 @@ import dalvik.system.DexFile;
  * @see 'http://stackoverflow.com/questions/11421085/implementing-spring-like-package-scanning-in-android'
  */
 public class DexClassScanner {
-    private static String TAG = DexClassScanner.class.getCanonicalName();
+    private static final String TAG = DexClassScanner.class.getCanonicalName();
 
     /**
      * Scanning for classes which are subtype of a given type and having a specified annotaion

@@ -42,14 +42,14 @@ import static org.hamcrest.CoreMatchers.not;
 @RunWith(AndroidJUnit4.class)
 public class EditFiltersTest {
 
-    private static String FILTER_NAME = "dummy filter";
-    private static String FILTER_NAME_2 = "My filter with existing rules";
-    private static String CAL_RULE = "cal rule";
-    private static String PATTERNS_RULE = "patterns rule";
-    private static String ACTION_NAME = "action name";
-    private static String TEST_CAL_RULE = "My calendar rule for testing";
-    private static String TEST_PAT_RULE = "My filter rule for testing";
-    private static String NEW_RULE = "New rule";
+    private static final String FILTER_NAME = "dummy filter";
+    private static final String FILTER_NAME_2 = "My filter with existing rules";
+    private static final String CAL_RULE = "cal rule";
+    private static final String PATTERNS_RULE = "patterns rule";
+    private static final String ACTION_NAME = "action name";
+    private static final String TEST_CAL_RULE = "My calendar rule for testing";
+    private static final String TEST_PAT_RULE = "My filter rule for testing";
+    private static final String NEW_RULE = "New rule";
     @ClassRule
     public static final DebugDBFileName myDebugDB = new DebugDBFileName();
 

@@ -24,6 +24,7 @@ import com.prismaqf.callblocker.sql.ServiceRunProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Helper class to detect incoming and outgoing calls
@@ -148,8 +149,8 @@ public class CallHelper {
                 Log.e(TAG, e.getMessage());
             } finally {
                 String msg = myFilters.size() > 1 ?
-                        String.format("%d filters loaded", myFilters.size()):
-                        String.format("%d filter loaded", myFilters.size());
+                        String.format(Locale.getDefault(),"%d filters loaded", myFilters.size()):
+                        String.format(Locale.getDefault(),"%d filter loaded", myFilters.size());
                 Log.i(TAG,msg);
                 if (db != null) db.close();
             }
@@ -160,8 +161,8 @@ public class CallHelper {
         protected void onPostExecute (Void v) {
             if (myContext==null) return;
             String msg = myFilters.size() > 1 ?
-                    String.format("%d filters loaded", myFilters.size()):
-                    String.format("%d filter loaded", myFilters.size());
+                    String.format(Locale.getDefault(),"%d filters loaded", myFilters.size()):
+                    String.format(Locale.getDefault(),"%d filter loaded", myFilters.size());
             Toast.makeText(myContext, msg, Toast.LENGTH_LONG).show();
         }
     }
@@ -183,7 +184,7 @@ public class CallHelper {
                 Log.e(TAG, e.getMessage());
             } finally {
                 String msg = purged > 0  ?
-                        String.format("%d service run records purged", purged):
+                        String.format(Locale.getDefault(),"%d service run records purged", purged):
                         "No service run records purged";
                 Log.i(TAG,msg);
                 if (db != null) db.close();
@@ -195,7 +196,7 @@ public class CallHelper {
         protected void onPostExecute (Integer purged) {
             if (myContext==null) return;
             String msg = purged > 0  ?
-                    String.format("%d service run records purged", purged):
+                    String.format(Locale.getDefault(),"%d service run records purged", purged):
                     "No service run records purged";
             Toast.makeText(myContext, msg, Toast.LENGTH_LONG).show();
         }
@@ -307,7 +308,7 @@ public class CallHelper {
         new LoadFilters().execute(context);
     }
 
-    public void purgeLogs(final Context context) {
+    private void purgeLogs(final Context context) {
         new PurgeLogs().execute(context);
     }
 

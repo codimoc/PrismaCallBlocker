@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -152,7 +153,7 @@ public class FilterRule implements IFilterRule, Cloneable, Parcelable{
 
     @Override
     public String toString() {
-        return String.format("Rule %s [description = %s, total number of patterns = %d]",name,description,patterns.size());
+        return String.format(Locale.getDefault(),"Rule %s [description = %s, total number of patterns = %d]",name,description,patterns.size());
     }
 
     @Override

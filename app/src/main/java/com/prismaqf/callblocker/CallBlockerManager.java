@@ -24,6 +24,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.util.Locale;
+
 public class CallBlockerManager extends AppCompatActivity {
 
     private static final String TAG = CallBlockerManager.class.getCanonicalName();
@@ -63,7 +65,8 @@ public class CallBlockerManager extends AppCompatActivity {
             String number = intent.getStringExtra(context.getString(R.string.ky_number_called));
             int numReceived = intent.getIntExtra(context.getString(R.string.ky_received), 0);
             int numTriggered = intent.getIntExtra(context.getString(R.string.ky_triggered), 0);
-            String message = String.format("Incoming: %s, Num received: %d, Num triggered: %d",
+            String message = String.format(Locale.getDefault(),
+                                           "Incoming: %s, Num received: %d, Num triggered: %d",
                                            number, numReceived, numTriggered);
             Log.i(TAG,message);
 
