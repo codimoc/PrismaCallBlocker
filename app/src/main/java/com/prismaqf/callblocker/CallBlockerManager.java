@@ -2,6 +2,7 @@ package com.prismaqf.callblocker;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,6 +11,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +38,7 @@ public class CallBlockerManager extends AppCompatActivity {
     private Button buttonReceived;
     private Button buttonTriggered;
     private boolean isBound;
+    private Dialog aboutDlg;
 
     private final ServiceConnection myConnection = new ServiceConnection() {
 
@@ -151,6 +155,8 @@ public class CallBlockerManager extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if (aboutDlg!=null && aboutDlg.isShowing())
+            aboutDlg.dismiss();
         if (isBound){
             unbindService(myConnection);
             isBound = false;
@@ -199,6 +205,9 @@ public class CallBlockerManager extends AppCompatActivity {
                 return true;
             case R.id.action_help:
                 showHelp();
+                return true;
+            case R.id.action_about:
+                showAbout();
                 return true;
         }
 
@@ -318,5 +327,34 @@ public class CallBlockerManager extends AppCompatActivity {
         });
         alert.show();
     }
+
+    private void showAbout() {
+        String version = "Unknown";
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            version = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG,"Could not get package info");
+        }
+        View messageView = getLayoutInflater().inflate(R.layout.about, null, false);
+
+        TextView versionView = (TextView) messageView.findViewById(R.id.about_version);
+        versionView.setText(String.format(Locale.getDefault(),"Version: %s",version));
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.mipmap.police_launcher);
+        builder.setTitle(R.string.app_name);
+        builder.setView(messageView);
+        builder.create();
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        aboutDlg = builder.create();
+        aboutDlg.show();
+    }
+
 
 }

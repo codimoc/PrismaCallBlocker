@@ -14,4 +14,11 @@
         android:entries="@array/log_longevity"
         android:entryValues="@array/log_longevity" />
 
+    <ListPreference
+        android:key="@string/pk_toast_verbosity"
+        android:title="@string/tx_toasts_verbosity"
+        android:defaultValue="medium verbosity"
+        android:entries="@array/toast_verbosity"
+        android:entryValues="@array/toast_verbosity" />
+
 </PreferenceScreen>

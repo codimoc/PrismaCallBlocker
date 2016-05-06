@@ -2,12 +2,11 @@ package com.prismaqf.callblocker;
 
 import android.content.CursorLoader;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 
 import com.prismaqf.callblocker.sql.LoggedCallProvider;
+import com.prismaqf.callblocker.utils.PreferenceHelper;
 
 /**
  * Activity to show a list of recent triggered events
@@ -39,9 +38,7 @@ public class ShowTriggerEvents extends ShowLoggedCalls{
                 {
                     @Override
                     public Cursor loadInBackground() {
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-                        String key = getString(R.string.pk_sql_limit);
-                        int limit = Integer.parseInt(prefs.getString(key,"10"));
+                        int limit = PreferenceHelper.GetSqlQueryLimit(getContext());
                         return LoggedCallProvider.LatestTriggered(myDbConnection, limit, true);
                     }
                 };

@@ -2,14 +2,13 @@ package com.prismaqf.callblocker;
 
 import android.content.CursorLoader;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.widget.SimpleCursorAdapter;
 
 import com.prismaqf.callblocker.sql.DbContract;
 import com.prismaqf.callblocker.sql.ServiceRunProvider;
+import com.prismaqf.callblocker.utils.PreferenceHelper;
 
 /**
  * Activity to show a list of recent service runs with
@@ -37,9 +36,7 @@ public class ShowServiceRuns extends ShowListActivity {
                 {
                     @Override
                     public Cursor loadInBackground() {
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-                        String key = getString(R.string.pk_sql_limit);
-                        int limit = Integer.parseInt(prefs.getString(key, "10"));
+                        int limit = PreferenceHelper.GetSqlQueryLimit(getContext());
                         return ServiceRunProvider.LatestRuns(myDbConnection, limit);
                     }
                 };

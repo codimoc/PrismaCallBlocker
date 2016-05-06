@@ -25,9 +25,11 @@
     <string name="ac_show_filter_rules">Show filter rules</string>
     <string name="tx_sql_limit">Max sixe of DB query</string>
     <string name="tx_log_longevity">Keep call logs for…</string>
+    <string name="tx_toasts_verbosity">Show toast messages</string>
     <string name="ac_setting">Settings</string>
     <string name="pk_sql_limit">sql_query_limit</string>
     <string name="pk_log_longevity">log_longevity</string>
+    <string name="pk_toast_verbosity">toast verbosity</string>
     <string name="mn_new_item">Add a new item</string>
     <string name="mn_new_calendar_rule">Add a calendar rule</string>
     <string name="mn_new_filter_rule">Add a filter rule</string>
@@ -110,5 +112,10 @@
     <string name="mn_edit_patterns">Edit the filter rule</string>
     <string name="tx_action_class">Action class:</string>
     <string name="msg_can_not_delete_rule">Can\'t delete because rule name is in use in a filter</string>
+    <string name="about_title">Prisma Call Blocker by ConteDiMonteCristo</string>
+    <string name="about_email">Contact: prismoid01@gmail.com</string>
+    <string name="about_version">Version: X.X</string>
+    <string name="about_description">Rule based call blocker application</string>
+    <string name="ac_about">About</string>
 
 </resources>

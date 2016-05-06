@@ -31,4 +31,10 @@
         <item>no limit</item>
     </string-array>
 
+    <string-array name="toast_verbosity">
+        <item>no toast messages</item>
+        <item>medium verbosity</item>
+        <item>all toast messages</item>
+    </string-array>
+
 </resources>

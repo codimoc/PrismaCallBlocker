@@ -2,13 +2,11 @@ package com.prismaqf.callblocker.sql;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.prismaqf.callblocker.R;
+import com.prismaqf.callblocker.utils.PreferenceHelper;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -245,9 +243,7 @@ public class ServiceRunProvider {
     }
 
     public static synchronized int PurgeLog(SQLiteDatabase db, Context context, String longevity) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String key = context.getString(R.string.pk_log_longevity);
-        String theLongevity = longevity!=null ? longevity : prefs.getString(key, "no limit");
+        String theLongevity = longevity!=null ? longevity : PreferenceHelper.GetLogLongevity(context);
         if (theLongevity.equals("no limit")) return 0;
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         cal.setTime(new Date());

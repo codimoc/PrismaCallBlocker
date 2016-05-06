@@ -21,6 +21,7 @@ import com.prismaqf.callblocker.filters.FilterHandle;
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.FilterProvider;
 import com.prismaqf.callblocker.sql.ServiceRunProvider;
+import com.prismaqf.callblocker.utils.PreferenceHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +109,8 @@ public class CallHelper {
                     intent.putExtra(ctx.getString(R.string.ky_received),getNumReceived());
                     intent.putExtra(ctx.getString(R.string.ky_triggered), getNumTriggered());
                     ctx.sendBroadcast(intent);
-                    Toast.makeText(ctx, "Incoming: " + incomingNumber, Toast.LENGTH_LONG).show();
+                    if (PreferenceHelper.GetToastVerbosity(ctx) > 0)
+                        Toast.makeText(ctx, "Incoming: " + incomingNumber, Toast.LENGTH_LONG).show();
                     if (!logging) {
                         new LogIncoming().act(ctx,incomingNumber,info);
                     }
@@ -127,7 +129,8 @@ public class CallHelper {
         @Override
         public void onReceive(Context context, Intent intent) {
             String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-            Toast.makeText(ctx, "Outgoing: "+number, Toast.LENGTH_LONG).show();
+            if (PreferenceHelper.GetToastVerbosity(ctx) > 1)
+                Toast.makeText(ctx, "Outgoing: "+number, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -163,7 +166,8 @@ public class CallHelper {
             String msg = myFilters.size() > 1 ?
                     String.format(Locale.getDefault(),"%d filters loaded", myFilters.size()):
                     String.format(Locale.getDefault(),"%d filter loaded", myFilters.size());
-            Toast.makeText(myContext, msg, Toast.LENGTH_LONG).show();
+            if (PreferenceHelper.GetToastVerbosity(ctx) > 1)
+                Toast.makeText(myContext, msg, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -198,7 +202,8 @@ public class CallHelper {
             String msg = purged > 0  ?
                     String.format(Locale.getDefault(),"%d service run records purged", purged):
                     "No service run records purged";
-            Toast.makeText(myContext, msg, Toast.LENGTH_LONG).show();
+            if (PreferenceHelper.GetToastVerbosity(ctx) > 1)
+                Toast.makeText(myContext, msg, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -216,7 +221,8 @@ public class CallHelper {
     public void start() {
         if (isRunning) {
             Log.e(TAG,"The service is already running");
-            Toast.makeText(ctx,"The service is already running",Toast.LENGTH_LONG).show();
+            if (PreferenceHelper.GetToastVerbosity(ctx) > 0)
+                Toast.makeText(ctx,"The service is already running",Toast.LENGTH_LONG).show();
             return;
         }
         purgeLogs(ctx);

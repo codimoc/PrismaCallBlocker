@@ -28,4 +28,9 @@
         android:icon="@drawable/ic_help_circle"
         android:orderInCategory="80"
         com.prismaqf.callblocker:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="200"
+        android:title="@string/ac_about"
+        app:showAsAction="never" />
 </menu>
