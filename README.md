@@ -1,4 +1,4 @@
 # PrismaCallBlocker
 Android Call Blocker with pattern management
 
-* [Help pages](wiki/help) 
+* [Help pages](https://github.com/ConteDiMonteCristo/PrismaCallBlocker/wiki/Help) 
