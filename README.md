@@ -5,7 +5,7 @@ Android Call Blocker with pattern management
 * [Help pages](https://github.com/ConteDiMonteCristo/PrismaCallBlocker/wiki/Help) 
 
 
-License
+## License
 Copyright 2016 ConteDiMonteCristo
 
 Licensed under the Apache License, Version 2.0 (the "License");
