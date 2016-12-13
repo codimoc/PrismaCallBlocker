@@ -23,7 +23,7 @@
     <string name="ac_show_triggers">Show latest triggered events</string>
     <string name="ac_show_calendar_rules">Show calendar rules</string>
     <string name="ac_show_filter_rules">Show filter rules</string>
-    <string name="tx_sql_limit">Max sixe of DB query</string>
+    <string name="tx_sql_limit">Max size of DB query</string>
     <string name="tx_log_longevity">Keep call logs for…</string>
     <string name="tx_toasts_verbosity">Show toast messages</string>
     <string name="ac_setting">Settings</string>
