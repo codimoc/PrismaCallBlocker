@@ -20,5 +20,8 @@
         android:defaultValue="medium verbosity"
         android:entries="@array/toast_verbosity"
         android:entryValues="@array/toast_verbosity" />
+    <Preference
+        android:key="@string/pk_exp_rules"
+        android:title="@string/tx_exp_rules" />
 
 </PreferenceScreen>

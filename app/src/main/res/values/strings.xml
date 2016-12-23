@@ -117,5 +117,9 @@
     <string name="about_version">Version: X.X</string>
     <string name="about_description">Rule based call blocker application</string>
     <string name="ac_about">About</string>
+    <string name="pk_exp_rules">export_rules</string>
+    <string name="tx_exp_rules">Export rules</string>
+    <string name="export_dirpath">com.prismaqf.callblocker</string>
+    <string name="export_filename">rules.xml</string>
 
 </resources>
