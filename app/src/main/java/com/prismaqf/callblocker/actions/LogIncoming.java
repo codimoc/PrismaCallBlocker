@@ -9,15 +9,18 @@ import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.LoggedCallProvider;
 import com.prismaqf.callblocker.sql.ServiceRunProvider;
 
+import java.io.Serializable;
+
 /**
  * Class to log an incoming call
  * @author ConteDiMonteCristo
  */
 @AvailableAction(description = "Logs events to DB")
-public class LogIncoming implements IAction{
+public class LogIncoming implements IAction, Serializable{
 
     private final static String TAG = LogIncoming.class.getCanonicalName();
     private final static String DESCRIPTION = "Logs events to DB";
+    private final static long serialVersionUID = 1L; //for serialization consistency
 
 
     @Override

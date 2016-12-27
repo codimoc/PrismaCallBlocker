@@ -3,6 +3,7 @@ package com.prismaqf.callblocker.rules;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -13,8 +14,9 @@ import java.util.regex.Pattern;
  * A class to represent a Filter to match a number against a set of pattern
  * @author ConteDiMonteCristo
  */
-public class FilterRule implements IFilterRule, Cloneable, Parcelable{
+public class FilterRule implements IFilterRule, Cloneable, Parcelable, Serializable{
 
+    private final static long serialVersionUID = 1L; //for serialization consistency
     private String name;
     private String description;
     private Map<String,Pattern> patterns;

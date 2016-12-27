@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -129,7 +130,7 @@ public class EditFilterPatterns extends AppCompatActivity {
 
     private void update() {
         Intent returnIntent = new Intent();
-        returnIntent.putExtra(NewEditActivity.KEY_PTRULE, myFragment.getAdapter().getRule());
+        returnIntent.putExtra(NewEditActivity.KEY_PTRULE, (Parcelable)myFragment.getAdapter().getRule());
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }

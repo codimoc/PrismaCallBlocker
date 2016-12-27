@@ -120,6 +120,6 @@
     <string name="pk_exp_rules">export_rules</string>
     <string name="tx_exp_rules">Export rules</string>
     <string name="export_dirpath">com.prismaqf.callblocker</string>
-    <string name="export_filename">rules.xml</string>
+    <string name="export_filename">filters.bin</string>
 
 </resources>

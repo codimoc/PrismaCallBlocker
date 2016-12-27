@@ -1,6 +1,7 @@
 package com.prismaqf.callblocker;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -11,6 +12,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 
 /**
@@ -39,13 +41,11 @@ public class SettingFragment extends PreferenceFragment{
                         // Create the file.
                         File file = new File(getStorageDir(getString(R.string.export_dirpath)), getString(R.string.export_filename));
                         FileOutputStream fOut = new FileOutputStream(file);
-                        OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                        myOutWriter.append("Hello world!");
-
-                        myOutWriter.close();
-
-                        fOut.flush();
-                        fOut.close();
+                        ObjectOutputStream oOut = new ObjectOutputStream(fOut);
+                        Context ctx = getActivity();
+                        oOut.writeObject(CallHelper.GetHelper(ctx).getFilters(ctx));
+                        oOut.flush();
+                        oOut.close();
                     }
                     catch (IOException e)
                     {

@@ -137,6 +137,11 @@ public class CallHelper {
     private class LoadFilters extends AsyncTask<Context, Void, Void> {
 
         Context myContext;
+        List<Filter> filters = new ArrayList<>();
+
+        List<Filter> getFilters() {
+            return filters;
+        }
 
         @Override
         protected Void doInBackground(Context... ctxs) {
@@ -147,13 +152,13 @@ public class CallHelper {
                 db = new DbHelper(myContext).getReadableDatabase();
                 List<FilterHandle> handles = FilterProvider.LoadFilters(db);
                 for(FilterHandle h : handles)
-                    myFilters.add(Filter.makeFilter(myContext,h));
+                    filters.add(Filter.makeFilter(myContext,h));
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
             } finally {
-                String msg = myFilters.size() > 1 ?
-                        String.format(Locale.getDefault(),"%d filters loaded", myFilters.size()):
-                        String.format(Locale.getDefault(),"%d filter loaded", myFilters.size());
+                String msg = filters.size() > 1 ?
+                        String.format(Locale.getDefault(),"%d filters loaded", filters.size()):
+                        String.format(Locale.getDefault(),"%d filter loaded", filters.size());
                 Log.i(TAG,msg);
                 if (db != null) db.close();
             }
@@ -163,10 +168,10 @@ public class CallHelper {
         @Override
         protected void onPostExecute (Void v) {
             if (myContext==null) return;
-            String msg = myFilters.size() > 1 ?
-                    String.format(Locale.getDefault(),"%d filters loaded", myFilters.size()):
-                    String.format(Locale.getDefault(),"%d filter loaded", myFilters.size());
-            if (PreferenceHelper.GetToastVerbosity(ctx) > 1)
+            String msg = filters.size() > 1 ?
+                    String.format(Locale.getDefault(),"%d filters loaded", filters.size()):
+                    String.format(Locale.getDefault(),"%d filter loaded", filters.size());
+            if (PreferenceHelper.GetToastVerbosity(myContext) > 1)
                 Toast.makeText(myContext, msg, Toast.LENGTH_LONG).show();
         }
     }
@@ -310,8 +315,13 @@ public class CallHelper {
     }
 
     public void loadFilters(final Context context) {
-        myFilters = new ArrayList<>();
-        new LoadFilters().execute(context);
+        myFilters = getFilters(context);
+    }
+
+    public List<Filter> getFilters(final Context context) {
+        LoadFilters lf = new LoadFilters();
+        lf.execute(context);
+        return lf.getFilters();
     }
 
     private void purgeLogs(final Context context) {

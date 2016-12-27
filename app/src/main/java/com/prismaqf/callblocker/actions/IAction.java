@@ -2,12 +2,14 @@ package com.prismaqf.callblocker.actions;
 
 import android.content.Context;
 
+import java.io.Serializable;
+
 /**
  * Interface for an action to be performed after a rule is triggered
  * upn an incoming number
  * @author ConteDiMonteCristo
  */
-public interface IAction {
+public interface IAction{
 
     /**
      * The action to be performed

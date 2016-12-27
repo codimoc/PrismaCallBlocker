@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.android.internal.telephony.ITelephony;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
@@ -14,10 +15,11 @@ import java.lang.reflect.Method;
  * @see 'http://androidsourcecode.blogspot.co.uk/2010/10/blocking-incoming-call-android.html'
  */
 @AvailableAction(description = "Drop by Itelephone endCall (preferrred)")
-public class DropCallByEndCall implements IAction{
+public class DropCallByEndCall implements IAction, Serializable{
 
     private final static String TAG = DropCallByEndCall.class.getCanonicalName();
     private final static String DESCRIPTION = "Use ITelephony to end call (preferred action)";
+    private final static long serialVersionUID = 1L; //for serialization consistency
 
 
 

@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import dalvik.system.DexFile;
@@ -37,9 +40,24 @@ public class DexClassScanner {
         DexFile dex = null;
         try {
             dex = new DexFile(classPath);
-            Enumeration<String> apkClassNames = dex.entries();
-            while (apkClassNames.hasMoreElements()) {
-                String className = apkClassNames.nextElement();
+            List<String> apkClassNames = Collections.list(dex.entries());
+            //deal with instant run here
+            List<String> sourcePaths = new ArrayList<>();
+            File instantRunFilePath = new File(ai.dataDir,"files" + File.separator + "instant-run" + File.separator + "dex");
+            if (instantRunFilePath.exists() && instantRunFilePath.isDirectory()) {
+                File[] sliceFiles = instantRunFilePath.listFiles();
+                for (File sliceFile : sliceFiles) {
+                    if (null != sliceFile && sliceFile.exists() && sliceFile.isFile() && sliceFile.getName().endsWith(".dex")) {
+                        sourcePaths.add(sliceFile.getAbsolutePath());
+                    }
+                }
+            }
+            for (String sp : sourcePaths) {
+                dex = new DexFile(sp);
+                apkClassNames.addAll(Collections.list(dex.entries()));
+            }
+            //finish instant run
+            for (String className : apkClassNames) {
                 if (!className.startsWith(prefix)) continue;
                 try {
                     Class c = loader.loadClass(className);
