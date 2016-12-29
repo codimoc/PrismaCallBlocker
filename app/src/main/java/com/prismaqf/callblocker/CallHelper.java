@@ -97,7 +97,7 @@ public class CallHelper {
                     boolean logging = false;
                     for (Filter f : myFilters) {
                         f.act(ctx,incomingNumber,info);
-                        if (f.getAction().getClass().getCanonicalName().equals(LogIncoming.class.getCanonicalName()))
+                        if (f.getAction().getName().equals(LogIncoming.class.getCanonicalName()))
                             logging = true;
                     }
                     setNumReceived(info.getNumReceived());

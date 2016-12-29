@@ -12,6 +12,12 @@ import java.io.Serializable;
 public interface IAction{
 
     /**
+     *
+     * @return the name
+     */
+    String getName();
+
+    /**
      * The action to be performed
      * @param context the Android context
      * @param number the incoming number

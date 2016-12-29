@@ -22,6 +22,10 @@ public class LogIncoming implements IAction, Serializable{
     private final static String DESCRIPTION = "Logs events to DB";
     private final static long serialVersionUID = 1L; //for serialization consistency
 
+    @Override
+    public String getName() {
+        return getClass().getCanonicalName();
+    }
 
     @Override
     public void act(final Context ctx, final String number, final LogInfo info) {

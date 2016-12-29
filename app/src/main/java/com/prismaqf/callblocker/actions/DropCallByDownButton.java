@@ -17,6 +17,11 @@ public class DropCallByDownButton implements IAction, Serializable{
     private final static String DESCRIPTION = "Drop call by down button + headset hook";
     private final static long serialVersionUID = 1L; //for serialization consistency
 
+    @Override
+    public String getName() {
+        return getClass().getCanonicalName();
+    }
+
 
     @Override
     public void act(Context ctx, String number, LogInfo info) {

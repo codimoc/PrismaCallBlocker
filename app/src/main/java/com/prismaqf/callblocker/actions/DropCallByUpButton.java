@@ -18,6 +18,11 @@ public class DropCallByUpButton implements IAction, Serializable{
     private final static long serialVersionUID = 1L; //for serialization consistency
 
     @Override
+    public String getName() {
+        return getClass().getCanonicalName();
+    }
+
+    @Override
     public void act(Context ctx, String number, LogInfo info) {
         Log.i(TAG, "Dropping a call by up button");
         Intent buttonDown = new Intent(Intent.ACTION_MEDIA_BUTTON);

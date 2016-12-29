@@ -16,6 +16,11 @@ public class WarnTrigger implements IAction, Serializable {
     private final static long serialVersionUID = 1L; //for serialization consistency
 
     @Override
+    public String getName() {
+        return getClass().getCanonicalName();
+    }
+
+    @Override
     public void act(Context ctx, String number, LogInfo info) {
         Toast.makeText(ctx, String.format("Suspected number %s has triggered an event. Reject call?",number), Toast.LENGTH_LONG).show();
     }

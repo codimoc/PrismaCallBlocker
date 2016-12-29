@@ -7,6 +7,11 @@ import java.util.Date;
  */
 public class Never implements ICalendarRule{
     @Override
+    public String getName() {
+        return "Never";
+    }
+
+    @Override
     public boolean IsActive(Date currentTime) {
         return false;
     }

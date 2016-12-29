@@ -7,6 +7,11 @@ package com.prismaqf.callblocker.rules;
  */
 public class NoMatches implements IFilterRule {
     @Override
+    public String getName() {
+        return "NoMatches";
+    }
+
+    @Override
     public boolean Matches(String number) {
         return false;
     }

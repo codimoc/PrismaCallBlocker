@@ -20,6 +20,11 @@ public class DropCallByInvisibleActivity implements IAction, Serializable {
     private final static long serialVersionUID = 1L; //for serialization consistency
 
     @Override
+    public String getName() {
+        return getClass().getCanonicalName();
+    }
+
+    @Override
     public void act(final Context ctx, final String number, final LogInfo info) {
         Log.i(TAG, "Dropping a call using an invisible activity");
         Intent intent = new Intent(ctx, CallAcceptDrop.class);

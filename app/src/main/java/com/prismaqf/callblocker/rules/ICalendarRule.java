@@ -9,6 +9,12 @@ import java.util.Date;
 public interface ICalendarRule {
 
     /**
+     *
+     * @return the name of the rule
+     */
+    String getName();
+
+    /**
      * Check if a rule is currently active
      * @param currentTime the current time
      * @return a boolean flag to check if the rule is active

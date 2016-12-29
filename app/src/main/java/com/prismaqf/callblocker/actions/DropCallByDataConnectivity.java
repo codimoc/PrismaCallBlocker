@@ -20,6 +20,11 @@ public class DropCallByDataConnectivity implements IAction, Serializable {
 
 
     @Override
+    public String getName() {
+        return getClass().getCanonicalName();
+    }
+
+    @Override
     public void act(final Context ctx, final String number, final LogInfo info) {
         Log.i(TAG, "Dropping the network connection");
         try {

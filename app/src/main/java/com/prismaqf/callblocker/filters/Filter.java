@@ -123,7 +123,7 @@ public class Filter implements IAction, Serializable{
         return name.equals(other.name) &&
                calendarRule.equals(other.calendarRule) &&
                filterRule.equals(other.filterRule) &&
-               action.getClass().getCanonicalName().equals(other.action.getClass().getCanonicalName());
+               action.getName().equals(other.action.getName());
     }
 
     @Override
@@ -133,7 +133,7 @@ public class Filter implements IAction, Serializable{
         result = prime * result + name.hashCode();
         result = prime * result + calendarRule.hashCode();
         result = prime * result + filterRule.hashCode();
-        result = prime * result + action.getClass().getCanonicalName().hashCode();
+        result = prime * result + action.getName().hashCode();
         return result;
     }
 

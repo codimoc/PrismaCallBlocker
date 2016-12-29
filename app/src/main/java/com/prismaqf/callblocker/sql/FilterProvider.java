@@ -5,7 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.prismaqf.callblocker.filters.Filter;
 import com.prismaqf.callblocker.filters.FilterHandle;
+import com.prismaqf.callblocker.rules.CalendarRule;
+import com.prismaqf.callblocker.rules.FilterRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +39,24 @@ public class FilterProvider {
         if (fh.getActionName() != null)
             vals.put(DbContract.Filters.COLUMN_NAME_ACTIONNAME,fh.getActionName());
         return db.insert(DbContract.Filters.TABLE_NAME, DbContract.Filters.COLUMN_NAME_ACTIONNAME, vals);
+    }
+
+    /**
+     * Save a Filter from its binary representation
+     * @param db the SQLite db connection
+     * @param f the filter object
+     * @return the id of the filter or -1 if there is a problem
+     */
+    public static synchronized long SaveFilter(SQLiteDatabase db, Filter f) {
+        if (HasFilter(db,f)) return -1L;
+        String fname = f.getName();
+        if (FindFilter(db,fname) != null)
+            fname = String.format("%s_#",fname);
+        //Save the content here
+
+        //Save the filter handle here
+        FilterHandle fh = new FilterHandle(fname,f.getCalendarRule().getName(),f.getFilterRule().getName(),f.getAction().getName());
+        return InsertRow(db,fh);
     }
 
     /**
@@ -191,6 +212,26 @@ public class FilterProvider {
     public static synchronized boolean HasFilterRule(SQLiteDatabase db, String ruleName) {
         String where = DbContract.Filters.COLUMN_NAME_FILTERRULENAME + " = ?";
         String[] args = {ruleName};
+        Cursor c = db.query(DbContract.Filters.TABLE_NAME, null, where, args, null, null, null, null);
+        boolean flag = false;
+        if (c.getCount() > 0) flag = true;
+        c.close();
+        return flag;
+    }
+
+    /**
+     * Check if a filter with the same rules already exists
+     * @param db the SQLite connection
+     * @param filter the filter object
+     * @return a flag indicating if the rule exixts or not
+     */
+    public static synchronized boolean HasFilter (SQLiteDatabase db, Filter filter) {
+        String where = DbContract.Filters.COLUMN_NAME_FILTERRULENAME + " = ? AND " +
+                       DbContract.Filters.COLUMN_NAME_CALENDARRULENAME + " = ? AND " +
+                       DbContract.Filters.COLUMN_NAME_ACTIONNAME + " = ?";
+        String[] args = {((FilterRule)filter.getFilterRule()).getName(),
+                         ((CalendarRule)filter.getCalendarRule()).getName(),
+                         filter.getAction().getName()};
         Cursor c = db.query(DbContract.Filters.TABLE_NAME, null, where, args, null, null, null, null);
         boolean flag = false;
         if (c.getCount() > 0) flag = true;
