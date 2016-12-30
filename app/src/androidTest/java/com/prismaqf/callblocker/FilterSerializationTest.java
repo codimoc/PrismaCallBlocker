@@ -29,8 +29,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.SQLException;
 import java.util.List;
@@ -104,7 +106,7 @@ public class FilterSerializationTest {
 
 
     @Test
-    public void SerializationTest() throws IOException{
+    public void SerializationTest() throws IOException, ReflectiveOperationException, SQLException {
         Context myContext = InstrumentationRegistry.getTargetContext();
         String actionName1 = DropCallByDownButton.class.getCanonicalName();
         String actionName2 = DropCallByEndCall.class.getCanonicalName();
@@ -114,7 +116,6 @@ public class FilterSerializationTest {
         FilterProvider.InsertRow(db,fh1);
         FilterProvider.InsertRow(db,fh2);
         assertEquals("Two filters are present in the db",2,FilterProvider.AllFilters(db).size());
-        db.close();
         Activity act = InstrumentTestHelper.getCurrentActivity();
         List<Filter> myFilters = CallHelper.GetHelper(act).getFilters(act);
         assertEquals("Two filters in memory",2,myFilters.size());
@@ -128,7 +129,33 @@ public class FilterSerializationTest {
         oOut.writeObject(myFilters);
         oOut.flush();
         oOut.close();
+        //now roundtrip, remove filters from db and desrialize
+        CalendarRuleProvider.DeleteCalendarRule(db, CAL_RULE);
+        FilterRuleProvider.DeleteFilterRule(db, FIL_RULE_1);
+        FilterRuleProvider.DeleteFilterRule(db, FIL_RULE_2);
+        FilterProvider.DeleteFilter(db,"myFilter1");
+        FilterProvider.DeleteFilter(db,"myFilter2");
+        assertEquals("No filters are present in the db",0,FilterProvider.AllFilters(db).size());
+        //now deserialize
+        FileInputStream fIn = new FileInputStream(f);
+        ObjectInputStream oIn = new ObjectInputStream(fIn);
+        List<Filter> myFiltersIn = (List<Filter>) oIn.readObject();
+        oIn.close();
+        assertEquals("Two deserialized filters",2,myFiltersIn.size());
+        //now save to db
+        for(Filter ff : myFiltersIn) {
+            FilterProvider.SaveFilter(db,ff);
+        }
+        assertEquals("Two filters are present in the db",2,FilterProvider.AllFilters(db).size());
+        FilterHandle fh1_in = FilterProvider.FindFilter(db,"myFilter1");
+        FilterHandle fh2_in = FilterProvider.FindFilter(db,"myFilter2");
+        Filter f1 = Filter.makeFilter(myContext,fh1_in);
+        Filter f2 = Filter.makeFilter(myContext,fh2_in);
+        assertEquals("Deserialized first filter",myFilters.get(0),f1);
+        assertEquals("Deserialized second filter",myFilters.get(1),f2);
+
         assertTrue("Now the file exists",f.exists());
         assertTrue("I can delete",f.delete());
+        db.close();
     }
 }

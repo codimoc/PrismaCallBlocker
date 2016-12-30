@@ -9,6 +9,7 @@ import com.prismaqf.callblocker.filters.Filter;
 import com.prismaqf.callblocker.filters.FilterHandle;
 import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.rules.FilterRule;
+import com.prismaqf.callblocker.rules.ICalendarRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +53,43 @@ public class FilterProvider {
         String fname = f.getName();
         if (FindFilter(db,fname) != null)
             fname = String.format("%s_#",fname);
+
         //Save the content here
+        //for calendar rules we try to find an equivalent rule so we don't save
+        //if no equivalent we save.
+        //In any case we resolve name ambiguity when we save
+        CalendarRule cr = (CalendarRule) f.getCalendarRule();
+        String cname = f.getCalendarRule().getName();
+        if (cr != null) { //ICalendarRule is a CalendarRule
+            String oldName = CalendarRuleProvider.FindCalendarRule(db, cr);
+            if (oldName == null) //an equivalent rule does not exist
+            {
+                if (CalendarRuleProvider.FindCalendarRule(db,cname)!=null) //the name is already used
+                {
+                    cname = String.format("%s_#",cname);
+                    cr.setName(cname);
+                }
+                CalendarRuleProvider.InsertRow(db, cr);
+            }
+            else
+                cname = oldName;
+        }
+        //for filter rules we always save and
+        //we resolve name ambiguity when we save
+        FilterRule fr = (FilterRule)f.getFilterRule();
+        String frname = f.getFilterRule().getName();
+        if (fr != null) { //IFilterRule is a FilterRule
+            if (FilterRuleProvider.FindFilterRule(db,frname) != null) //the name is already used
+            {
+                frname = String.format("%s_#",frname);
+                fr.setName(frname);
+            }
+            FilterRuleProvider.InsertRow(db, fr);
+        }
+        //for actions instead there is nothing that need to be saved
 
         //Save the filter handle here
-        FilterHandle fh = new FilterHandle(fname,f.getCalendarRule().getName(),f.getFilterRule().getName(),f.getAction().getName());
+        FilterHandle fh = new FilterHandle(fname,cname,frname,f.getAction().getName());
         return InsertRow(db,fh);
     }
 
@@ -229,8 +263,8 @@ public class FilterProvider {
         String where = DbContract.Filters.COLUMN_NAME_FILTERRULENAME + " = ? AND " +
                        DbContract.Filters.COLUMN_NAME_CALENDARRULENAME + " = ? AND " +
                        DbContract.Filters.COLUMN_NAME_ACTIONNAME + " = ?";
-        String[] args = {((FilterRule)filter.getFilterRule()).getName(),
-                         ((CalendarRule)filter.getCalendarRule()).getName(),
+        String[] args = {filter.getFilterRule().getName(),
+                         filter.getCalendarRule().getName(),
                          filter.getAction().getName()};
         Cursor c = db.query(DbContract.Filters.TABLE_NAME, null, where, args, null, null, null, null);
         boolean flag = false;
