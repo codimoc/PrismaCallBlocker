@@ -22,6 +22,11 @@
         android:entryValues="@array/toast_verbosity" />
     <Preference
         android:key="@string/pk_exp_rules"
-        android:title="@string/tx_exp_rules" />
+        android:title="@string/tx_exp_rules"
+        android:summary="@string/tx_serialization_location"/>
+    <Preference
+        android:key="@string/pk_imp_rules"
+        android:title="@string/tx_imp_rules"
+        android:summary="@string/tx_serialization_location"/>
 
 </PreferenceScreen>

@@ -119,7 +119,10 @@
     <string name="ac_about">About</string>
     <string name="pk_exp_rules">export_rules</string>
     <string name="tx_exp_rules">Export rules</string>
+    <string name="pk_imp_rules">import_rules</string>
+    <string name="tx_imp_rules">Import rules</string>
     <string name="export_dirpath">com.prismaqf.callblocker</string>
     <string name="export_filename">filters.bin</string>
+    <string name="tx_serialization_location">Download/com.prismaqf.callblocker/filters.bin</string>
 
 </resources>
