@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -59,7 +60,7 @@ public class CalendarRulesFragment extends EditCursorListFragment {
             } else {
                 Intent intent = new Intent(getActivity(),NewEditCalendarRule.class);
                 intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_UPDATE);
-                intent.putExtra(NewEditActivity.KEY_ORIG,rule);
+                intent.putExtra(NewEditActivity.KEY_ORIG,(Parcelable)rule);
                 intent.putExtra(NewEditActivity.KEY_RULEID,myRuleId);
                 startActivity(intent);
             }

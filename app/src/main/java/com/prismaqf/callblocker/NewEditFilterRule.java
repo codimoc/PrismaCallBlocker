@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -95,8 +96,8 @@ public class NewEditFilterRule extends NewEditActivity {
             else if (myContext.equals(CONTEXT_SAVE)) {
                 myContext = CONTEXT_EDIT;
                 Intent intent = new Intent(NewEditFilterRule.this, NewEditFilterRule.class);
-                intent.putExtra(NewEditActivity.KEY_NEW, myNewRule);
-                intent.putExtra(NewEditActivity.KEY_ORIG, myOrigRule);
+                intent.putExtra(NewEditActivity.KEY_NEW, (Parcelable)myNewRule);
+                intent.putExtra(NewEditActivity.KEY_ORIG, (Parcelable)myOrigRule);
                 intent.putExtra(NewEditActivity.KEY_ACTION, ACTION_EDIT);
                 intent.putExtra(NewEditActivity.KEY_ISNAMEVALID, isNameValid);
                 intent.putExtra(NewEditActivity.KEY_RULENAMES, myRuleNames);
@@ -398,8 +399,8 @@ public class NewEditFilterRule extends NewEditActivity {
 
     public void onManagePatterns(View view) {
         Intent intent = new Intent(this, EditFilterPatterns.class);
-        intent.putExtra(KEY_PTRULE,ptRule);
-        intent.putExtra(KEY_ORIG,ptRule);
+        intent.putExtra(KEY_PTRULE,(Parcelable)ptRule);
+        intent.putExtra(KEY_ORIG,(Parcelable)ptRule);
         startActivityForResult(intent,EDIT_PATTERNS);
     }
 }

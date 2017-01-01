@@ -4,6 +4,7 @@ import android.content.Context;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
@@ -11,11 +12,17 @@ import java.lang.reflect.Method;
  * network connectivity and then restoriting it back
  * @author ConteDiMonteCristo
  */
-public class DropCallByDataConnectivity implements IAction {
+public class DropCallByDataConnectivity implements IAction, Serializable {
 
     private final static String TAG = DropCallByDataConnectivity.class.getCanonicalName();
     private final static String DESCRIPTION = "Drop call by switching off data connectivity (requires special permission)";
+    private final static long serialVersionUID = 1L; //for serialization consistency
 
+
+    @Override
+    public String getName() {
+        return getClass().getCanonicalName();
+    }
 
     @Override
     public void act(final Context ctx, final String number, final LogInfo info) {

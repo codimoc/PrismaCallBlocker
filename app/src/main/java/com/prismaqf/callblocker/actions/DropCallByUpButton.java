@@ -5,14 +5,22 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import java.io.Serializable;
+
 /**
  * @author ConteDiMonteCristo
  * @see 'http://www.codeproject.com/Tips/578817/Reject-and-Accept-an-Incoming-Call'
  */
 @AvailableAction(description = "Drop by button up")
-public class DropCallByUpButton implements IAction{
+public class DropCallByUpButton implements IAction, Serializable{
     private final static String TAG = DropCallByUpButton.class.getCanonicalName();
     private final static String DESCRIPTION = "Drop call by up button + headset hook";
+    private final static long serialVersionUID = 1L; //for serialization consistency
+
+    @Override
+    public String getName() {
+        return getClass().getCanonicalName();
+    }
 
     @Override
     public void act(Context ctx, String number, LogInfo info) {

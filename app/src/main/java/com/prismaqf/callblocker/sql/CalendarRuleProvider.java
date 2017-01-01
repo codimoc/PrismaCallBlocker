@@ -164,6 +164,20 @@ public class CalendarRuleProvider {
         return 0;
     }
 
+    public static synchronized String FindCalendarRule(SQLiteDatabase db, CalendarRule cr) {
+        String selection = DbContract.CalendarRules.COLUMN_NAME_DAYMASK + " = ? AND " +
+                           DbContract.CalendarRules.COLUMN_NAME_FROM + " = ? AND " +
+                           DbContract.CalendarRules.COLUMN_NAME_TO + " = ?";
+        String[] selectionArgs = { String.valueOf(cr.getBinaryMask()), cr.getBareStartTime(), cr.getBareEndTime() };
+        Cursor c = db.query(DbContract.CalendarRules.TABLE_NAME,null,selection,selectionArgs,null,null,null,null);
+        if (c.getCount() >0) {
+            c.moveToLast(); //get the last occurrency (should be only one entry
+            return c.getString(c.getColumnIndexOrThrow(DbContract.CalendarRules.COLUMN_NAME_RULENAME));
+        }
+        c.close();
+        return null;
+    }
+
     private static String makeRuleFormat(int daymask, String from, String to) {
         StringBuilder buffer = new StringBuilder("Days ");
         if ((daymask & 1) == 1) buffer.append('M');

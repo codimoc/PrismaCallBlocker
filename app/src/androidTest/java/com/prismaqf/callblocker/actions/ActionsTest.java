@@ -67,7 +67,7 @@ public class ActionsTest {
         Collection<IAction> actions = ActionRegistry.getAvailableActions(myCtx);
         assertTrue("The collection of actions is not null", actions.size()>0);
         IAction action1 = (IAction)actions.toArray()[0];
-        IAction action2 = ActionRegistry.getAvailableAction(myCtx,action1.getClass().getCanonicalName());
+        IAction action2 = ActionRegistry.getAvailableAction(myCtx,action1.getName());
         assertTrue("The two objects are identical",action1==action2);
         assertTrue("The two objects have the same hash",action1.hashCode()==action2.hashCode());
     }

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -102,7 +103,7 @@ public class NewEditFilter extends NewEditActivity{
             Intent intent = new Intent(NewEditFilter.this,NewEditCalendarRule.class);
             intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_UPDATE);
             intent.putExtra(NewEditActivity.KEY_CONTEXT, NewEditActivity.CONTEXT_EDIT);
-            intent.putExtra(NewEditActivity.KEY_ORIG,rule);
+            intent.putExtra(NewEditActivity.KEY_ORIG,(Parcelable)rule);
             intent.putExtra(NewEditActivity.KEY_RULEID,myRuleId);
             startActivityForResult(intent, EDIT_CAL);
         }
@@ -135,7 +136,7 @@ public class NewEditFilter extends NewEditActivity{
             Intent intent = new Intent(NewEditFilter.this,NewEditFilterRule.class);
             intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_UPDATE);
             intent.putExtra(NewEditActivity.KEY_CONTEXT, NewEditActivity.CONTEXT_EDIT);
-            intent.putExtra(NewEditActivity.KEY_ORIG,rule);
+            intent.putExtra(NewEditActivity.KEY_ORIG,(Parcelable)rule);
             intent.putExtra(NewEditActivity.KEY_RULEID,myRuleId);
             startActivityForResult(intent, EDIT_PAT);
         }

@@ -3,6 +3,7 @@ package com.prismaqf.callblocker.rules;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
@@ -12,8 +13,9 @@ import java.util.Locale;
  * Custom calendar rule, with days of week and start stop times
  * @author ConteDiMonteCristo.
  */
-public class CalendarRule implements ICalendarRule, Cloneable, Parcelable{
+public class CalendarRule implements ICalendarRule, Cloneable, Parcelable, Serializable{
 
+    private final static long serialVersionUID = 1L; //for serialization consistency
     private String name;
     private EnumSet<DayOfWeek> dayMask;
     private int startHour;

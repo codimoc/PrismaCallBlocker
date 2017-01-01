@@ -16,6 +16,7 @@ import com.prismaqf.callblocker.sql.CalendarRuleProvider;
 import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.sql.FilterRuleProvider;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 
 /**
@@ -24,8 +25,9 @@ import java.sql.SQLException;
  * two rules matches
  * @author ConteDiMonteCristo
  */
-public class Filter implements IAction{
+public class Filter implements IAction, Serializable{
 
+    private final static long serialVersionUID = 1L; //for serialization consistency
     private static final String TAG = Filter.class.getCanonicalName();
 
     private final ICalendarRule calendarRule;
@@ -121,7 +123,7 @@ public class Filter implements IAction{
         return name.equals(other.name) &&
                calendarRule.equals(other.calendarRule) &&
                filterRule.equals(other.filterRule) &&
-               action.getClass().getCanonicalName().equals(other.action.getClass().getCanonicalName());
+               action.getName().equals(other.action.getName());
     }
 
     @Override
@@ -131,7 +133,7 @@ public class Filter implements IAction{
         result = prime * result + name.hashCode();
         result = prime * result + calendarRule.hashCode();
         result = prime * result + filterRule.hashCode();
-        result = prime * result + action.getClass().getCanonicalName().hashCode();
+        result = prime * result + action.getName().hashCode();
         return result;
     }
 

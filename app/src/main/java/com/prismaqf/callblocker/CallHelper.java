@@ -41,8 +41,8 @@ public class CallHelper {
 
     private final Context ctx;
     private TelephonyManager tm;
-    private final CallStateListener callListener;
-    private final OutgoingReceiver outgoingReceiver;
+    private CallStateListener callListener;
+    private OutgoingReceiver outgoingReceiver;
 
     private synchronized void setNumReceived(int numReceived) {
         this.numReceived = numReceived;
@@ -97,7 +97,7 @@ public class CallHelper {
                     boolean logging = false;
                     for (Filter f : myFilters) {
                         f.act(ctx,incomingNumber,info);
-                        if (f.getAction().getClass().getCanonicalName().equals(LogIncoming.class.getCanonicalName()))
+                        if (f.getAction().getName().equals(LogIncoming.class.getCanonicalName()))
                             logging = true;
                     }
                     setNumReceived(info.getNumReceived());
@@ -137,6 +137,11 @@ public class CallHelper {
     private class LoadFilters extends AsyncTask<Context, Void, Void> {
 
         Context myContext;
+        List<Filter> filters = new ArrayList<>();
+
+        List<Filter> getFilters() {
+            return filters;
+        }
 
         @Override
         protected Void doInBackground(Context... ctxs) {
@@ -147,13 +152,13 @@ public class CallHelper {
                 db = new DbHelper(myContext).getReadableDatabase();
                 List<FilterHandle> handles = FilterProvider.LoadFilters(db);
                 for(FilterHandle h : handles)
-                    myFilters.add(Filter.makeFilter(myContext,h));
+                    filters.add(Filter.makeFilter(myContext,h));
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
             } finally {
-                String msg = myFilters.size() > 1 ?
-                        String.format(Locale.getDefault(),"%d filters loaded", myFilters.size()):
-                        String.format(Locale.getDefault(),"%d filter loaded", myFilters.size());
+                String msg = filters.size() > 1 ?
+                        String.format(Locale.getDefault(),"%d filters loaded", filters.size()):
+                        String.format(Locale.getDefault(),"%d filter loaded", filters.size());
                 Log.i(TAG,msg);
                 if (db != null) db.close();
             }
@@ -163,11 +168,12 @@ public class CallHelper {
         @Override
         protected void onPostExecute (Void v) {
             if (myContext==null) return;
-            String msg = myFilters.size() > 1 ?
-                    String.format(Locale.getDefault(),"%d filters loaded", myFilters.size()):
-                    String.format(Locale.getDefault(),"%d filter loaded", myFilters.size());
-            if (PreferenceHelper.GetToastVerbosity(ctx) > 1)
+            String msg = filters.size() > 1 ?
+                    String.format(Locale.getDefault(),"%d filters loaded", filters.size()):
+                    String.format(Locale.getDefault(),"%d filter loaded", filters.size());
+            if (PreferenceHelper.GetToastVerbosity(myContext) > 1)
                 Toast.makeText(myContext, msg, Toast.LENGTH_LONG).show();
+            myFilters = filters;
         }
     }
 
@@ -209,8 +215,6 @@ public class CallHelper {
 
     private CallHelper(Context ctx) {
         this.ctx = ctx;
-        callListener = new CallStateListener();
-        outgoingReceiver = new OutgoingReceiver();
         numReceived = 0;
         numTriggered = 0;
     }
@@ -225,6 +229,10 @@ public class CallHelper {
                 Toast.makeText(ctx,"The service is already running",Toast.LENGTH_LONG).show();
             return;
         }
+        if (callListener==null)
+            callListener = new CallStateListener();
+        if (outgoingReceiver==null)
+            outgoingReceiver = new OutgoingReceiver();
         purgeLogs(ctx);
         loadFilters(ctx);
         Log.i(TAG, "Registering the listeners");
@@ -268,8 +276,10 @@ public class CallHelper {
     public void stop() {
         isRunning = false;
         Log.i(TAG, "Unregistering the listeners");
-        tm.listen(callListener, PhoneStateListener.LISTEN_NONE);
-        ctx.unregisterReceiver(outgoingReceiver);
+        if (callListener!= null)
+            tm.listen(callListener, PhoneStateListener.LISTEN_NONE);
+        if (outgoingReceiver!=null)
+            ctx.unregisterReceiver(outgoingReceiver);
         setNumTriggered(0);
         setNumReceived(0);
     }
@@ -309,9 +319,40 @@ public class CallHelper {
         return description;
     }
 
+    /**
+     * This is an asynchronous loader of filters.
+     * The CallHelper filters are set when the thread terminates (onPostExecute)
+     * @param context
+     */
     public void loadFilters(final Context context) {
-        myFilters = new ArrayList<>();
-        new LoadFilters().execute(context);
+        LoadFilters lf = new LoadFilters();
+        lf.execute(context);
+    }
+
+    /**
+     * This is an synchronous getter of filters.
+     * @param context
+     * @return the filters
+     */
+    public List<Filter> getFilters(final Context context) {
+        List<Filter> filters = new ArrayList<>();
+        Log.i(TAG,"Getting the filters");
+        SQLiteDatabase db = null;
+        try {
+            db = new DbHelper(context).getReadableDatabase();
+            List<FilterHandle> handles = FilterProvider.LoadFilters(db);
+            for(FilterHandle h : handles)
+                filters.add(Filter.makeFilter(context,h));
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        } finally {
+            String msg = filters.size() > 1 ?
+                    String.format(Locale.getDefault(),"%d filters loaded", filters.size()):
+                    String.format(Locale.getDefault(),"%d filter loaded", filters.size());
+            Log.i(TAG,msg);
+            if (db != null) db.close();
+        }
+        return filters;
     }
 
     private void purgeLogs(final Context context) {

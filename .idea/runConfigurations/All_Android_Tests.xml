@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="All Tests" type="AndroidTestRunConfigurationType" factoryName="Android Tests" nameIsGenerated="true">
+  <configuration default="false" name="All Android Tests" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
     <module name="app" />
     <option name="TESTING_TYPE" value="0" />
     <option name="INSTRUMENTATION_RUNNER_CLASS" value="android.support.test.runner.AndroidJUnitRunner" />
@@ -35,7 +35,7 @@
       <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
     </Native>
     <Profilers>
-      <option name="ENABLE_ADVANCED_PROFILING" value="true" />
+      <option name="ENABLE_ADVANCED_PROFILING" value="false" />
       <option name="GAPID_ENABLED" value="false" />
       <option name="GAPID_DISABLE_PCS" value="false" />
       <option name="SUPPORT_LIB_ENABLED" value="true" />

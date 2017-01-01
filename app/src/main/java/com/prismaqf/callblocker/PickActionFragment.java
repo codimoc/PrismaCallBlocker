@@ -38,7 +38,7 @@ public class PickActionFragment extends ListFragment {
         super.onListItemClick(l, v, position, id);
         IAction action = myAdapter.getItem(position);
         Intent returnIntent = new Intent();
-        returnIntent.putExtra(NewEditActivity.KEY_ACTIONNAME, action.getClass().getCanonicalName());
+        returnIntent.putExtra(NewEditActivity.KEY_ACTIONNAME, action.getName());
         getActivity().setResult(Activity.RESULT_OK, returnIntent);
         getActivity().finish();
     }

@@ -11,6 +11,11 @@ import java.util.Date;
 public class Always implements ICalendarRule {
 
     @Override
+    public String getName() {
+        return "Always";
+    }
+
+    @Override
     public boolean IsActive(Date currentTime) {
         return true;
     }
