@@ -1,14 +1,13 @@
 package com.prismaqf.callblocker;
 
-import android.app.NotificationManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+import android.os.PowerManager;
 import android.util.Log;
 
 /**
@@ -18,7 +17,8 @@ import android.util.Log;
  */public class CallDetectService extends Service {
 
     private static final String TAG = CallDetectService.class.getCanonicalName();
-
+    private static final int ONGOING_NOTIFICATION_ID = 1007;
+    private PowerManager.WakeLock myWakeLock;
 
 
     /**
@@ -46,7 +46,12 @@ import android.util.Log;
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        sendNotification();
+        /*
+        The idea of starting the service in the foreground + aquiring a wake lock
+        does not work properly in Marshmallow. The service is still killed by the
+        doze mode. Untill this is fixed the only solution is to add the app to
+        the whitelist to prevent doze
+         */
         myCallHelper.start();
         new Thread(new Runnable() {
             @Override
@@ -56,6 +61,21 @@ import android.util.Log;
                 }
             }
         }).start();
+
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, CallBlockerManager.class), 0);
+        Notification notification = new Notification.Builder(this)
+                .setContentTitle(getText(R.string.app_name))
+                .setContentText(getText(R.string.tx_notification))
+                .setSmallIcon(R.drawable.police)
+                .setContentIntent(pendingIntent)
+                .setTicker(getText(R.string.app_name))
+                .build();
+        startForeground(ONGOING_NOTIFICATION_ID, notification);
+        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        myWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+        myWakeLock.acquire();
+
         return Service.START_STICKY;
     }
 
@@ -71,6 +91,8 @@ import android.util.Log;
                 }
             }
         }).start();*/
+        if (myWakeLock!=null)
+            myWakeLock.release();
         myCallHelper.recordServiceStop();
         myCallHelper.stop();
         super.onDestroy();
@@ -81,24 +103,4 @@ import android.util.Log;
         return myBinder;
     }
 
-
-    private void sendNotification() {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.police)
-                .setContentTitle(getText(R.string.app_name))
-                .setContentText(getText(R.string.tx_notification));
-        Intent resultIntent = new Intent(this, CallBlockerManager.class);
-        //artificial back stack for the navigation to go back to the app
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(CallBlockerManager.class);
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT );
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        // mId allows you to update the notification later on.
-        mNotificationManager.notify(R.integer.notification_id, mBuilder.build());
-    }
 }
