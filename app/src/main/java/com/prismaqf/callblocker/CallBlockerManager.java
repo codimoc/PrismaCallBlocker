@@ -255,6 +255,7 @@ public class CallBlockerManager extends AppCompatActivity {
 
     private void startService() {
         Log.i(TAG, "Starting the service");
+        PermissionHelper.checkBatteryOptimization(this);
         Intent intent = new Intent(this, CallDetectService.class);
         startService(intent);
         textDetectState.setText((R.string.tx_detect));
