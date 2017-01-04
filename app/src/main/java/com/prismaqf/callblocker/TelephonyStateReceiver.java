@@ -4,30 +4,34 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 /**
- * Receiver to start the service after reboot
- * if it was running before
- * @author  ConteDiMonteCristo.
+ * Receiver to detect the state of the telephone ringing and ensure
+ * the service is running
+ * @author ConteDiMonteCristo
  */
-public class RebootReceiver extends BroadcastReceiver{
 
-    private static final String TAG = RebootReceiver.class.getCanonicalName();
+public class TelephonyStateReceiver extends BroadcastReceiver {
+
+    private static final String TAG = TelephonyStateReceiver.class.getCanonicalName();
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, "Reboot receiver receiving");
-        if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
+        Log.i(TAG, "Receiving a call..");
+        if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(intent.getAction())) {
             SharedPreferences prefs = context.getSharedPreferences(
                     context.getString(R.string.file_shared_prefs_name),
                     Context.MODE_PRIVATE);
             String state = prefs.getString(context.getString(R.string.pk_state), "not found");
-            if (state.equals(context.getString(R.string.tx_state_running))) {
+            if (state.equals(context.getString(R.string.tx_state_running)) &&
+                CallBlockerManager.isServiceRunning(context)) {
                 Intent serviceIntent = new Intent(context, CallDetectService.class);
                 context.startService(serviceIntent);
-                Log.i(TAG, "Starting CallDetectService after reboot completed");
+                Log.i(TAG, "Starting CallDetectService after dozing");
             }
         }
+
     }
 }

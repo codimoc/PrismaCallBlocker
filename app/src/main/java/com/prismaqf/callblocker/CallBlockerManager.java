@@ -214,6 +214,21 @@ public class CallBlockerManager extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PermissionHelper.REQUEST_CODE_PERMISSION_TELEPHONY_STATE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.i(TAG,"Telephone state permission granted");
+                } else {
+                    Log.w(TAG,"Telephone state permission denied");
+                }
+            }
+
+        }
+    }
     private void setDetectEnabled() {
 
         if (!isServiceRunning(this)) {
@@ -260,6 +275,8 @@ public class CallBlockerManager extends AppCompatActivity {
 
         startService(intent);
         textDetectState.setText((R.string.tx_detect));
+        //grant permission to detect phone state chenges
+        PermissionHelper.checkTelephonePermission(this);
     }
 
 

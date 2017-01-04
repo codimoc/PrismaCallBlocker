@@ -140,6 +140,13 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".TelephonyStateReceiver">
+            <intent-filter android:priority="100">
+                <action android:name="android.intent.action.PHONE_STATE"
+                        android:enabled="true" />
+            </intent-filter>
+        </receiver>
+
         <meta-data android:name="com.google.android.backup.api_key"
                    android:value="AEdPqrEAAAAIDQhhOkcNV1q3evsZ6BLW8Vxyo7U2JuTtJQVbiQ" />
 
