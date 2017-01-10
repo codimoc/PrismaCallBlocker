@@ -93,9 +93,17 @@ public class CallBlockerManager extends AppCompatActivity {
 
         textDetectState = (TextView) findViewById(R.id.textDetectState);
         ToggleButton buttonToggleDetect = (ToggleButton) findViewById(R.id.buttonDetectToggle);
-        if (isServiceRunning(this) && buttonToggleDetect!=null) {
+        if (isServiceRunning(this)) {
             textDetectState.setText(R.string.tx_detect);
-            buttonToggleDetect.setChecked(true);
+            if (buttonToggleDetect!=null) buttonToggleDetect.setChecked(true);
+        } else {  //service not running but check the state in SharedPreference
+            SharedPreferences prefs = getSharedPreferences(getString(R.string.file_shared_prefs_name),
+                                                           Context.MODE_PRIVATE);
+            String state = prefs.getString(getString(R.string.pk_state), "not found");
+            if (state.equals(getString(R.string.tx_state_running))) {
+                buttonToggleDetect.setChecked(true);
+                startService();
+            }
         }
         Button buttonExit = (Button) findViewById(R.id.buttonExit);
 

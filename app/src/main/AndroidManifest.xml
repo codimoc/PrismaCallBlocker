@@ -141,9 +141,8 @@
         </receiver>
 
         <receiver android:name=".TelephonyStateReceiver">
-            <intent-filter android:priority="100">
-                <action android:name="android.intent.action.PHONE_STATE"
-                        android:enabled="true" />
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
 

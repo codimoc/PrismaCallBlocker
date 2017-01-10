@@ -26,7 +26,7 @@ public class TelephonyStateReceiver extends BroadcastReceiver {
                     Context.MODE_PRIVATE);
             String state = prefs.getString(context.getString(R.string.pk_state), "not found");
             if (state.equals(context.getString(R.string.tx_state_running)) &&
-                CallBlockerManager.isServiceRunning(context)) {
+                !CallBlockerManager.isServiceRunning(context)) {
                 Intent serviceIntent = new Intent(context, CallDetectService.class);
                 context.startService(serviceIntent);
                 Log.i(TAG, "Starting CallDetectService after dozing");
