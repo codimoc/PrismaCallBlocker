@@ -124,5 +124,11 @@
     <string name="export_dirpath">com.prismaqf.callblocker</string>
     <string name="export_filename">filters.bin</string>
     <string name="tx_serialization_location">Download/com.prismaqf.callblocker/filters.bin</string>
+    <string name="pk_skip_protected">skipProtectedAppsMessage</string>
+    <string name="tx_dont_show">Do not show again</string>
+    <string name="tx_huawei_protected">Huawei Protected Apps</string>
+    <string name="tx_list_protected">List Protected Apps</string>
+    <string name="tx_show_protected">Show protected app dialog</string>
+    <string name="px_show_protected">showProtected</string>
 
 </resources>

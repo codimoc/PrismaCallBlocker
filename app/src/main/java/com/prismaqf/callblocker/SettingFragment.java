@@ -2,6 +2,7 @@ package com.prismaqf.callblocker;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -22,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.List;
 
 /**
@@ -133,7 +133,8 @@ public class SettingFragment extends PreferenceFragment{
             });
         }
         Preference importer = findPreference(getString(R.string.pk_imp_rules));
-        if (!isExternalStorageReadable() || !isExternalStorageWritable())
+        File rules = new File(getStorageDir(getString(R.string.export_dirpath)), getString(R.string.export_filename));
+        if (!isExternalStorageReadable() || !isExternalStorageWritable() || !rules.exists())
             importer.setEnabled(false);
         else {
             importer.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -144,6 +145,23 @@ public class SettingFragment extends PreferenceFragment{
                 }
             });
         }
+        Preference shProtected = findPreference(getString(R.string.px_show_protected));
+        shProtected.setEnabled(false);
+        final SharedPreferences prefs = getActivity().getSharedPreferences(getString(R.string.file_shared_prefs_name),
+                                                           Context.MODE_PRIVATE);
+        Boolean skipShowProtected = prefs.getBoolean(getString(R.string.pk_skip_protected), false);
+        if (CallBlockerManager.isHuawei(getActivity()) && skipShowProtected){
+            shProtected.setEnabled(true);
+            shProtected.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    CallBlockerManager.HuaweiAlert(getActivity(),true);
+                    return true;
+                }
+            });
+        }
+
+
     }
 
     /* Checks if external storage is available to at least read */

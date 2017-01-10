@@ -28,5 +28,8 @@
         android:key="@string/pk_imp_rules"
         android:title="@string/tx_imp_rules"
         android:summary="@string/tx_serialization_location"/>
+    <Preference
+        android:key="@string/px_show_protected"
+        android:title="@string/tx_show_protected" />
 
 </PreferenceScreen>
