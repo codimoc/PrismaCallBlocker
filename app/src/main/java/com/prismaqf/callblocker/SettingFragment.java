@@ -148,10 +148,9 @@ public class SettingFragment extends PreferenceFragment{
         Preference shProtected = findPreference(getString(R.string.px_show_protected));
         shProtected.setEnabled(false);
         final SharedPreferences prefs = getActivity().getSharedPreferences(getString(R.string.file_shared_prefs_name),
-                                                           Context.MODE_PRIVATE);
+                Context.MODE_PRIVATE);
         Boolean skipShowProtected = prefs.getBoolean(getString(R.string.pk_skip_protected), false);
         if (CallBlockerManager.isHuawei(getActivity()) && skipShowProtected){
-            shProtected.setEnabled(true);
             shProtected.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
@@ -159,28 +158,24 @@ public class SettingFragment extends PreferenceFragment{
                     return true;
                 }
             });
+            shProtected.setEnabled(true);
+            final SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(getString(R.string.pk_skip_protected),false);
+            editor.apply();
         }
-
-
     }
 
     /* Checks if external storage is available to at least read */
     private boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 
     private File getStorageDir(String folder) {
