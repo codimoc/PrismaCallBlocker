@@ -33,4 +33,9 @@
         android:orderInCategory="200"
         android:title="@string/ac_about"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_faq"
+        android:orderInCategory="300"
+        android:title="@string/ac_faq"
+        app:showAsAction="never" />
 </menu>

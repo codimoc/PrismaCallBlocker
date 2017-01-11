@@ -130,5 +130,7 @@
     <string name="tx_list_protected">List Protected Apps</string>
     <string name="tx_show_protected">Show protected app dialog</string>
     <string name="px_show_protected">showProtected</string>
+    <string name="ac_faq">FAQ</string>
+    <string name="uri_faq">https://github.com/ConteDiMonteCristo/PrismaCallBlocker/wiki/FAQ</string>
 
 </resources>

@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -233,6 +234,9 @@ public class CallBlockerManager extends AppCompatActivity {
             case R.id.action_about:
                 showAbout();
                 return true;
+            case R.id.action_faq:
+                showFAQ();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -368,6 +372,12 @@ public class CallBlockerManager extends AppCompatActivity {
             }
         });
         alert.show();
+    }
+
+    private void showFAQ() {
+        Uri uri = Uri.parse(getString(R.string.uri_faq));
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
     }
 
     private void showAbout() {
