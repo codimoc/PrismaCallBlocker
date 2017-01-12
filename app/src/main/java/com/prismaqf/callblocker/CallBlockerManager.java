@@ -159,8 +159,8 @@ public class CallBlockerManager extends AppCompatActivity {
             }
         });
 
-        //grant permission to detect phone state chenges
-        PermissionHelper.checkTelephonePermission(this);
+        //grant permission to detect phone state chenges and read contacts
+        PermissionHelper.checkPermissions(this);
 
         //check protected apps for Huawei devices
         //http://stackoverflow.com/questions/31638986/protected-apps-setting-on-huawei-phones-and-how-to-handle-it
@@ -441,9 +441,16 @@ public class CallBlockerManager extends AppCompatActivity {
                     .setPositiveButton(R.string.tx_list_protected, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             huaweiProtectedApps(ctx);
+                            editor.putBoolean(saveIfSkip,dontShowAgain.isChecked());
+                            editor.apply();
                         }
                     })
-                    .setNegativeButton(android.R.string.cancel, null)
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            editor.putBoolean(saveIfSkip,dontShowAgain.isChecked());
+                            editor.apply();
+                        }
+                    })
                     .show();
 
         }
