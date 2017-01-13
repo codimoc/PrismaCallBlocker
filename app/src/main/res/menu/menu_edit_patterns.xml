@@ -9,6 +9,10 @@
         android:title="@string/mn_pick_log"
         android:orderInCategory="10"
         com.prismaqf.callblocker:showAsAction="never"/>
+    <item android:id="@+id/action_edit_pattern"
+        android:title="@string/mn_edit_pattern"
+        android:orderInCategory="15"
+        com.prismaqf.callblocker:showAsAction="never"/>
     <item android:id="@+id/action_delete_pattern"
         android:title="@string/mn_delete_pattern"
         android:orderInCategory="20"

@@ -83,6 +83,14 @@ public class PatternAdapter extends ArrayAdapter<String> {
         if (myActivity!= null) myActivity.validateActions();
     }
 
+    public void replace(String oldPattern, String newPattern) {
+        myRule.removePattern(oldPattern);
+        myRule.addPattern(newPattern);
+        super.clear();
+        super.addAll(myRule.getPatternKeys());
+        if (myActivity!= null) myActivity.validateActions();
+    }
+
     public FilterRule getRule() {
         return myRule;
     }

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.prismaqf.callblocker.rules.FilterRule;
 import com.prismaqf.callblocker.utils.PatternAdapter;
@@ -28,7 +29,7 @@ public class EditFilterPatterns extends AppCompatActivity {
 
     private EditPatternsFragment myFragment;
     private final int RESULT_PICK = 1001;
-    private MenuItem mi_update, mi_delete;
+    private MenuItem mi_update, mi_delete, mi_edit;
     private FilterRule myOrigRule;
 
     @Override
@@ -73,6 +74,7 @@ public class EditFilterPatterns extends AppCompatActivity {
         inflater.inflate(R.menu.menu_edit_patterns, menu);
         mi_update = menu.findItem(R.id.action_update_patterns);
         mi_delete = menu.findItem(R.id.action_delete_pattern);
+        mi_edit = menu.findItem(R.id.action_edit_pattern);
         validateActions();
         return super.onCreateOptionsMenu(menu);
     }
@@ -87,6 +89,9 @@ public class EditFilterPatterns extends AppCompatActivity {
                 return true;
             case R.id.action_pick_pattern:
                 pick();
+                return true;
+            case R.id.action_edit_pattern:
+                edit();
                 return true;
             case R.id.action_delete_pattern:
                 delete();
@@ -134,6 +139,34 @@ public class EditFilterPatterns extends AppCompatActivity {
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
+
+    private void edit() {
+        PatternAdapter adapter = myFragment.getAdapter();
+        if (adapter.getMyChecked().size()!=1) return;
+        final String oldPattern = adapter.getMyChecked().get(0);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Edit a pattern (* and digits)");
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_PHONE);
+        input.setText(oldPattern, TextView.BufferType.EDITABLE);
+        builder.setView(input);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                myFragment.getAdapter().replace(oldPattern,input.getText().toString());
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+        validateActions();
+    }
+
 
     private void add() {
         //todo: restrict input to what allowed
@@ -203,6 +236,7 @@ public class EditFilterPatterns extends AppCompatActivity {
         FilterRule currentRule = myFragment.getAdapter().getRule();
         mi_update.setVisible(!currentRule.equals(myOrigRule));
         mi_delete.setVisible(myFragment.getAdapter().getMyChecked().size() > 0);
+        mi_edit.setVisible(myFragment.getAdapter().getMyChecked().size() == 1);
     }
 
 }
