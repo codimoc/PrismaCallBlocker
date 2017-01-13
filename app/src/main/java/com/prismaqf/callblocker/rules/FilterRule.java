@@ -4,10 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 /**
@@ -35,13 +35,13 @@ public class FilterRule implements IFilterRule, Cloneable, Parcelable, Serializa
     public FilterRule(String name, String description) {
         this.name = name;
         this.description = description;
-        patterns = new HashMap<>();
+        patterns = new TreeMap<>();
     }
 
     private FilterRule(Parcel in) {
         name = in.readString();
         description = in.readString();
-        patterns = new HashMap<>();
+        patterns = new TreeMap<>();
         int size = in.readInt();
         for (int i=0; i<size; i++)
             addPattern(in.readString());
@@ -187,7 +187,7 @@ public class FilterRule implements IFilterRule, Cloneable, Parcelable, Serializa
     @Override
     public Object clone() throws CloneNotSupportedException {
         FilterRule other = (FilterRule) super.clone();
-        other.patterns = new HashMap<>();
+        other.patterns = new TreeMap<>();
         for (String key: patterns.keySet())
             other.addPattern(key);
         return other;
