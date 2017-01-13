@@ -3,11 +3,9 @@ package com.prismaqf.callblocker;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.PowerManager;
 import android.util.Log;
 
 /**
@@ -18,7 +16,6 @@ import android.util.Log;
 
     private static final String TAG = CallDetectService.class.getCanonicalName();
     private static final int ONGOING_NOTIFICATION_ID = 1007;
-    private PowerManager.WakeLock myWakeLock;
 
 
     /**
@@ -72,9 +69,6 @@ import android.util.Log;
                 .setTicker(getText(R.string.app_name))
                 .build();
         startForeground(ONGOING_NOTIFICATION_ID, notification);
-        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        myWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-        myWakeLock.acquire();
 
         return Service.START_STICKY;
     }
@@ -91,8 +85,6 @@ import android.util.Log;
                 }
             }
         }).start();*/
-        if (myWakeLock!=null)
-            myWakeLock.release();
         myCallHelper.recordServiceStop();
         myCallHelper.stop();
         super.onDestroy();

@@ -19,7 +19,7 @@ public class TelephonyStateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, "Receiving a call..");
+        Log.i(TAG, "Phone state changed");
         if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(intent.getAction())) {
             SharedPreferences prefs = context.getSharedPreferences(
                     context.getString(R.string.file_shared_prefs_name),
