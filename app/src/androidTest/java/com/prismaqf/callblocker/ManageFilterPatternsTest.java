@@ -15,6 +15,7 @@ import com.prismaqf.callblocker.sql.LoggedCallProvider;
 import com.prismaqf.callblocker.utils.CountingMatcher;
 import com.prismaqf.callblocker.utils.DebugDBFileName;
 import com.prismaqf.callblocker.utils.InstrumentTestHelper;
+import com.prismaqf.callblocker.utils.PatternAdapter;
 
 import org.junit.After;
 import org.junit.Before;
@@ -28,6 +29,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -294,6 +296,78 @@ public class ManageFilterPatternsTest{
         //we should have landed in the parent activity and the rule description should be unpdates
         onView(withId(R.id.tx_rule_description)).check(matches(withText(containsString("123"))));
 
+    }
+
+    @Test
+    public void PatternsOrderedAlphabetically() {
+        onView(withId(R.id.action_help_patterns)).check(matches(isDisplayed()));
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Add a pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("123"));
+        onView(withText("OK")).perform(click());
+        onView(withText("123")).check(matches(isDisplayed()));
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Add a pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("456"));
+        onView(withText("OK")).perform(click());
+        onView(withText("456")).check(matches(isDisplayed()));
+        //now get the ListView and the adapter
+        onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(0).onChildView(withId(R.id.text_pattern)).check(matches(withText(containsString("123"))));
+        onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(1).onChildView(withId(R.id.text_pattern)).check(matches(withText(containsString("456"))));
+        //now add a pattern which should ordered in between the last two
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Add a pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("125"));
+        onView(withText("OK")).perform(click());
+        onView(withText("125")).check(matches(isDisplayed()));
+        //and check that the order is respected
+        onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(0).onChildView(withId(R.id.text_pattern)).check(matches(withText(containsString("123"))));
+        onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(1).onChildView(withId(R.id.text_pattern)).check(matches(withText(containsString("125"))));
+        onData(anything()).inAdapterView(withId(android.R.id.list)).atPosition(2).onChildView(withId(R.id.text_pattern)).check(matches(withText(containsString("456"))));
+    }
+
+    @Test
+    public void EditAPatternShouldWork() {
+        onView(withId(R.id.action_help_patterns)).check(matches(isDisplayed()));
+        Context ctx = InstrumentationRegistry.getTargetContext();
+        openActionBarOverflowOrOptionsMenu(ctx);
+        //add two patterns
+        onView(withText("Add a pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("123"));
+        onView(withText("OK")).perform(click());
+        onView(withText("123")).check(matches(isDisplayed()));
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Add a pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("456"));
+        onView(withText("OK")).perform(click());
+        onView(withText("456")).check(matches(isDisplayed()));
+        //first the edit is not displayed because nothing is checked
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Edit a single pattern")).check(doesNotExist());
+        pressBack();
+        //now tick one box
+        onData(containsString("123")).onChildView(withId(R.id.cb_pattern)).perform(click());
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Edit a single pattern")).check(matches(isDisplayed()));
+        pressBack();
+        //now tick another box
+        onData(containsString("456")).onChildView(withId(R.id.cb_pattern)).perform(click());
+        openActionBarOverflowOrOptionsMenu(ctx);
+        //the edit option should have disappeared
+        onView(withText("Edit a single pattern")).check(doesNotExist());
+        pressBack();
+        //now untick the second box
+        onData(containsString("456")).onChildView(withId(R.id.cb_pattern)).perform(click());
+        //and edit the first
+        openActionBarOverflowOrOptionsMenu(ctx);
+        onView(withText("Edit a single pattern")).check(matches(isDisplayed()));
+        onView(withText("Edit a single pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).check(matches(withText("123")));
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(replaceText("999"));
+        onView(withText("OK")).perform(click());
+        //now check that the text has changed
+        onView(withText("999")).check(matches(isDisplayed()));
     }
 
 }
