@@ -43,6 +43,7 @@ public abstract class NewEditActivity extends AppCompatActivity {
     protected abstract void undo();
     protected abstract void delete();
     protected abstract void help();
+    protected abstract boolean hasChanged();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -99,10 +100,17 @@ public abstract class NewEditActivity extends AppCompatActivity {
                 help();
                 return true;
             case android.R.id.home:
+                if (hasChanged()) save();
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (hasChanged()) save();
+        super.onBackPressed();
     }
 
     void refreshWidgets(boolean validate) {

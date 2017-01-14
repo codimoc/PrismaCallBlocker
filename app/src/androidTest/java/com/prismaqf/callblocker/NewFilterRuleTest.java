@@ -3,12 +3,15 @@ package com.prismaqf.callblocker;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.test.espresso.action.ReplaceTextAction;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.EditText;
 
+import com.prismaqf.callblocker.sql.DbContract;
+import com.prismaqf.callblocker.sql.DbHelper;
 import com.prismaqf.callblocker.utils.DebugDBFileName;
 import com.prismaqf.callblocker.utils.InstrumentTestHelper;
 
@@ -23,6 +26,7 @@ import java.util.Collections;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
@@ -50,6 +54,9 @@ public class NewFilterRuleTest {
     @Before
     public void before() {
         ctx = myActivityRule.getActivity();
+        SQLiteDatabase db = new DbHelper(myActivityRule.getActivity()).getWritableDatabase();
+        db.delete(DbContract.FilterRules.TABLE_NAME, null, null);
+        db.delete(DbContract.FilterPatterns.TABLE_NAME, null, null);
         intent = new Intent(ctx,NewEditFilterRule.class);
         intent.putExtra(NewEditActivity.KEY_ACTION, NewEditActivity.ACTION_CREATE);
     }
@@ -161,5 +168,29 @@ public class NewFilterRuleTest {
         onView(ViewMatchers.withId(R.id.edit_filter_rule_name)).perform(new ReplaceTextAction(""));
         InstrumentTestHelper.rotateScreen(activity);
         onView(ViewMatchers.withId(R.id.edit_filter_rule_name)).check(matches(withText("")));
+    }
+
+    @Test
+    public void AfterUpdatingTheRulePatternsTheRuleShouldSaveWhenActivityIsLeft() {
+        intent.putStringArrayListExtra(NewEditActivity.KEY_RULENAMES, new ArrayList<String>());
+        ctx.startActivity(intent);
+        onView(ViewMatchers.withId(R.id.edit_filter_rule_name)).perform(new ReplaceTextAction("my dummy rule"));
+        onView(ViewMatchers.withId(R.id.bt_filter_rule_patterns)).perform(click());
+        openActionBarOverflowOrOptionsMenu(ctx);
+        //add a patterns
+        onView(withText("Add a pattern")).perform(click());
+        onView(withClassName(equalTo(EditText.class.getCanonicalName()))).perform(typeText("123"));
+        onView(withText("OK")).perform(click());
+        onView(withText("123")).check(matches(isDisplayed()));
+        onView(withId(R.id.action_update_patterns)).perform(click());
+        //back in the main activity
+        onView(withId(R.id.tx_rule_description)).check(matches(withText(containsString("123"))));
+        //now leave the activity without saving
+        pressBack();
+        //now check the rule is in the list
+        onView(ViewMatchers.withId(R.id.text_rule_name)).check(matches(withText("my dummy rule")));
+        //now go back and check the pattren was saved
+        onView(ViewMatchers.withId(R.id.text_rule_name)).perform(click());
+        onView(withId(R.id.tx_rule_description)).check(matches(withText(containsString("123"))));
     }
 }

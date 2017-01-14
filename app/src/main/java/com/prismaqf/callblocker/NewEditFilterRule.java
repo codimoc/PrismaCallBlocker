@@ -305,6 +305,11 @@ public class NewEditFilterRule extends NewEditActivity {
     }
 
     @Override
+    protected boolean hasChanged() {
+        return ptRule!=null && !ptRule.equals(myOrigRule);
+    }
+
+    @Override
     protected RuleNameValidator getRuleNameValidator() {
         return new RuleNameValidator(ed_name, tv_validation, myRuleNames) {
             @Override

@@ -521,6 +521,11 @@ public class NewEditCalendarRule extends NewEditActivity {
         alert.show();
     }
 
+    @Override
+    protected boolean hasChanged() {
+        return ptRule!=null && !ptRule.equals(myOrigRule);
+    }
+
 
 
 }

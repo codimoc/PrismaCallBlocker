@@ -355,6 +355,11 @@ public class NewEditFilter extends NewEditActivity{
     }
 
     @Override
+    protected boolean hasChanged() {
+        return ptFilter!=null && !ptFilter.equals(myOrigFilter);
+    }
+
+    @Override
     protected void validateActions() {
         if (mi_save==null || mi_delete ==null || mi_change == null || mi_undo == null) return;
         //Save only valie in EDIT or CREATE mode, when the data has change and the name is valid
