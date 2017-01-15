@@ -1,7 +1,9 @@
 package com.prismaqf.callblocker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +13,9 @@ import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.prismaqf.callblocker.filters.Filter;
@@ -163,6 +168,37 @@ public class SettingFragment extends PreferenceFragment{
             editor.putBoolean(getString(R.string.pk_skip_protected),false);
             editor.apply();
         }
+        Preference help = findPreference(getString(R.string.mn_help));
+        if (help != null)
+            help.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    showHelp();
+                    return true;
+                }
+            });
+    }
+
+    private void showHelp() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle(R.string.tx_settings);
+
+        WebView wv = new WebView(getActivity());
+        wv.loadUrl("file:///android_asset/html/settings.html");
+        ScrollView scroll = new ScrollView(getActivity());
+        scroll.setVerticalScrollBarEnabled(true);
+        scroll.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        scroll.addView(wv);
+
+        alert.setView(scroll);
+        alert.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
     }
 
     /* Checks if external storage is available to at least read */

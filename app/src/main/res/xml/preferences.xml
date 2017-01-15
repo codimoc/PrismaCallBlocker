@@ -31,5 +31,8 @@
     <Preference
         android:key="@string/px_show_protected"
         android:title="@string/tx_show_protected" />
+    <Preference
+        android:key="@string/mn_help"
+        android:title="@string/mn_help" />
 
 </PreferenceScreen>
