@@ -25,7 +25,6 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_gravity="start"
-                android:singleLine="false"
                 android:gravity="center_vertical"
                 android:focusable="true"
                 android:layout_weight="0.3"

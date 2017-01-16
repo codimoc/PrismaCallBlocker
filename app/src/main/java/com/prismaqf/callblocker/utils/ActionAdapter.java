@@ -41,7 +41,7 @@ public class ActionAdapter extends ArrayAdapter<IAction> {
         // Lookup view for data population
         TextView tv_name = (TextView) convertView.findViewById(R.id.text_action_class);
         TextView tv_description = (TextView) convertView.findViewById(R.id.text_action_description);
-        tv_name.setText(action.getClass().getSimpleName());
+        tv_name.setText(action != null ? action.getClass().getSimpleName() : null);
         AvailableAction a = action.getClass().getAnnotation(AvailableAction.class);
         if (a!=null)
             tv_description.setText(a.description());

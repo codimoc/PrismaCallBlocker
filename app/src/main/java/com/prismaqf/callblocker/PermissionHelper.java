@@ -8,12 +8,11 @@ import android.support.v4.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Created by ConteDiMonteCristo
  */
-public class PermissionHelper {
+class PermissionHelper {
     static final int REQUEST_CODE_PERMISSION_WRITE_EXTERNAL_STORAGE = 102;
     static final int REQUEST_CODE_PERMISSION_TELEPHONY_STATE = 103;
     static final int REQUEST_CODE_PERMISSION_CONTACTS = 104;

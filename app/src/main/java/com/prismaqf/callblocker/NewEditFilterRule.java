@@ -60,7 +60,7 @@ public class NewEditFilterRule extends NewEditActivity {
                     case NewEditActivity.ACTION_EDIT:
                         FilterRuleProvider.UpdateFilterRule(db, ruleid, rule);
                         if (CallHelper.IsRunning() && FilterProvider.HasFilterRule(db,rule.getName()))
-                            CallHelper.GetHelper(NewEditFilterRule.this).loadFilters(NewEditFilterRule.this);
+                            CallHelper.GetHelper().loadFilters(NewEditFilterRule.this);
                         break;
                     default:
                         if (FilterProvider.HasFilterRule(db,rule.getName())) {

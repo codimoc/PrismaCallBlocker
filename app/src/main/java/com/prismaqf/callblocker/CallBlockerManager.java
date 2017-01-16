@@ -457,7 +457,7 @@ public class CallBlockerManager extends AppCompatActivity {
     }
 
 
-    static void huaweiProtectedApps(Context ctx) {
+    private static void huaweiProtectedApps(Context ctx) {
         try {
             String cmd = "am start -n com.huawei.systemmanager/.optimize.process.ProtectActivity";
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -468,7 +468,7 @@ public class CallBlockerManager extends AppCompatActivity {
         }
     }
 
-    static String getUserSerial(Context ctx) {
+    private static String getUserSerial(Context ctx) {
         //noinspection ResourceType
         Object userManager = ctx.getSystemService("user");
         if (null == userManager) return "";

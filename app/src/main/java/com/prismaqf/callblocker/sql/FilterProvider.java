@@ -9,7 +9,6 @@ import com.prismaqf.callblocker.filters.Filter;
 import com.prismaqf.callblocker.filters.FilterHandle;
 import com.prismaqf.callblocker.rules.CalendarRule;
 import com.prismaqf.callblocker.rules.FilterRule;
-import com.prismaqf.callblocker.rules.ICalendarRule;
 
 import java.util.ArrayList;
 import java.util.List;

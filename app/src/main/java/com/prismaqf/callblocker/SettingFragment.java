@@ -1,6 +1,5 @@
 package com.prismaqf.callblocker;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -47,7 +46,7 @@ public class SettingFragment extends PreferenceFragment{
                 myPath = file.getAbsolutePath();
                 FileOutputStream fOut = new FileOutputStream(file);
                 ObjectOutputStream oOut = new ObjectOutputStream(fOut);
-                oOut.writeObject(CallHelper.GetHelper(myContext).getFilters(myContext));
+                oOut.writeObject(CallHelper.GetHelper().getFilters(myContext));
                 oOut.flush();
                 oOut.close();
 
@@ -90,7 +89,7 @@ public class SettingFragment extends PreferenceFragment{
                 db = new DbHelper(myContext).getWritableDatabase();
                 for (Filter f : filters)
                     FilterProvider.SaveFilter(db,f);
-                CallHelper.GetHelper(myContext).loadFilters(myContext);
+                CallHelper.GetHelper().loadFilters(myContext);
                 oIn.close();
 
             }
@@ -173,7 +172,7 @@ public class SettingFragment extends PreferenceFragment{
     }
 
     /* Checks if external storage is available for read and write */
-    public boolean isExternalStorageWritable() {
+    private boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
     }

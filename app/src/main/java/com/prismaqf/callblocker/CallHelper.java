@@ -39,7 +39,6 @@ public class CallHelper {
     private static CallHelper theHelper = null;
     private static boolean isRunning = false;
 
-    private final Context ctx;
     private TelephonyManager tm;
     private CallStateListener callListener;
     private OutgoingReceiver outgoingReceiver;
@@ -52,11 +51,11 @@ public class CallHelper {
         this.numTriggered = numTriggered;
     }
 
-    public int getNumReceived() {
+    int getNumReceived() {
         return numReceived;
     }
 
-    public int getNumTriggered() {
+    int getNumTriggered() {
         return numTriggered;
     }
 
@@ -67,12 +66,10 @@ public class CallHelper {
 
     /**
      * Method to return the only intance of CallHelper (singleton)
-     * @param ctx the Context, only needed when creating a CallHelper for the first time,
-     *            a null value is ok all the remaining times
      * @return the single instance of a CallHelper class
      */
-    public static CallHelper GetHelper(Context ctx) {
-        if (theHelper==null) theHelper = new CallHelper(ctx);
+    static CallHelper GetHelper() {
+        if (theHelper==null) theHelper = new CallHelper();
         return theHelper;
     }
 
@@ -80,13 +77,20 @@ public class CallHelper {
      * Check if the serice is running
      * @return a boolean flag to indicate if the service is running
      */
-    public static boolean IsRunning() { return isRunning;}
+    static boolean IsRunning() { return isRunning;}
 
 
     /**
      * Listener to detect incoming calls
      */
     private class CallStateListener extends PhoneStateListener {
+
+        private Context ctx;
+
+        CallStateListener(Context context) {
+            super();
+            ctx = context;
+        }
 
         @Override
         public void onCallStateChanged(int state, final String incomingNumber) {
@@ -129,8 +133,8 @@ public class CallHelper {
         @Override
         public void onReceive(Context context, Intent intent) {
             String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-            if (PreferenceHelper.GetToastVerbosity(ctx) > 1)
-                Toast.makeText(ctx, "Outgoing: "+number, Toast.LENGTH_LONG).show();
+            if (PreferenceHelper.GetToastVerbosity(context) > 1)
+                Toast.makeText(context, "Outgoing: "+number, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -208,21 +212,21 @@ public class CallHelper {
             String msg = purged > 0  ?
                     String.format(Locale.getDefault(),"%d service run records purged", purged):
                     "No service run records purged";
-            if (PreferenceHelper.GetToastVerbosity(ctx) > 1)
+            if (PreferenceHelper.GetToastVerbosity(myContext) > 1)
                 Toast.makeText(myContext, msg, Toast.LENGTH_LONG).show();
         }
     }
 
-    private CallHelper(Context ctx) {
-        this.ctx = ctx;
+    private CallHelper() {
         numReceived = 0;
         numTriggered = 0;
     }
 
     /**
      * Start calls detection
+     * @param ctx the context
      */
-    public void start() {
+    public void start(Context ctx) {
         if (isRunning) {
             Log.e(TAG,"The service is already running");
             if (PreferenceHelper.GetToastVerbosity(ctx) > 0)
@@ -230,7 +234,7 @@ public class CallHelper {
             return;
         }
         if (callListener==null)
-            callListener = new CallStateListener();
+            callListener = new CallStateListener(ctx);
         if (outgoingReceiver==null)
             outgoingReceiver = new OutgoingReceiver();
         purgeLogs(ctx);
@@ -246,8 +250,9 @@ public class CallHelper {
 
     /**
      * Open a db connection and insert a record and set the run id
+     * @param ctx the context
      */
-    public void recordServiceStart() {
+    void recordServiceStart(Context ctx) {
         Log.i(TAG, "Opening a DB connection and recording service start");
         SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
         try {
@@ -272,8 +277,9 @@ public class CallHelper {
 
     /**
      * Stop calls detection
+     * @param ctx the context
      */
-    public void stop() {
+    void stop(Context ctx) {
         isRunning = false;
         Log.i(TAG, "Unregistering the listeners");
         if (callListener!= null)
@@ -286,8 +292,9 @@ public class CallHelper {
 
     /**
      * Closing the DB connection and updating the service run record
+     * @param ctx the context
      */
-    public void recordServiceStop() {
+    void recordServiceStop(Context ctx) {
         Log.i(TAG, "Closing the DB connection and updating the ServiceRunProvider record");
         SQLiteDatabase db = new DbHelper(ctx).getWritableDatabase();
         ServiceRunProvider.ServiceRun lastRun = ServiceRunProvider.LatestCompletedRun(db);
@@ -322,19 +329,19 @@ public class CallHelper {
     /**
      * This is an asynchronous loader of filters.
      * The CallHelper filters are set when the thread terminates (onPostExecute)
-     * @param context
+     * @param context the context
      */
-    public void loadFilters(final Context context) {
+    void loadFilters(final Context context) {
         LoadFilters lf = new LoadFilters();
         lf.execute(context);
     }
 
     /**
      * This is an synchronous getter of filters.
-     * @param context
+     * @param context the context
      * @return the filters
      */
-    public List<Filter> getFilters(final Context context) {
+    List<Filter> getFilters(final Context context) {
         List<Filter> filters = new ArrayList<>();
         Log.i(TAG,"Getting the filters");
         SQLiteDatabase db = null;

@@ -3,6 +3,7 @@ package com.prismaqf.callblocker;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
@@ -33,7 +34,7 @@ import android.util.Log;
     private final IBinder myBinder = new LocalBinder();
     
     public CallDetectService() {
-        myCallHelper = CallHelper.GetHelper(this);
+        myCallHelper = CallHelper.GetHelper();
     }
 
     public int getNumReceived() {return myCallHelper.getNumReceived();}
@@ -49,12 +50,13 @@ import android.util.Log;
         doze mode. Untill this is fixed the only solution is to add the app to
         the whitelist to prevent doze
          */
-        myCallHelper.start();
+        final Context ctx=this;
+        myCallHelper.start(ctx);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 synchronized (myCallHelper) {
-                    myCallHelper.recordServiceStart();
+                    myCallHelper.recordServiceStart(ctx);
                 }
             }
         }).start();
@@ -85,8 +87,8 @@ import android.util.Log;
                 }
             }
         }).start();*/
-        myCallHelper.recordServiceStop();
-        myCallHelper.stop();
+        myCallHelper.recordServiceStop(this);
+        myCallHelper.stop(this);
         super.onDestroy();
     }
 

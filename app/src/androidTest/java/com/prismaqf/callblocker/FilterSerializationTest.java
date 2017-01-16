@@ -117,7 +117,7 @@ public class FilterSerializationTest {
         FilterProvider.InsertRow(db,fh2);
         assertEquals("Two filters are present in the db",2,FilterProvider.AllFilters(db).size());
         Activity act = InstrumentTestHelper.getCurrentActivity();
-        List<Filter> myFilters = CallHelper.GetHelper(act).getFilters(act);
+        List<Filter> myFilters = CallHelper.GetHelper().getFilters(act);
         assertEquals("Two filters in memory",2,myFilters.size());
         ApplicationInfo ai = myContext.getApplicationInfo();
         String filePath = ai.dataDir + "/test.bin";

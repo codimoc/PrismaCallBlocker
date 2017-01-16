@@ -60,7 +60,7 @@ public class NewEditFilter extends NewEditActivity{
                         break;
                 }
                 if (CallHelper.IsRunning())
-                    CallHelper.GetHelper(NewEditFilter.this).loadFilters(NewEditFilter.this);
+                    CallHelper.GetHelper().loadFilters(NewEditFilter.this);
             }
             finally {
                 db.close();
