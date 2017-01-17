@@ -1,6 +1,5 @@
 package com.prismaqf.callblocker;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -52,7 +51,7 @@ public class SettingFragment extends PreferenceFragment{
                 myPath = file.getAbsolutePath();
                 FileOutputStream fOut = new FileOutputStream(file);
                 ObjectOutputStream oOut = new ObjectOutputStream(fOut);
-                oOut.writeObject(CallHelper.GetHelper(myContext).getFilters(myContext));
+                oOut.writeObject(CallHelper.GetHelper().getFilters(myContext));
                 oOut.flush();
                 oOut.close();
 
@@ -95,7 +94,7 @@ public class SettingFragment extends PreferenceFragment{
                 db = new DbHelper(myContext).getWritableDatabase();
                 for (Filter f : filters)
                     FilterProvider.SaveFilter(db,f);
-                CallHelper.GetHelper(myContext).loadFilters(myContext);
+                CallHelper.GetHelper().loadFilters(myContext);
                 oIn.close();
 
             }

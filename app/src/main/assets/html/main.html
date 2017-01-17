@@ -7,7 +7,7 @@
 </head>
 <body>
 <p>This app blocks or reacts to unwanted calls on a rule-based logic. The main-home
-activity controls the turning on and off of a background service that listens to incoming calls.
+activity controls the turning on and off of a service that listens to incoming calls.
 This service is <em>sticky</em> and survives crashes and reboots of the system.</p>
 <p>When an incoming call is detected, the service loops through the list of active <b>filters</b>,
 and for each filter, if there is a match, an action is performed, like dropping the call,
@@ -25,13 +25,13 @@ that all filters shown by the action "<b>Show active filters</b>" will be used b
 incoming call is detected.</p>
 <p>Here is a list of all menu items available from the drop-down menu:</p>
 <ul>
-    <li><b>Show active filters</b>, to create and edit active filters; This is a main entry point in the use of this app.</li>
-    <li><b>Show latest service runs</b>, this is a brief summary of recent service runs, where a run is defined as the period
-    between two consecutive service-start and service-stop events,</li>
-    <li><b>Show latest calls received</b>, a log of the incoming calls most recently received.</li>
-    <li><b>Show calendar rules</b>, the activity to create and edit calendar rules.</li>
-    <li><b>Show filter rules</b>, the activity to create and edit filter rules.</li>
-    <li><b>Settings</b>, a setting page for further customization.</li>
+    <li><b>Show active filters</b> to create and edit active filters; This is a main entry point in the use of this app</li>
+    <li><b>Show latest service runs</b>, a brief summary of recent service runs, where a run is defined as the period
+    between two consecutive service-start and service-stop events</li>
+    <li><b>Show latest calls received</b>, a log of the incoming calls most recently received</li>
+    <li><b>Show calendar rules</b>, the activity to create and edit calendar rules</li>
+    <li><b>Show filter rules</b>, the activity to create and edit filter rules</li>
+    <li><b>Settings</b>, a setting page for further customization</li>
 </ul>
 <p>Once the service is running, the main activity's page also shows a brief statistics of the total
 number of calls received and triggered events, <em>i.e.</em> when the filter reacted by performing an action, since service start.
