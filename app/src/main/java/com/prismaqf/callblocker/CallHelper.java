@@ -62,7 +62,7 @@ public class CallHelper {
     private int numReceived;
     private int numTriggered;
     private long myRunId;
-    private List<Filter> myFilters;
+    private List<Filter> myFilters = new ArrayList<>();
 
     /**
      * Method to return the only intance of CallHelper (singleton)
