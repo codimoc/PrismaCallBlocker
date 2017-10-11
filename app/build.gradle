@@ -1,14 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    signingConfigs {
+        PrismaCallBlocker {
+        }
+    }
+    compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.prismaqf.callblocker"
         minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 3
-        versionName "1.2.1"
+        maxSdkVersion 25
+        targetSdkVersion 25
+        versionCode 4
+        versionName "1.2.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
