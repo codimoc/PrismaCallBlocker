@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -28,7 +29,10 @@ public class TelephonyStateReceiver extends BroadcastReceiver {
             if (state.equals(context.getString(R.string.tx_state_running)) &&
                 !CallBlockerManager.isServiceRunning(context)) {
                 Intent serviceIntent = new Intent(context, CallDetectService.class);
-                context.startService(serviceIntent);
+                if (Build.VERSION.SDK_INT < 26)
+                    context.startService(serviceIntent);
+                else //changes with Android Oreo that otherwise throw and IllegalStateException
+                    context.startForegroundService(serviceIntent);
                 Log.i(TAG, "Starting CallDetectService after dozing");
             }
         }

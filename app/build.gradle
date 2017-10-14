@@ -5,12 +5,12 @@ android {
         PrismaCallBlocker {
         }
     }
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.prismaqf.callblocker"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 5
         versionName "1.2.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
 
 /**
@@ -25,7 +26,10 @@ public class RebootReceiver extends BroadcastReceiver{
             String state = prefs.getString(context.getString(R.string.pk_state), "not found");
             if (state.equals(context.getString(R.string.tx_state_running))) {
                 Intent serviceIntent = new Intent(context, CallDetectService.class);
-                context.startService(serviceIntent);
+                if (Build.VERSION.SDK_INT < 26)
+                    context.startService(serviceIntent);
+                else //changes with Android Oreo that otherwise throw and IllegalStateException
+                    context.startForegroundService(serviceIntent);
                 Log.i(TAG, "Starting CallDetectService after reboot completed");
             }
         }

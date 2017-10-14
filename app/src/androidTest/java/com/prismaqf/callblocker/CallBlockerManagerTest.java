@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.SystemClock;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -104,6 +105,24 @@ public class CallBlockerManagerTest
         SystemClock.sleep(500);
         onView(withId(R.id.button_received)).check(matches(withText("10")));
         onView(withId(R.id.button_triggered)).check(matches(withText("5")));
+    }
+
+    @Test
+    public void testStartServiceWhenInBackground() {
+        Activity myactivity = mActivityRule.getActivity();
+        Context ctx = myactivity.getApplicationContext();
+        //first stop the service
+        stopRunningService();
+        //now put the app in the background
+        myactivity.moveTaskToBack(true);
+        Intent i = new Intent();
+        i.setAction(Intent.ACTION_MAIN);
+        i.addCategory(Intent.CATEGORY_HOME);
+        ctx.startActivity(i);
+        SystemClock.sleep(5000);
+        //now try to start the service from the background
+        Intent serviceIntent = new Intent(ctx, CallDetectService.class);
+        myactivity.startService(serviceIntent);
     }
 
     private void stopRunningService() {
