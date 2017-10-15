@@ -5,8 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.SystemClock;
+import android.provider.ContactsContract;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -123,6 +126,15 @@ public class CallBlockerManagerTest
         //now try to start the service from the background
         Intent serviceIntent = new Intent(ctx, CallDetectService.class);
         myactivity.startService(serviceIntent);
+    }
+
+    @Test
+    public void testContactResolverDoesNotThrow() {
+        String incomingNumber = "123";
+        Context ctx = mActivityRule.getActivity().getApplicationContext();
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(incomingNumber));
+        String[] projection = new String[]{ ContactsContract.PhoneLookup.DISPLAY_NAME};
+        Cursor c = ctx.getContentResolver().query(uri, projection, null, null, null);
     }
 
     private void stopRunningService() {
